@@ -1,0 +1,79 @@
+import { create } from 'zustand'
+import { publicAxios } from '@/lib/axios'
+import toast from 'react-hot-toast'
+
+export const useAuthStore = create((set, get) => ({
+    token: null,
+    authUser: null,
+    users: null,
+    isCheckingAuth: false,
+
+    //apis
+    signUp: async (body) => {
+        try {
+            const { data } = await publicAxios.post('/auth/signup',
+                body,
+                { headers: { "Content-Type": "multipart/form-data" }, }
+            )
+            toast.success(data.message)
+            return true
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+            return false
+        }
+    },
+    login: async (body) => {
+        try {
+            const { data } = await publicAxios.post('/auth/login', body
+                ,
+                { headers: { "Content-Type": "application/json" }, }
+            )
+            toast.success(data.message)
+            set({ authUser: data.user, token: data.accessToken })
+            return true
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+            return false
+        }
+    },
+    logout: async () => {
+        try {
+            const { data } = await publicAxios.post('/auth/logout')
+            set({ authUser: null, token: null })
+            toast.success(data.message)
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        }
+    },
+    issueRefreshToken: async () => {
+
+        try {
+            const { data } = await publicAxios.get('/auth/refresh')
+            set({
+                token: data.accessToken,
+                authUser: data.user
+            })
+            return data.accessToken
+
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+        }
+    },
+    checkAuthStatus: async () => {
+        set({ isCheckingAuth: true })
+        try {
+            const { data } = await publicAxios.get('/auth/refresh')
+            set({
+                token: data.accessToken,
+                authUser: data.user
+            })
+
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+        } finally {
+            set({ isCheckingAuth: false })
+        }
+    }
+
+}))
+
