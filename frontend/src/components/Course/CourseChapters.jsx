@@ -102,7 +102,7 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
                                         <div
                                             key={lec.lectureId}
                                             className={`p-4 rounded-sm border flex items-center justify-between transition-all duration-300 h-[75px]
-    ${lectureId === lec.lectureId
+    ${lectureId == lecIdx
                                                     ? "bg-blue-500/10 border-blue-500"
                                                     : completedLectures?.includes(lec.lectureId)
                                                         ? "bg-green-500/10 border-green-500"

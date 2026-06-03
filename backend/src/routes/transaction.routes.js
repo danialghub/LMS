@@ -1,12 +1,13 @@
 import express from 'express'
-import { createTransaction } from '../controller/transaction.controller.js'
-import {  protectRoute, allowStudent } from '../middlewares/auth.middleware.js'
+import { createTransaction, updateTransactionStatus } from '../controller/transaction.controller.js'
+import { protectRoute, allowStudent } from '../middlewares/auth.middleware.js'
 
 const router = express.Router()
 
 router.use(protectRoute, allowStudent)
 
-router.post('/purchase/:courseId', createTransaction)
+router.post('/place', createTransaction)
+router.put('/make', updateTransactionStatus)
 
 
 

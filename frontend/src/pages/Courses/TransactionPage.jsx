@@ -68,12 +68,7 @@ const TransactionPage = () => {
     const handleFormSubmit = async (data) => {
         setLoading(true);
 
-            await createTransaction(course._id, {
-                cardNumber: data.cardNumber.replace(/\s/g, ""),
-                cvv2: data.cvv2,
-                expireMonth: data.expiryMonth,
-                expireYear: data.expiryYear
-            })
+            await createTransaction(course._id)
             setTimeout(() =>
                 navigate(`/course/${course._id}`)
                 , 2000);

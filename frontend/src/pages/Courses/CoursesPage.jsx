@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MyCourseCard, CourseCard, Navbar, CourseFilteringCard, PageLoader, Footer } from '@/components/index'
+import { MyCourseCard, CourseCard, Navbar, CourseFilteringCard, PageLoader, Footer, SubmitLoading } from '@/components/index'
 import { BookA, GraduationCap, Loader, User } from 'lucide-react'
 import { useGetCourses } from '@/query/courseQueries'
 import toast from 'react-hot-toast'
@@ -127,11 +127,7 @@ const CoursesPage = () => {
                                     className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
                                 >
                                     {isFetchingNextPage ? (
-                                        <div className="flex items-center gap-1">
-                                            <span className="dot" />
-                                            <span className="dot" />
-                                            <span className="dot" />
-                                        </div>
+                                        <SubmitLoading />
                                     ) : (
                                         "مشاهده بیشتر"
                                     )}

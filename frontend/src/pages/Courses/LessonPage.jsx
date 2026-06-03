@@ -10,28 +10,29 @@ import toast from 'react-hot-toast'
 const LessonPage = () => {
 
   const { chapterId, lectureId, courseId } = useParams()
-  const { authUser } = useAuthStore()
-  const { getLectureById, getCourseById, course, isFetching } = useCourseStore()
+  const { authUser, isCheckingAuth } = useAuthStore()
+  const { getCourseById, course } = useCourseStore()
   const [lecture, setLecture] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!courseId) return
+    if (!courseId || isCheckingAuth || !(authUser && authUser.role === "student")) return
     if (course._id) return
 
-    if (authUser && authUser.role === "student") {
-      getCourseById(courseId, { userId: authUser._id })
 
-    } else {
-      getCourseById(courseId)
-    }
+
+    getCourseById(courseId, { userId: authUser._id })
+
+
+
 
   }, [courseId, authUser])
 
   useEffect(() => {
-    if (!course._id || !lectureId) return
+    if (!course._id || !lectureId || !chapterId) return
 
     const lecture = course.courseContent[chapterId].chapterContent[lectureId]
+    console.log(lecture);
 
     if (!lecture) {
       toast.error('جلسه نامعتبر است')
@@ -39,10 +40,10 @@ const LessonPage = () => {
     }
     setLecture(lecture)
 
-  }, [course._id, chapterId])
+  }, [course._id, chapterId,])
 
 
-  return lecture?.lectureId ? (
+  return lecture?.lectureId  ? (
     <CourseDetail course={{ ...course, lecture }} isPreviewPage={false} />
   ) : <PageLoader />
 }

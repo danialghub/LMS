@@ -9,9 +9,10 @@ import {
     Check,
 } from "lucide-react";
 
-import { VideoPlayer, LectureAttachment, CourseChapters, CourseRating } from "@/components/index";
+import { VideoPlayer, LectureAttachment, CourseChapters, CourseRating, SubmitLoading } from "@/components/index";
 import { Link, useNavigate } from "react-router";
 import { useAuthStore } from '@/store/useAuthStore'
+import { useStudentStore } from '@/store/useStudentStore'
 import { formatPrice, formatTime } from '@/lib/helper'
 import toast from "react-hot-toast";
 
@@ -45,11 +46,12 @@ const celebrate = () => {
 
 
 const CourseDetail = ({ isPreviewPage, course }) => {
-    console.log(course);
+
 
     const [theme, setTheme] = useState("dark");
 
     const { authUser } = useAuthStore()
+    const { markLectureAsCompleted, isMarking } = useStudentStore()
     const navigate = useNavigate()
 
     const goToTransactionPageHandler = () => {
@@ -91,14 +93,30 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     }
     const calcTotalCourseRTating = (courseRatings) => {
         if (!courseRatings.length) return 0
-        const sum = courseRatings.reduce((total, arg) => total + arg.rating,0)
+        const sum = courseRatings.reduce((total, arg) => total + arg.rating, 0)
         return Math.floor(sum / courseRatings.length)
     }
-
 
     const progressPercent = Math.round(
         ((course?.courseProgress?.completedLectures?.length || 0) / calcTotalLectures(course.courseContent)) * 100
     );
+
+
+
+    const handleMarkAsComplete = async () => {
+        const result = await markLectureAsCompleted(course._id, course.lecture.lectureId)
+
+
+        if (result) {
+            const progress = Math.round(
+                ((result?.completedLectures?.length || 0) /
+                    calcTotalLectures(course.courseContent)) * 100
+            )
+            if (progress == 100) celebrate()
+        }
+    }
+
+
     const completedLessons = course?.courseProgress?.completedLectures?.length || 0
     const totalLessons = calcTotalLectures(course.courseContent)
 
@@ -149,6 +167,9 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     useEffect(() => {
         localStorage.setItem("theme", theme);
     }, [theme]);
+
+
+
 
     const isDark = theme === "dark";
 
@@ -213,7 +234,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                 <span>{completedLessons} / {totalLessons} درس</span>
                                             </div>
                                             <div className={`w-full h-2 rounded-full overflow-hidden ${isDark ? "bg-[#1b2233]" : "bg-zinc-200"}`}>
-                                                <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${progressPercent}% ` }} />
+                                                <div className={`${progressPercent == 100 ? "bg-green-500" : "bg-blue-500"} h-full  rounded-full transition-all duration-500`} style={{ width: `${progressPercent}% ` }} />
                                             </div>
                                         </div>
                                     )
@@ -255,7 +276,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                         {/* CONTENT */}
                         <div className="p-8 py-5">
                             {/* قیمت و دکمه ثبت نام */}
-                            {!course.enrolledStudents.includes(authUser?._id) && (
+                            {!course.enrolledStudents.includes(authUser?._id) ? (
                                 <div className="flex items-end justify-between mb-10 gap-6">
                                     {/* دکمه ثبت‌نام */}
                                     <button
@@ -291,47 +312,72 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                         </div>
                                     </div>
                                 </div>
+                            ) : (
+                                <div>
+
+                                    {course?.lecture
+                                        ? !isPreviewPage && (
+                                            <div className="flex items-center justify-between">
+
+                                                {
+                                                    !course?.courseProgress?.completedLectures?.includes(course.lecture.lectureId)
+                                                        ?
+                                                        (
+                                                            <button
+                                                                onClick={handleMarkAsComplete}
+                                                                disabled={isMarking}
+                                                                className="btn-primary py-3 min-w-[220px] min-h-[50px] flex items-center gap-2 justify-center font-medium transition-all shadow-lg shadow-blue-600/20 hover:scale-[1.02] rounded disabled:bg-blue-300">
+
+                                                                {isMarking ? <SubmitLoading /> : (
+                                                                    <>
+                                                                        <span>علامت به عنوان مشاهده شده</span>
+                                                                        <CheckCircle2 size={20} />
+                                                                    </>
+                                                                )}
+                                                            </button>
+
+                                                        ) : (
+                                                            <div className="bg-green-700/100 text-white py-3 px-5 flex items-center gap-2 font-medium transition-all shadow-lg shadow-green-600/20 hover:scale-[1.02] rounded">
+                                                                <Check size={20} />مشاهده شده
+                                                            </div>
+                                                        )
+                                                }
+
+
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
+                                                        آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
+                                                    </span>
+
+                                                </div>
+                                            </div>
+                                        ) : isPreviewPage && (
+                                            <div className="flex items-center justify-between">
+                                                <Link
+                                                    to={`/course/${course._id}/0/0`}
+                                                    className="px-4 py-2 bg-blue-500 text-white rounded-md mb-10"
+                                                >
+                                                    مشاهده ادامه دوره
+                                                </Link>
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
+                                                        آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
+                                                    </span>
+
+                                                </div>
+                                            </div>
+                                        )
+
+                                    }
+                                </div>
                             )}
 
-                            {course.enrolledStudents.includes(authUser?._id) && course?.lecture
-                                ? (
-                                    <div className="flex items-center justify-between">
-                                        {/* COMPLETE BUTTON */}
-                                        {
-                                            !isPreviewPage ? (
-                                                <button onClick={celebrate} className="btn-primary py-3 px-5 flex items-center gap-2 font-medium transition-all shadow-lg shadow-blue-600/20 hover:scale-[1.02] rounded">
-                                                    <CheckCircle2 size={20} />علامت به عنوان مشاهده شده
-                                                </button>
-                                            ) : course.courseProgress.completedLectures.includes(course.lecture.lectureId)
-                                            && (
-                                                <div className="bg-green-700/100 text-white py-3 px-5 flex items-center gap-2 font-medium transition-all shadow-lg shadow-green-600/20 hover:scale-[1.02] rounded">
-                                                    <Check size={20} />مشاهده شده
-                                                </div>
-                                            )}
-
-                                        <div className="flex flex-wrap items-center gap-3">
-                                            <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
-                                                بروزرسانی: {formatTime(course.updatedAt)}
-                                            </span>
-                                            <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm border border-blue-500/20">Next.js</span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <Link
-                                        to={`/course/${course._id}/0/0`}
-                                        className="px-4 py-2 bg-blue-500 text-white rounded-md mb-10"
-                                    >
-                                        مشاهده ادامه دوره
-                                    </Link>
-                                )
-
-                            }
-                            <div className="flex flex-wrap items-center gap-3">
+                            {!course.enrolledStudents.includes(authUser?._id) && (
                                 <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
                                     آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
                                 </span>
-                                <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm border border-blue-500/20">Next.js</span>
-                            </div>
+                            )}
+
                             {/* Course Rating */}
                             {course.enrolledStudents.includes(authUser?._id) &&
                                 !course.courseRatings.some(rate => rate.userId === authUser._id) &&

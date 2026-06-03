@@ -2,20 +2,37 @@ import Course from "../Models/Course.js"
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 
 //course
-export const getInstructorCourseService = async (instructorId) => {
+export const getInstructorCourseService = async (instructorId, page = 1, limit = 6) => {
+
+    const skip = (page - 1) * limit;
+    console.log(page, limit);
+
+
+    const totalCourses = await Course.countDocuments({
+        instructor: instructorId
+    });
+
 
     const instructorCourses = await Course.find({
         instructor: instructorId
-    }).populate([
-        { path: 'enrolledStudents', select: '-password' },
-    ])
-        .sort({ _id: -1 });
+    })
+        .populate([
+            { path: 'enrolledStudents', select: '-password' },
+        ])
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+    console.log(instructorCourses);
 
-    if (!instructorCourses.length) throw new NotFoundException('هیچ دوره ای یافت نشد')
 
+    // محاسبه تعداد کل صفحات
+    const totalPages = Math.ceil(totalCourses / limit);
 
-    return instructorCourses;
-
+    return {
+        courses: instructorCourses,
+        totalPages,
+        currentPage: page,
+    };
 }
 
 export const getInstructorCourseByIdService = async (courseId) => {
@@ -40,4 +57,27 @@ export const getInstructorCourseByIdService = async (courseId) => {
     }
 
     return course;
+}
+
+export const getAnalyticsService = async (instructorId) => {
+    const courses = await Course.find({ instructor: instructorId })
+
+    if (!courses.length)
+        throw new NotFoundException("هیچ دوره ای یافت نشد")
+
+    const analytics = courses.map(course => {
+        const finalPrice = course.coursePrice - (course.coursePrice * course.courseDiscount / 100);
+        const sales = course.enrolledStudents.length * finalPrice
+        return {
+            courseName: course.courseTitle,
+            sales,
+            students: course.enrolledStudents.length,
+        }
+    })
+
+    if (!analytics.length) {
+        throw new NotFoundException("مشکلی رخ داد")
+    }
+
+    return analytics
 }

@@ -26,6 +26,8 @@ export const useCourseStore = create((set, get) => ({
     },
     getCourseById: async (courseId, query = {}) => {
         set({ isFetching: true })
+        console.log(query);
+
         try {
             const { data } = await publicAxios.get(`/course/${courseId}`, {
                 params: query
@@ -39,13 +41,14 @@ export const useCourseStore = create((set, get) => ({
         }
     },
     createCourse: async (title) => {
-        const { courses } = get()
+
         try {
             const { data } = await privateRoutes.post('/course/create', title)
-            set({ courses: [...courses, data.course] })
-            toast.success(data.message)
+            return data
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
+
+            throw error;
         }
     },
     patchCourseFields: async (courseId, body) => {
@@ -60,7 +63,7 @@ export const useCourseStore = create((set, get) => ({
             console.error(error.response?.data?.message || "Something went wrong");
         }
     },
-    
+
     updateCoursePublishStatus: async (courseId) => {
         const { instructorCourse } = useInstructorStore.getState()
         try {

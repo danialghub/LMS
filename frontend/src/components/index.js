@@ -6,12 +6,15 @@ export { default as CourseInput } from './UI/CourseInput'
 export { default as LectureInput } from './UI/LectureInput'
 export { default as UserAvatar } from './UI/UserAvatar'
 export { default as RichTextEditor } from './UI/RIchTextEditor'
+export { default as Pagination } from './UI/Pagination'
 
 
 //helper
 export { default as PageLoader } from './helper/PageLoader'
 export { default as VideoPlayer } from './helper/VideoPlayer'
 export { default as UnAuthorized } from './helper/UnAuthorized'
+export { default as SubmitLoading } from './helper/SubmitLoading'
+export { default as CourseSkleton } from './helper/CourseSkleton'
 
 
 //Home
@@ -31,4 +34,3 @@ export { default as CourseRating } from './Course/CourseRating'
 
 //Instructor
 //Student
-//Transaction

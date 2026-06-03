@@ -90,7 +90,7 @@ const CourseCard = ({ course }) => {
 
                     <hr className='text-gray-200 my-3 sm:my-4' />
 
-                    {course?.enrolledStudents.some(std => std === authUser._id)
+                    {course?.enrolledStudents.some(std => std === authUser?._id)
                         ? (
                             <div>
                                 <Link to={`/course/${course._id}`}

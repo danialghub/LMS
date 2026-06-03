@@ -34,7 +34,7 @@ const LoginPage = ({ role = "student" }) => {
         const result = await login(formData)
         if (result) {
 
-            navigate(`/${role}/dashboard`)
+            navigate(`/${role}/my-courses`)
         }
 
     };

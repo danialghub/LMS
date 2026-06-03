@@ -46,9 +46,11 @@ export const loginService = async (req, res, body) => {
   const newRefreshToken = generateRefreshToken(email, role)
   const newAccessToken = generateAccessToken(email, role)
 
-  const newRefreshTokenArray = !cookies
+  let newRefreshTokenArray = !cookies
     ? user.refreshToken
     : user.refreshToken.filter(rt => rt !== cookies)
+
+
 
   if (cookies) {
     const foundToken = await User.findOne({ refreshToken: cookies })
@@ -68,56 +70,82 @@ export const loginService = async (req, res, body) => {
 };
 
 export const refreshTokenService = async (res, token) => {
-  if (!token) throw new UnauthorizedException()
+  if (!token) throw new UnauthorizedException();
 
-  clearCoockie(res)
+  clearCoockie(res);
 
-  const user = await User.findOne({ refreshToken: token })
+  const user = await User.findOne({
+    refreshToken: token,
+  });
 
   if (!user) {
+    jwt.verify(
+      token,
+      Env.REFRESH_TOKEN_SECRET,
+      async (err, decoded) => {
+        if (err) return;
 
-    jwt.verify(token, Env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
-      if (err) return;
-      
+        const hackerUser = await User.findOne({
+          email: decoded.email,
+        });
 
-      const hackerUser = await User.findOne({
-        email: decoded.email
-      })
-      hackerUser.refreshToken = []
+        if (hackerUser) {
+          hackerUser.refreshToken = [];
+          await hackerUser.save();
+        }
+      }
+    );
 
-      await hackerUser.save()
-    })
-    return res.sendStatus(403)
+    throw new ForbiddenException();
   }
 
-  const newRefreshTokenArray = user.refreshToken.filter(rt => rt !== token)
+  const newRefreshTokenArray =
+    user.refreshToken.filter(
+      (rt) => rt !== token
+    );
 
+  let decoded;
 
-  const data = jwt.verify(token, Env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
-    if (err) {
-      user.refreshToken = [...newRefreshTokenArray]
-      await user.save()
-    }
+  try {
+    decoded = jwt.verify(
+      token,
+      Env.REFRESH_TOKEN_SECRET
+    );
+  } catch (err) {
+    user.refreshToken = newRefreshTokenArray;
+    await user.save();
 
-    const role = user.role
-    const email = user.email
+    throw new ForbiddenException();
+  }
 
-    if (email !== decoded.email) return res.sendStatus(403)
+  if (decoded.email !== user.email) {
+    throw new ForbiddenException();
+  }
 
-    const accessToken = generateAccessToken(email, role)
-    const refreshToken = generateRefreshToken(email, role)
+  const accessToken = generateAccessToken(
+    user.email,
+    user.role
+  );
 
-    user.refreshToken = [...newRefreshTokenArray, refreshToken]
+  const refreshToken = generateRefreshToken(
+    user.email,
+    user.role
+  );
 
-    await user.save()
+  user.refreshToken = [
+    ...newRefreshTokenArray,
+    refreshToken,
+  ];
 
-    setCookie(res, refreshToken)
+  await user.save();
 
-    return { user, accessToken }
-  })
+  setCookie(res, refreshToken);
 
-  return data
-}
+  return {
+    user,
+    accessToken,
+  };
+};
 
 export const logOutService = async (res, token) => {
 

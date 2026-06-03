@@ -1,15 +1,40 @@
 import Course from "../Models/Course.js"
+import Transaction from "../Models/Transaction.js"
 import CourseProgress from "../Models/CourseProgress.js";
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 
 //course
-export const getStudentCourseService = async (studentId) => {
+export const getStudentCourseService = async (studentId,filterQueries) => {
+
+    const page = Number(filterQueries.page) || 1;
+    const limit = Number(filterQueries.limit) || 12;
+    const skip = (page - 1) * limit;
+
+
     let studentCourses = await Course.find({
         enrolledStudents: studentId
-    }).populate([
-        { path: 'enrolledStudents', select: '-password' },
-    ])
+    })
+        .populate([
+            { path: 'instructor', select: '-password' },
+        ])
         .sort({ _id: -1 });
+
+
+          [courses, totalCourses] = await Promise.all([
+                    Course.find(query)
+                        .select("-courseContent")
+                        .populate({
+                            path: "instructor",
+                            select: "-password",
+                        })
+                        .sort(sortOption)
+                        .skip(skip)
+                        .limit(limit)
+                        .lean(),
+        
+                    Course.countDocuments(query),
+                ]);
+                
 
     if (!studentCourses.length) {
         throw new NotFoundException('هیچ دوره ای یافت نشد');
@@ -31,50 +56,6 @@ export const getStudentCourseService = async (studentId) => {
     return studentCourses;
 }
 
-export const getStudentCourseByIdService = async (userId, courseId) => {
-    // 1. پیدا کردن دوره همراه با بررسی ثبت‌نام
-    let studentCourse = await Course.findOne({
-        _id: courseId,
-        enrolledStudents: userId  // مهم: بررسی ثبت‌نام کاربر
-    });
-
-    if (!studentCourse) {
-        throw new NotFoundException('دوره یافت نشد یا شما در این دوره ثبت‌نام نکرده‌اید');
-    }
-
-    // 2. تبدیل به آبجکت ساده
-    let course = studentCourse.toObject();
-
-    // 3. مرتب‌سازی محتوای دوره
-    if (course?.courseContent?.length) {
-        // مرتب‌سازی فصل‌ها
-        course.courseContent.sort(
-            (a, b) => (a.chapterOrder ?? 0) - (b.chapterOrder ?? 0)
-        );
-
-        // مرتب‌سازی جلسات هر فصل
-        course.courseContent.forEach(chapter => {
-            if (chapter?.chapterContent?.length) {
-                chapter.chapterContent.sort(
-                    (a, b) => (a.lectureOrder ?? 0) - (b.lectureOrder ?? 0)
-                );
-            }
-        });
-    }
-
-    // 4. پیدا کردن پیشرفت کاربر
-    let courseProgress = await CourseProgress.findOne({
-        courseId: courseId,
-        userId: userId
-    });
-
-    // 5. اضافه کردن اطلاعات پیشرفت به دوره
-    course.courseProgress = courseProgress || {
-        completedLessons: [],
-    };
-
-    return course;
-}
 
 export const markLectureAsCompletedService = async (userId, courseId, lectureId) => {
     let courseProgress = await CourseProgress.findOne({ courseId, userId })
@@ -97,16 +78,15 @@ export const markLectureAsCompletedService = async (userId, courseId, lectureId)
     return courseProgress;
 }
 
-export const getCourseProgressService = async (userId, courseId) => {
-    const courseProgress = await CourseProgress.findOne({ courseId, userId })
+export const geStudentTransactionService = async (stdId) => {
 
-    if (!courseProgress) {
-        throw new NotFoundException('پیشرفت دوره پیدا نشد')
-    }
+    const transactions = await Transaction.find({ userId: stdId }).populate("courseId")
 
-    return courseProgress
+    if (!transactions.length)
+        throw new NotFoundException("تراکنشی یافت نشد")
+
+    return transactions
 }
-
 export const rateToCourseService = async (courseId, userId, rating) => {
     const foundCourse = await Course.findById(courseId);
 

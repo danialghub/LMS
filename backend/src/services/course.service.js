@@ -198,6 +198,7 @@ export const getCourseByIdService = async (userId, courseId) => {
             chapter.chapterContent = chapter.chapterContent.filter(lec => lec.isLecturePublished)
         });
     }
+console.log(userId);
 
     return course;
 }

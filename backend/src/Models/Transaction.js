@@ -1,14 +1,14 @@
-// models/User.js
+
 import mongoose from 'mongoose'
 
 const transactionSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
-    courseId: { type: String, required: true, unique: true },
+    userId: { type: String, required: true, unique: true, ref: "User" },
+    courseId: { type: String, required: true, unique: true, ref: "Course" },
     value: { type: String, required: true },
     status: {
         type: String,
-        enum: ["failed", 'successful'],
-        default: "failed"
+        enum: ["failed", 'successful', 'progressing'],
+        default: "progressing"
     },
 
 }, { timestamps: true });

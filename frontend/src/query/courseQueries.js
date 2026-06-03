@@ -1,5 +1,7 @@
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCourseStore } from '@/store/useCourseStore'
+import { useInstructorStore } from '@/store/useInstructorStore'
+import toast from 'react-hot-toast'
 
 export const useGetCourses = (debouncedFilters = {}) => {
 
@@ -23,7 +25,39 @@ export const useGetCourses = (debouncedFilters = {}) => {
                 : undefined,
     })
 }
+export const useGetInstructorCourses = (page) => {
+    const { getInstrucorCourses } = useInstructorStore()
 
+    return useQuery({
+        queryKey: ['instructorCourses', page],
+        queryFn: () => getInstrucorCourses({ page, limit: 6 }),
+        keepPreviousData: true
+    })
+}
+export const usePostCourseMutation = () => {
+
+    const queryClient = useQueryClient()
+
+    const { createCourse } = useCourseStore()
+
+    return useMutation({
+        mutationFn: (newCourse) => {
+            createCourse(newCourse)
+            console.log('mutated');
+
+        },
+
+        onSuccess: (data, variables) => {
+            toast.success(
+                'دوره با موفقیت ایجاد شد'
+            )
+
+            queryClient.invalidateQueries({
+                queryKey: ['instructorCourses']
+            })
+        },
+    })
+}
 const useRateToCourse = (courseId, rating) => {
     const queryClient = useQueryClient()
     const { rateToCourse } = useCourseStore()

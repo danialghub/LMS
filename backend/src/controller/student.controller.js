@@ -1,8 +1,9 @@
 import { HTTPSTATUS } from "../config/http.config.js";
 import {
-    getStudentCourseByIdService, getStudentCourseService,
+    getStudentCourseService,
     markLectureAsCompletedService,
-    rateToCourseService
+    rateToCourseService,
+    geStudentTransactionService
 } from "../services/student.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
 
@@ -11,37 +12,23 @@ export const getStudentCourses = asyncHandler(
     async (req, res) => {
         const studentId = req.user._id
 
-        const instructorCourses = await getStudentCourseService(studentId)
+        const studentCourses = await getStudentCourseService(studentId)
 
-        if (!instructorCourses.length)
+        if (!studentCourses.length)
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
 
 
-        res.status(HTTPSTATUS.OK).json(instructorCourses)
+        res.status(HTTPSTATUS.OK).json(studentCourses)
     }
 )
 
-export const getStudnetCourseById = asyncHandler(
-    async (req, res) => {
-        const { courseId } = req.params
-        const userId = req.user._id
-
-        const course = await getStudentCourseByIdService(userId, courseId)
-
-
-
-        if (!course) {
-            return res.sendStatus(HTTPSTATUS.NOT_FOUND)
-        }
-        res.status(HTTPSTATUS.OK).json(course)
-    }
-)
 
 export const markLectureAsCompleted = asyncHandler(
     async (req, res) => {
         const { lectureId, courseId } = req.body
         const userId = req.user._id
+        console.log(lectureId, courseId);
 
         const courseProgress = await markLectureAsCompletedService(userId, courseId, lectureId)
 
@@ -52,14 +39,14 @@ export const markLectureAsCompleted = asyncHandler(
         res.status(HTTPSTATUS.OK).json(courseProgress)
     }
 )
-export const getCourseProgress = asyncHandler(
+
+export const geStudentTransaction = asyncHandler(
     async (req, res) => {
-        const { courseId } = req.params
-        const userId = req.user._id
+        const studentId = req.user._id
 
-        const courseProgress = await getCourseProgressService(userId, courseId)
+        const transactions = await geStudentTransactionService(studentId)
 
-        res.status(HTTPSTATUS.OK).json(courseProgress)
+        res.status(HTTPSTATUS.OK).json(transactions)
     }
 )
 

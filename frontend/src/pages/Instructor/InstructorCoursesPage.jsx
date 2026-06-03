@@ -4,65 +4,19 @@ import { useCourseStore } from '@/store/useCourseStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Link } from 'react-router'
 import { useEffect } from 'react';
-import { useInstructorStore } from '../../store/useInstructorStore';
-// نمونه دیتا برای جدول
-const initialCourses = [
-    {
-        id: 1,
-        title: 'دوره جامع React',
-        image: '/course1.png',
-        revenue: 12500000,
-        students: 245,
-        isPublished: true,
-    },
-    {
-        id: 2,
-        title: 'دوره تخصصی Next.js',
-        image: '/course2.png',
-        revenue: 8900000,
-        students: 178,
-        isPublished: false,
-    },
-    {
-        id: 3,
-        title: 'دوره پیشرفته TypeScript',
-        image: '/course3.png',
-        revenue: 6700000,
-        students: 156,
-        isPublished: true,
-    },
-    {
-        id: 3,
-        title: 'دوره پیشرفته TypeScript',
-        image: '/course3.png',
-        revenue: 6700000,
-        students: 156,
-        isPublished: true,
-    },
-    {
-        id: 3,
-        title: 'دوره پیشرفته TypeScript',
-        image: '/course3.png',
-        revenue: 6700000,
-        students: 156,
-        isPublished: true,
-    },
-    {
-        id: 3,
-        title: 'دوره پیشرفته TypeScript',
-        image: '/course3.png',
-        revenue: 6700000,
-        students: 156,
-        isPublished: true,
-    },
-];
+import { SubmitLoading, Pagination } from '@/components/index'
+import { useInstructorStore } from '@/store/useInstructorStore';
+import { usePostCourseMutation, useGetInstructorCourses } from '@/query/courseQueries';
+
 
 const NewCourseModal = ({ isOpen, onClose }) => {
 
     const [title, setTitle] = useState('');
     const [error, setError] = useState('');
 
-    const { createCourse, isCreating } = useCourseStore()
+
+
+    const { mutate: createCourse, isPending: isCreating } = usePostCourseMutation()
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -86,6 +40,7 @@ const NewCourseModal = ({ isOpen, onClose }) => {
         setError('');
         onClose();
     };
+
 
     if (!isOpen) return null;
 
@@ -141,10 +96,10 @@ const NewCourseModal = ({ isOpen, onClose }) => {
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                            className="flex-1 px-4 py-2 min-w-[120px] min-h-[40px] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
                         >
                             {isCreating
-                                ? <Loader className='animate-spin text-lg' />
+                                ? <SubmitLoading />
                                 : (
                                     <>
                                         <Plus size={18} />
@@ -166,20 +121,33 @@ const formatPrice = (price) => {
 };
 
 const InstructorCoursesPage = () => {
-    // const [courses, setCourses] = useState(initialCourses);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
     const { authUser } = useAuthStore()
 
-    const { getInstrucorCourses, isFetching, instructorCourses: courses } = useInstructorStore()
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+
+    const { data, isLoading, isError, isFetching } = useGetInstructorCourses(page)
+
+
+    const courses = data?.courses || []
+    const totalPagesInfo = data?.totalPages
+
+    const calcDiscount = (price, discount) => {
+        return (price - (price * discount / 100))
+    }
+    const calcTotalEarning = course => {
+        const totalEarning = course.enrolledStudents.length * (calcDiscount(course.coursePrice, course.courseDiscount))
+
+        return formatPrice(totalEarning)
+    }
 
 
     useEffect(() => {
-        if (!authUser) return;
-
-        getInstrucorCourses()
-    }, [authUser])
-
+        if (!totalPagesInfo) return
+        setTotalPages(totalPagesInfo)
+    }, [totalPagesInfo])
 
     return (
         <div className="container max-w-7xl p-6 bg-gray-50 " dir="rtl">
@@ -200,137 +168,140 @@ const InstructorCoursesPage = () => {
             </div>
 
             {/* جدول دوره‌ها */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                {isFetching
-                    ? <div className='flex items-center justify-center '>
-                        <Loader className='animate-spin text-2xl text-blue-500' />
-                    </div>
-                    : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead className="bg-gray-100 border-b-2 border-gray-200">
-                                    <tr>
-                                        <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">دوره</th>
-                                        <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                            <div className="flex items-center gap-1">
-                                                <DollarSign size={16} />
-                                                <span>درآمد دوره</span>
-                                            </div>
-                                        </th>
-                                        <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                            <div className="flex items-center gap-1">
-                                                <Users size={16} />
-                                                <span>تعداد دانشجو</span>
-                                            </div>
-                                        </th>
-                                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">
-                                            <div className="flex items-center justify-center gap-1">
-                                                <CheckSquare size={16} />
-                                                <span>وضعیت انتشار</span>
-                                            </div>
-                                        </th>
-                                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">عملیات</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {courses.map((course, index) => (
-                                        <tr
-                                            key={index}
-                                            className={`border-b border-gray-200 hover:bg-gray-50 transition duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                                                }`}
-                                        >
-                                            {/* ستون دوره (عکس + عنوان کنار هم) */}
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    {/* عکس دوره */}
-                                                    <div className="w-14 h-10 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
-                                                        {course.courseThumbnail ? (
-                                                            <img
-                                                                src={course.courseThumbnail}
-                                                                alt={course.courseTitle}
-                                                                className="w-full h-full object-center"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-full h-full  flex items-center justify-center text-gray-400 text-xs">
-                                                                بدون عکس
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    {/* عنوان دوره */}
-                                                    <span className="font-medium text-gray-800">{course.courseTitle}</span>
-                                                </div>
-                                            </td>
-
-                                            {/* درآمد دوره */}
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-1 text-green-600 font-semibold">
-
-                                                    {course?.coursePrice
-                                                        ? <span>{formatPrice(course?.coursePrice)}</span>
-                                                        : <span>________</span>
-                                                    }
-                                                </div>
-                                            </td>
-
-                                            {/* تعداد دانشجو */}
-                                            <td className="px-6 py-4 ">
-                                                <div className="flex items-center gap-1 text-blue-600 ">
-                                                    <Users size={16} />
-                                                    <span className="font-semibold">{
-                                                        course?.enrolledStudents?.length
-                                                            ? <>
-                                                                <span>{course?.enrolledStudents?.length.toLocaleString('fa-IR')}</span>
-                                                                <span className="text-gray-500 text-sm"> نفر</span>
-                                                            </>
-                                                            : <span>________</span>
-
-                                                    }
-                                                    </span>
-
-                                                </div>
-                                            </td>
-
-                                            {/* وضعیت انتشار (Checkbox) */}
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center justify-center">
-                                                    <button
-                                                        className="flex items-center gap-2 group"
-                                                    >
-                                                        {course.isCoursePublished ? (
-                                                            <CheckSquare size={22} className="text-green-600 group-hover:text-green-700 transition" />
-                                                        ) : (
-                                                            <Square size={22} className="text-gray-400 group-hover:text-gray-500 transition" />
-                                                        )}
-                                                        <span className={`text-sm ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'}`}>
-                                                            {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </td>
-
-                                            {/* دکمه ویرایش */}
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center justify-center">
-                                                    <Link
-                                                        to={`/instructor/courses/course-setup/${course._id}`}
-                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-150 group"
-                                                        title="ویرایش دوره"
-                                                    >
-                                                        <Edit size={18} className="group-hover:scale-110 transition" />
-                                                    </Link>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[60vh] relative">
+                {isError
+                    ? <div>خطا در دریافت دوره‌ها</div>
+                    : isLoading
+                        ? <div className='flex items-center justify-center h-[60vh]'>
+                            <Loader className='animate-spin size-10 text-blue-500' />
                         </div>
-                    )
+                        : (
+                            <div className="overflow-x-auto pb-14">
+                                <table className="w-full">
+                                    <thead className="bg-gray-100 border-b-2 border-gray-200">
+                                        <tr>
+                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">دوره</th>
+                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
+                                                <div className="flex items-center gap-1">
+                                                    <DollarSign size={16} />
+                                                    <span>درآمد دوره</span>
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
+                                                <div className="flex items-center gap-1">
+                                                    <Users size={16} />
+                                                    <span>تعداد دانشجو</span>
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <CheckSquare size={16} />
+                                                    <span>وضعیت انتشار</span>
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">عملیات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {courses.map((course, index) => (
+                                            <tr
+                                                key={index}
+                                                className={`border-b border-gray-200 hover:bg-gray-50 transition duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                                                    }`}
+                                            >
+                                                {/* ستون دوره (عکس + عنوان کنار هم) */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        {/* عکس دوره */}
+                                                        <div className="w-14 h-10 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
+                                                            {course.courseThumbnail ? (
+                                                                <img
+                                                                    src={course.courseThumbnail}
+                                                                    alt={course.courseTitle}
+                                                                    className="w-full h-full object-center"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-full  flex items-center justify-center text-gray-400 text-xs">
+                                                                    بدون عکس
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {/* عنوان دوره */}
+                                                        <span className="font-medium text-gray-800">{course.courseTitle}</span>
+                                                    </div>
+                                                </td>
+
+                                                {/* درآمد دوره */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-1 text-green-600 font-semibold">
+
+                                                        {course?.enrolledStudents.length
+                                                            ? <span>{calcTotalEarning(course)}</span>
+                                                            : <span>________</span>
+                                                        }
+                                                    </div>
+                                                </td>
+
+                                                {/* تعداد دانشجو */}
+                                                <td className="px-6 py-4 ">
+                                                    <div className="flex items-center gap-1 text-blue-600 ">
+                                                        <Users size={16} />
+                                                        <span className="font-semibold">{
+                                                            course?.enrolledStudents?.length
+                                                                ? <>
+                                                                    <span>{course?.enrolledStudents?.length.toLocaleString('fa-IR')}</span>
+                                                                    <span className="text-gray-500 text-sm"> نفر</span>
+                                                                </>
+                                                                : <span>________</span>
+
+                                                        }
+                                                        </span>
+
+                                                    </div>
+                                                </td>
+
+                                                {/* وضعیت انتشار (Checkbox) */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center justify-center">
+                                                        <button
+                                                            className="flex items-center gap-2 group"
+                                                        >
+                                                            {course.isCoursePublished ? (
+                                                                <CheckSquare size={22} className="text-green-600 group-hover:text-green-700 transition" />
+                                                            ) : (
+                                                                <Square size={22} className="text-gray-400 group-hover:text-gray-500 transition" />
+                                                            )}
+                                                            <span className={`text-sm ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'}`}>
+                                                                {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </td>
+
+                                                {/* دکمه ویرایش */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center justify-center">
+                                                        <Link
+                                                            to={`/instructor/courses/course-setup/${course._id}`}
+                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-150 group"
+                                                            title="ویرایش دوره"
+                                                        >
+                                                            <Edit size={18} className="group-hover:scale-110 transition" />
+                                                        </Link>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        )
 
                 }
 
                 {/* وضعیت خالی بودن جدول */}
-                {courses.length === 0 && (
+                {!isFetching && courses.length === 0 && (
                     <div className="text-center py-12">
                         <p className="text-gray-500">هیچ دوره‌ای یافت نشد</p>
                         <button
@@ -342,6 +313,15 @@ const InstructorCoursesPage = () => {
                         </button>
                     </div>
                 )}
+
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => {
+                        setPage(newPage)
+                    }}
+
+                />
             </div>
         </div>
     );

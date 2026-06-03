@@ -21,6 +21,10 @@ import InstructorAnalytics from '@/pages/Instructor/InstructorAnalytics'
 import InstructorCoursesPage from '@/pages/Instructor/InstructorCoursesPage'
 import InstructorHomePage from '@/pages/instructor/InstructorHomePage'
 
+import StudentDashboardPage from '@/pages/Student/StudentDashboardPage'
+import StudentCourses from '@/pages/Student/StudentCourses'
+import StudentTransactions from '@/pages/Student/StudentTransactions'
+
 import NotFoundPage from '@/pages/NotFoundPage'
 
 import { useAuthStore } from '@/store/useAuthStore'
@@ -92,6 +96,22 @@ const routes = () => {
                     path: "courses/course-setup/:courseId/chapter/:chapterId/lecture-setup/:lectureId",
                     element: <LectureSetup />
                 },
+            ]
+        },
+        //student routers
+        {
+            path: "/student/",
+            element: <ProtectedRoute requiredRole="student"><StudentDashboardPage /></ProtectedRoute>,
+            children: [
+                {
+                    path: "my-courses",
+                    element: <StudentCourses />
+                },
+                {
+                    path: "my-transactions",
+                    element: <StudentTransactions />
+                },
+              
             ]
         },
         //transaction

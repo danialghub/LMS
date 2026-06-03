@@ -7,21 +7,22 @@ import { PageLoader, CourseDetail } from '@/components/index'
 const CoursePage = () => {
 
     const { courseId } = useParams()
-    const { authUser } = useAuthStore()
+    const { authUser,isCheckingAuth } = useAuthStore()
     const { getCourseById, course, isFetching } = useCourseStore()
 
     useEffect(() => {
         if (!courseId) return
 
+
         if (authUser && authUser.role === "student") {
             getCourseById(courseId, { userId: authUser._id })
-
+     
 
         } else {
             getCourseById(courseId)
         }
     }, [authUser, courseId])
-    console.log(isFetching);
+
 
 
     return !isFetching && course?._id ? (
