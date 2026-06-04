@@ -29,9 +29,15 @@ const LessonPage = () => {
   }, [courseId, authUser])
 
   useEffect(() => {
+    if (!authUser) {
+      navigate("/unathorized")
+
+    }
+    
     if (!course._id || !lectureId || !chapterId) return
     const chapter = course.courseContent[chapterId]
     const lecture = chapter.chapterContent[lectureId]
+
 
 
     if (!lecture || !chapter) {
@@ -40,7 +46,7 @@ const LessonPage = () => {
     }
     setLecture(lecture)
 
-  }, [course._id, chapterId,])
+  }, [course._id, chapterId, authUser])
 
 
   return lecture?.lectureId ? (

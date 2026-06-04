@@ -26,6 +26,7 @@ import StudentCourses from '@/pages/Student/StudentCourses'
 import StudentTransactions from '@/pages/Student/StudentTransactions'
 
 import NotFoundPage from '@/pages/NotFoundPage'
+import UnAuthorized from '@/pages/UnAuthorized'
 
 import { useAuthStore } from '@/store/useAuthStore'
 
@@ -111,7 +112,7 @@ const routes = () => {
                     path: "my-transactions",
                     element: <StudentTransactions />
                 },
-              
+
             ]
         },
         //transaction
@@ -119,6 +120,11 @@ const routes = () => {
             path: "/transaction/:courseId",
             element: <ProtectedRoute requiredRole="student"><TransactionPage /></ProtectedRoute>,
         },
+        {
+            path: "/unathorized",
+            element: <UnAuthorized />,
+        },
+
         {
             path: '*',
             element: <NotFoundPage />

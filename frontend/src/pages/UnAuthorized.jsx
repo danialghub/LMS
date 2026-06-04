@@ -1,4 +1,5 @@
 import { ShieldAlert, ArrowRight, Home } from "lucide-react";
+import { Link } from "react-router";
 
 const UnAuthorized = () => {
     return (
@@ -26,20 +27,20 @@ const UnAuthorized = () => {
 
                     <div className="mt-8 flex flex-col gap-3 sm:flex-row justify-center">
                         <button
-                            onClick={() => window.history.back()}
+                            onClick={() => window.history.go(-2)}
                             className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-medium text-slate-900 transition hover:bg-slate-200"
                         >
                             <ArrowRight size={18} />
                             بازگشت
                         </button>
 
-                        <button
-                            onClick={() => (window.location.href = "/dashboard")}
+                        <Link
+                            to={"/courses"}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 px-5 py-3 font-medium text-slate-300 transition hover:bg-slate-800"
                         >
                             <Home size={18} />
-                            داشبورد
-                        </button>
+                            دوره ها
+                        </Link>
                     </div>
 
                 </div>

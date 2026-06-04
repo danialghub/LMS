@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router';
 import { useAuthStore } from '@/store/useAuthStore'
 import toast from 'react-hot-toast'
-const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDuration, course }) => {
+
+const CourseChapters = ({ chapters, completedLectures, formatDuration, course }) => {
 
     const { chapterId, lectureId } = useParams()
 
@@ -20,20 +21,15 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
 
         navigate(`/course/${course._id}/${chapterId}/${lectureId}`)
     }
-    
+
     return (
-        <div className="px-3 pb-5 overflow-y-auto  ">
-            <h3 className="text-xl text-white px-3 my-2 font-bold font-Dirooz">جلسات</h3>
+        <div className="px-3 pb-5 overflow-y-auto">
+            <h3 className="text-xl px-3 my-2 font-bold font-Dirooz text-zinc-900 dark:text-white">جلسات</h3>
             <div className='space-y-4'>
                 {chapters.map((chapter, chapIdx) => (
                     <div
                         key={chapter.chapterId}
-                        className={`rounded-md overflow-hidden border relative z-20 shadow-md
-                                ${isDark
-                                ? "bg-[#121826] border-[#1a2233]"
-                                : "bg-white border-zinc-200"
-                            }
-`}
+                        className="rounded-md overflow-hidden border relative z-20 shadow-md bg-white border-zinc-200 dark:bg-[#121826] dark:border-[#1a2233]"
                     >
                         {/* HEADER */}
                         <button
@@ -44,13 +40,9 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
                                         : chapter.chapterId
                                 )
                             }
-                            className={`  w-full p-5 flex items-center justify-between transition-all
- ${open === chapter.chapterId && "bg-[#171f30]"}
-                                    ${isDark
-                                    ? "hover:bg-[#171f30]"
-                                    : "hover:bg-zinc-50"
-                                }
-`}
+                            className={`w-full p-5 flex items-center justify-between transition-all hover:bg-zinc-100 dark:hover:bg-[#171f30]
+                                ${open === chapter.chapterId && "bg-zinc-100 dark:bg-[#171f30]"}
+                            `}
                         >
                             <div className="flex items-center gap-3">
                                 <div className="size-10 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold">
@@ -58,19 +50,11 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
                                 </div>
 
                                 <div className="text-right">
-                                    <h3 className="font-semibold">
+                                    <h3 className="font-semibold text-zinc-900 dark:text-white">
                                         {chapter.chapterTitle}
                                     </h3>
 
-                                    <p
-                                        className={` text-sm mt-1
-
-                                                ${isDark
-                                                ? "text-gray-400"
-                                                : "text-zinc-500"
-                                            }
-`}
-                                    >
+                                    <p className="text-sm mt-1 text-zinc-500 dark:text-gray-400">
                                         {chapter.chapterContent.length} درس
                                     </p>
                                 </div>
@@ -78,37 +62,30 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
 
                             <ChevronDown
                                 size={20}
-                                className={`transition ${open === chapter.chapterId
-                                    ? "rotate-180"
-                                    : ""
-                                    } `}
+                                className={`transition text-zinc-700 dark:text-white ${open === chapter.chapterId ? "rotate-180" : ""}`}
                             />
                         </button>
 
                         {/* LESSONS */}
                         <div
                             className={`grid transition-all duration-500 ease-in-out
-
-                    ${open === chapter.chapterId
+                                ${open === chapter.chapterId
                                     ? "grid-rows-[1fr] opacity-100"
                                     : "grid-rows-[0fr] opacity-0"
                                 }
-                        `}
+                            `}
                         >
                             <div className="overflow-hidden">
                                 <div className="px-0 py-0 space-y-2">
                                     {chapter.chapterContent.map((lec, lecIdx) => (
-
                                         <div
                                             key={lec.lectureId}
                                             className={`p-4 rounded-sm border flex items-center justify-between transition-all duration-300 h-[75px]
-    ${lectureId == lecIdx
+                                                ${lectureId == lecIdx
                                                     ? "bg-blue-500/10 border-blue-500"
                                                     : completedLectures?.includes(lec.lectureId)
                                                         ? "bg-green-500/10 border-green-500"
-                                                        : isDark
-                                                            ? "bg-[#0f1523] border-[#1a2233]"
-                                                            : "bg-zinc-50 border-zinc-200"
+                                                        : "bg-zinc-50 border-zinc-200 dark:bg-[#0f1523] dark:border-[#1a2233]"
                                                 }`}
                                         >
                                             <button
@@ -139,8 +116,7 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
 
                                                 <div className="min-w-0 flex-1">
                                                     <h4
-                                                        className={`text-sm font-medium truncate ${isDark ? "text-white" : "text-zinc-800"
-                                                            }`}
+                                                        className="text-sm font-medium truncate text-zinc-800 dark:text-white"
                                                         title={lec.lectureTitle}
                                                     >
                                                         {lec.lectureTitle}
@@ -160,14 +136,10 @@ const CourseChapters = ({ chapters, isDark = true, completedLectures, formatDura
                                                 </div>
                                             </button>
 
-                                            <span
-                                                className={`text-xs shrink-0 mr-3 ${isDark ? "text-gray-400" : "text-zinc-500"
-                                                    }`}
-                                            >
+                                            <span className="text-xs shrink-0 mr-3 text-zinc-500 dark:text-gray-400">
                                                 {formatDuration(lec.lectureDuration)}
                                             </span>
                                         </div>
-
                                     ))}
                                 </div>
                             </div>

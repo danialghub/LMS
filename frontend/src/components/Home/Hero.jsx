@@ -116,7 +116,7 @@ const Hero = () => {
                         </div>
 
                         {/* تیتر اصلی */}
-                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                             <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
                                 آینده یادگیری
                             </span>
@@ -126,18 +126,21 @@ const Hero = () => {
 
                         {/* توضیحات */}
                         <p className="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl lg:mx-0 mx-auto">
-                            به بزرگ‌ترین پلتفرم آموزش آنلاین ایران بپیوندید. با بیش از ۵۰۰+ دوره تخصصی،
+                            به بزرگ‌ترین پلتفرم آموزش آنلاین ایران بپیوندید. با  دوره های تخصصی،
                             یادگیری عملی و مدرسان مجرب، مهارت‌های خود را به سطح بعدی برسانید.
                         </p>
+                        <button className='flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl hover:bg-white/20 text-white text-lg  transition-all duration-300 hover:scale-105 font-semibold'>
 
                             <Link
                                 to='/courses'
-                                className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105">
+                                >
                                 مشاهده دوره‌ها
-                                <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" />
-                            </Link>
-                      
 
+                            </Link>
+
+                            <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" />
+
+                        </button>
                         {/* آمار */}
                         <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
                             <div>
