@@ -15,6 +15,7 @@ export { default as VideoPlayer } from './helper/VideoPlayer'
 export { default as UnAuthorized } from './helper/UnAuthorized'
 export { default as SubmitLoading } from './helper/SubmitLoading'
 export { default as CourseSkleton } from './helper/CourseSkleton'
+export { default as WarningModal } from './helper/WarningModal'
 
 
 //Home

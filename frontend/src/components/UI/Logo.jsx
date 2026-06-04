@@ -1,5 +1,6 @@
 import React from 'react';
 import { Brain, Cpu } from 'lucide-react';
+import { Link } from 'react-router';
 
 const Logo = ({ size = 'md', className = '' }) => {
     // سایزهای مختلف لوگو
@@ -77,19 +78,23 @@ const Logo = ({ size = 'md', className = '' }) => {
 // نسخه ساده برای حالت‌های خاص
 export const LogoSimple = ({ className = '' }) => {
     return (
-        <div className={`flex items-center font-bold text-2xl select-none ${className}`}>
-            <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-indigo-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300" />
-                <div className="relative flex">
-                    <span className="text-white bg-gradient-to-r from-orange-600 to-orange-700 px-3 py-1 rounded-r-full shadow-lg">
-                        مغز
-                    </span>
-                    <span className="text-white bg-gradient-to-r from-blue-600 to-indigo-700 px-3 py-1 rounded-l-full shadow-lg">
-                        افزار
-                    </span>
+        <Link
+            to='/'
+        >
+            <div className={`flex items-center font-bold text-2xl select-none ${className}`}>
+                <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-indigo-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300" />
+                    <div className="relative flex">
+                        <span className="text-white bg-gradient-to-r from-orange-600 to-orange-700 px-3 py-1 rounded-r-full shadow-lg">
+                            مغز
+                        </span>
+                        <span className="text-white bg-gradient-to-r from-blue-600 to-indigo-700 px-3 py-1 rounded-l-full shadow-lg">
+                            افزار
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

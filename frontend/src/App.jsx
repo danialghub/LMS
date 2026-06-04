@@ -4,15 +4,18 @@ import Routes from '@/routes'
 import { Toaster } from 'react-hot-toast'
 import { useAuthStore } from '@/store/useAuthStore'
 import { PageLoader } from '@/components/index'
+import { useLocation } from 'react-router'
 
 const App = () => {
   const { isCheckingAuth, checkAuthStatus, isAuthenticated } = useAuthStore()
+
 
   useEffect(() => {
     checkAuthStatus()
   }, [])
 
   if (isCheckingAuth) return <PageLoader />;
+
 
 
   return (

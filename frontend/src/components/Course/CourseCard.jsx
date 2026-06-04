@@ -71,7 +71,7 @@ const CourseCard = ({ course }) => {
                 <div className="flex-shrink-0">
                     <div className='flex items-center justify-between mt-4 sm:mt-6 md:mt-8'>
                         <div className='flex items-center gap-1.5 sm:gap-2'>
-                            <img src={course.instructor.avatar || "/instructor1.png"} className='w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover' alt="" />
+                            <img src={course.instructor.avatar || "/pro-avatar.webp"} className='w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover' alt="" />
                             <span className='text-[11px] sm:text-[13px] text-black/70 truncate'>{course.instructor.name}</span>
                         </div>
 

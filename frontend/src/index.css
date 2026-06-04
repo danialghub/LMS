@@ -42,6 +42,7 @@
   body {
     font-family: "VazirMatn", "Dirooz", "Dirooz-FD";
     @apply break-words;
+    scroll-behavior: smooth;
   }
 }
 

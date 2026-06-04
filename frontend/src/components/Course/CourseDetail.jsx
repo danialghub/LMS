@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 import { VideoPlayer, LectureAttachment, CourseChapters, CourseRating, SubmitLoading } from "@/components/index";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useAuthStore } from '@/store/useAuthStore'
 import { useStudentStore } from '@/store/useStudentStore'
 import { formatPrice, formatTime } from '@/lib/helper'
@@ -52,6 +52,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
 
     const { authUser } = useAuthStore()
     const { markLectureAsCompleted, isMarking } = useStudentStore()
+    const { lectureId,chapterId } = useParams()
     const navigate = useNavigate()
 
     const goToTransactionPageHandler = () => {
@@ -155,7 +156,26 @@ const CourseDetail = ({ isPreviewPage, course }) => {
         }
     ]
 
+    const foundFirstLecture = () => {
+        const chapterIndex = course.courseContent.findIndex(ch => ch.chapterContent.some(lec => lec.lectureUrl))
+        const lectureIndex = course.courseContent[chapterIndex].chapterContent.findIndex(lec => lec.lectureUrl)
+        console.log(lectureIndex);
 
+        if (!chapterIndex && !lectureIndex) {
+            toast.error('جلسه ای برای مشاهده موجود نیست')
+            return {}
+        }
+
+        return { chapterIndex, lectureIndex }
+    }
+
+    const goToLectures = () => {
+        const { chapterIndex, lectureIndex } = foundFirstLecture()
+        navigate(`/course/${course._id}/${chapterIndex}/${lectureIndex}`)
+
+
+
+    }
     useEffect(() => {
         const savedTheme = localStorage.getItem("theme");
 
@@ -168,7 +188,9 @@ const CourseDetail = ({ isPreviewPage, course }) => {
         localStorage.setItem("theme", theme);
     }, [theme]);
 
-
+    useEffect(() => {
+        scrollTo(0, 0)
+    }, [])
 
 
     const isDark = theme === "dark";
@@ -318,7 +340,11 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                     {course?.lecture
                                         ? !isPreviewPage && (
                                             <div className="flex items-center justify-between">
-
+                                                <span className="text-2xl font-heading">
+                                                  <span className="text-3xl text-blue-500">فصل {Number(chapterId)+1} , </span> 
+                                                  <span className="text-3xl text-blue-500">جلسه {Number(lectureId)+1} : </span> 
+                                                  {course.lecture.lectureTitle} 
+                                                </span>
                                                 {
                                                     !course?.courseProgress?.completedLectures?.includes(course.lecture.lectureId)
                                                         ?
@@ -343,28 +369,23 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                         )
                                                 }
 
-
-                                                <div className="flex flex-wrap items-center gap-3">
-                                                    <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
-                                                        آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
-                                                    </span>
-
-                                                </div>
                                             </div>
                                         ) : isPreviewPage && (
-                                            <div className="flex items-center justify-between">
-                                                <Link
-                                                    to={`/course/${course._id}/0/0`}
-                                                    className="px-4 py-2 bg-blue-500 text-white rounded-md mb-10"
+                                            <div className="flex items-center justify-between  mb-10">
+                                                <button
+                                                    onClick={goToLectures}
+                                                    className="px-6 py-3 bg-blue-500 text-white rounded-md"
                                                 >
                                                     مشاهده ادامه دوره
-                                                </Link>
-                                                <div className="flex flex-wrap items-center gap-3">
-                                                    <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
+                                                </button>
+                                             
+                                                 
+                                                        <span className={`bg-blue-500/50 rounded-full py-2 px-4 text-xs ${isDark ? "text-gray-300" : "text-zinc-500"}`}>
                                                         آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
                                                     </span>
+                                                   
 
-                                                </div>
+                                             
                                             </div>
                                         )
 
@@ -372,14 +393,10 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                 </div>
                             )}
 
-                            {!course.enrolledStudents.includes(authUser?._id) && (
-                                <span className={`text-sm ${isDark ? "text-gray-400" : "text-zinc-500"}`}>
-                                    آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
-                                </span>
-                            )}
+                          
 
                             {/* Course Rating */}
-                            {course.enrolledStudents.includes(authUser?._id) &&
+                            {isPreviewPage && course.enrolledStudents.includes(authUser?._id) &&
                                 !course.courseRatings.some(rate => rate.userId === authUser._id) &&
                                 <CourseRating />
                             }
@@ -388,8 +405,8 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                 {course?.lecture?.attachment && (
                                     <LectureAttachment isDark={theme === "dark"} attachmentFile={course.lecture.attachment} />
                                 )}
-                                <h1 className="text-4xl  mt-5 font-heading font-normal leading-[70px]">{course.courseTitle}</h1>
-                                <p dangerouslySetInnerHTML={{ __html: course.courseDescription }} className={`leading-9 mt-5 max-w-5xl text-[18px] ${isDark ? "!text-white" : "text-zinc-600"}`} />
+                                <h1 className="text-4xl  mt-28 font-heading font-normal leading-[70px]">{course.courseTitle}</h1>
+                                <p dangerouslySetInnerHTML={{ __html: course.courseDescription }} className={`font- leading-9 mt-5 max-w-5xl text-[18px] ${isDark ? "!text-white/70" : "text-zinc-600"}`} />
                             </div>
 
 

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Sparkles, GraduationCap, BarChart3, Users, Play, Star } from 'lucide-react';
+import { Link } from 'react-router';
 
 const Hero = () => {
     const canvasRef = useRef(null);
@@ -92,6 +93,8 @@ const Hero = () => {
         };
     }, []);
 
+
+
     return (
         <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
             {/* کانواس برای افکت ذرات */}
@@ -127,20 +130,13 @@ const Hero = () => {
                             یادگیری عملی و مدرسان مجرب، مهارت‌های خود را به سطح بعدی برسانید.
                         </p>
 
-                        {/* دکمه‌های CTA */}
-                        <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                            <button className="group relative px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-white text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/25">
-                                <span className="relative z-10 flex items-center gap-2">
-                                    شروع یادگیری رایگان
-                                    <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" />
-                                </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </button>
-
-                            <button className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105">
+                            <Link
+                                to='/courses'
+                                className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl font-semibold text-white text-lg transition-all duration-300 hover:bg-white/20 hover:scale-105">
                                 مشاهده دوره‌ها
-                            </button>
-                        </div>
+                                <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" />
+                            </Link>
+                      
 
                         {/* آمار */}
                         <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
@@ -175,47 +171,8 @@ const Hero = () => {
                             <div className="absolute -top-20 -right-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
                             <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000" />
 
-                            {/* کارت اصلی */}
-                            <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20">
-                               
+                            <img src="/hero-laptop.png" alt="" />
 
-                                <div className="space-y-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="flex items-center gap-4 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
-                                                <GraduationCap className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="text-white font-medium">دوره جامع React و Next.js</h3>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <div className="flex items-center gap-0.5">
-                                                        {[...Array(5)].map((_, idx) => (
-                                                            <Star key={idx} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                                        ))}
-                                                    </div>
-                                                    <span className="text-gray-400 text-sm">(۱۲۴ نظر)</span>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="text-indigo-400 font-bold line-through text-sm">۱,۲۹۰,۰۰۰</span>
-                                                <span className="text-white font-bold block">۹۹۰,۰۰۰</span>
-                                                <span className="text-green-400 text-xs">۲۳٪ تخفیف</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* بخش پیشرفت دوره */}
-                                <div className="mt-6 p-4 bg-white/5 rounded-xl">
-                                    <div className="flex justify-between text-white text-sm mb-2">
-                                        <span>پیشرفت امروز شما</span>
-                                        <span>۶۵٪</span>
-                                    </div>
-                                    <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                                        <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full animate-slide" style={{ width: '65%' }} />
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 

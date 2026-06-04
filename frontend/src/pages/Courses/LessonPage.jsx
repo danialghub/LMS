@@ -30,11 +30,11 @@ const LessonPage = () => {
 
   useEffect(() => {
     if (!course._id || !lectureId || !chapterId) return
+    const chapter = course.courseContent[chapterId]
+    const lecture = chapter.chapterContent[lectureId]
 
-    const lecture = course.courseContent[chapterId].chapterContent[lectureId]
-    console.log(lecture);
 
-    if (!lecture) {
+    if (!lecture || !chapter) {
       toast.error('جلسه نامعتبر است')
       navigate(-1)
     }
@@ -43,7 +43,7 @@ const LessonPage = () => {
   }, [course._id, chapterId,])
 
 
-  return lecture?.lectureId  ? (
+  return lecture?.lectureId ? (
     <CourseDetail course={{ ...course, lecture }} isPreviewPage={false} />
   ) : <PageLoader />
 }
