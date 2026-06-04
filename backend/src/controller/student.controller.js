@@ -11,10 +11,10 @@ import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
 export const getStudentCourses = asyncHandler(
     async (req, res) => {
         const studentId = req.user._id
+        const queries = req.query
+        const studentCourses = await getStudentCourseService(studentId, queries)
 
-        const studentCourses = await getStudentCourseService(studentId)
-
-        if (!studentCourses.length)
+        if (!studentCourses.courses.length)
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
 
@@ -43,8 +43,8 @@ export const markLectureAsCompleted = asyncHandler(
 export const geStudentTransaction = asyncHandler(
     async (req, res) => {
         const studentId = req.user._id
-
-        const transactions = await geStudentTransactionService(studentId)
+        const { page, limit } = req.query
+        const transactions = await geStudentTransactionService(studentId, page, limit)
 
         res.status(HTTPSTATUS.OK).json(transactions)
     }

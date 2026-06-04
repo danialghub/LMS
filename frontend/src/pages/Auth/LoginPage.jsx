@@ -1,18 +1,59 @@
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from '@/validators/authSchema'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router';
+import { LogIn, Loader2, Mail, Lock } from 'lucide-react';
+import { loginSchema } from '@/validators/authSchema';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Logo, AuthInput } from '@/components/index'
+import { AuthInput } from '@/components/index';
 
+// چیدمان اصلی صفحه (همون layout ساین آپ)
+const LoginLayout = ({ children }) => (
+    <div dir='ltr' className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="container mx-auto px-4 py-8">
+            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl min-h-[94vh]  overflow-hidden">
+                {children}
+            </div>
+        </div>
+    </div>
+);
 
+// بخش تصویرسازی (همون استایل ساین آپ)
+const LoginIllustration = ({ role }) => {
+    const imageSrc = role === 'instructor'
+        ? '/Auth/login-instructor.png'
+        : '/Auth/login-student.png';
+
+    const titles = {
+        student: {
+            title: "به جمع دانشجویان خوش آمدید",
+            desc: "به دوره‌های آموزشی خود دسترسی پیدا کنید"
+        },
+        instructor: {
+            title: "به پنل مدرسان خوش آمدید",
+            desc: "دوره‌های خود را مدیریت کنید"
+        }
+    };
+
+    const data = titles[role];
+
+    return (
+        <div className="flex-4 hidden lg:block relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 overflow-hidden">
+            <div className="absolute inset-0 flex justify-center items-center">
+                <img
+                    src={imageSrc}
+                    alt={data.title}
+                    className="w-full h-full object-cover"
+                />
+            </div>
+        </div>
+    );
+};
+
+// کامپوننت اصلی لاگین
 const LoginPage = ({ role = "student" }) => {
-
-
-    const { login } = useAuthStore()
-
-    const navigate = useNavigate()
-
+    const { login, isLoading } = useAuthStore();
+    const navigate = useNavigate();
 
     const {
         register,
@@ -24,89 +65,104 @@ const LoginPage = ({ role = "student" }) => {
     });
 
     const onSubmit = async (data) => {
-
         const formData = new FormData();
         formData.append('email', data.email);
         formData.append('password', data.password);
-        formData.append('role', role)
+        formData.append('role', role);
 
-
-        const result = await login(formData)
-        if (result) {
-
-            navigate(`/${role}/my-courses`)
+        const result = await login(formData);
+        if (result?.success) {
+            navigate(`/${role}/my-courses`);
         }
-
     };
 
-
-    const emailError = errors.email?.message
-    const passwordError = errors.password?.message
-
+    const isInstructor = role === "instructor";
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-blue-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-xl ">
-                {/* Card */}
+        <LoginLayout>
+            <div className="flex h-full">
+                <LoginIllustration role={role} />
 
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                    {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center p-8 py-5">
-                        <div className="flex items-center justify-center  mb-2">
-
-                            <Link to='/'>
-                                <Logo />
-                            </Link>
+                <div className="flex-5 p-6 md:p-8 col-span-2">
+                    {/* هدر */}
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg mb-4">
+                            <LogIn size={28} className="text-white" />
                         </div>
-                        <p className="text-indigo-100 mt-2">وارد به دنیا یادگیری شوید</p>
-
+                        <h1 className="text-2xl font-bold text-gray-800">ورود به حساب کاربری</h1>
+                        <p className="text-gray-500 text-sm mt-2">
+                            {isInstructor ? "به پنل مدرسان خوش آمدید" : "به جمع دانشجویان بپیوندید"}
+                        </p>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit(onSubmit)} className="p-8 py-6 relative">
-                        {/* User Info */}
+                    {/* فرم */}
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 min-h-[280px]">
+                        {/* فیلد ایمیل */}
                         <div>
-
-                            <AuthInput inputName="email" register={register} error={emailError} />
-                            <AuthInput inputName="password" register={register} error={passwordError} />
-
+                          
+                            <AuthInput
+                                inputName="email"
+                                register={register}
+                                error={errors.email?.message}
+                                placeholder="example@gmail.com"
+                                type="email"
+                            />
                         </div>
 
+                        {/* فیلد رمز عبور */}
+                        <div>
+                          
+                            <AuthInput
+                                inputName="password"
+                                register={register}
+                                error={errors.password?.message}
+                                placeholder="••••••••"
+                                type="password"
+                            />
+                        </div>
 
+                        {/* دکمه ورود */}
                         <button
                             type='submit'
-                            className="btn-primary w-full mt-4"
+                            className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
                             disabled={isSubmitting || !isValid}
                         >
                             {isSubmitting ? (
                                 <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
+                                    <Loader2 size={18} className="animate-spin" />
                                     در حال ورود...
                                 </span>
-                            ) : role === "student"
-                                ? "ورود به عنوان فراگیر"
-                                : "ورود به عنوان مدرس"
-
-                            }
+                            ) : (
+                                isInstructor ? "ورود به عنوان مدرس" : "ورود به عنوان دانشجو"
+                            )}
                         </button>
                     </form>
 
-                    {/* Footer */}
-                    <div className="text-center p-6  pt-0 border-t border-gray-100">
-                        <p className="text-sm text-gray-600">
-                            حساب ندارید؟{' '}
-                            <Link to={`/sign-up/${role}`} className="text-indigo-600 hover:text-indigo-700 font-semibold">
-                                ورود به پنل
-
+                    {/* لینک ثبت نام */}
+                    <div className="mt-8 text-center pt-6 border-t border-gray-100">
+                        <p className="text-sm text-gray-500">
+                            حساب کاربری ندارید؟{' '}
+                            <Link
+                                to={`/sign-up/${role}`}
+                                className="text-blue-600 font-medium hover:underline hover:text-blue-700 transition-colors"
+                            >
+                                ثبت نام کنید
                             </Link>
                         </p>
                     </div>
+
+                    {/* لینک فراموشی رمز عبور (اختیاری) */}
+                    <div className="mt-4 text-center">
+                        <Link
+                            to="/forgot-password"
+                            className="text-xs text-gray-400 hover:text-blue-500 transition-colors"
+                        >
+                            رمز عبور خود را فراموش کرده‌اید؟
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div>
+        </LoginLayout>
     );
 };
 

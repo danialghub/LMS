@@ -1,171 +1,344 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema } from '@/validators/authSchema'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router';
+import { Check, Loader2, UserPlus ,User, Upload, X, Image, FileImage, Trash2, RefreshCw  } from 'lucide-react';
+import { registerSchema } from '@/validators/authSchema';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Logo, AuthInput } from '@/components/index'
-import { ArrowLeft } from 'lucide-react'
+import { AuthInput } from '@/components/index';
+import { } from 'lucide-react';
 
+// کامپوننت پیشرفت مرحله
+const SignupProgress = ({ currentStep, totalSteps }) => (
+    <div className="flex items-center justify-center gap-1 mb-6">
+        {Array.from({ length: totalSteps }).map((_, index) => {
+            const step = index + 1;
+            const isActive = currentStep >= step;
+            const isCompleted = currentStep > step;
 
+            return (
+                <React.Fragment key={step}>
+                    <div
+                        className={`
+                            w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
+                            transition-all duration-300
+                            ${isActive
+                                ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+                                : "bg-gray-100 text-gray-400"}
+                        `}
+                    >
+                        {isCompleted ? <Check size={14} /> : step}
+                    </div>
 
-const InstructorInfo = ({ register, errors }) => {
-    const instructorBioError = errors.instructorProfile?.bio?.message
-    const instructorMajorError = errors.instructorProfile?.major?.message
+                    {step !== totalSteps && (
+                        <div
+                            className={`
+                                h-0.5 w-12 transition-all duration-300
+                                ${isCompleted ? "bg-blue-600" : "bg-gray-200"}
+                            `}
+                        />
+                    )}
+                </React.Fragment>
+            );
+        })}
+    </div>
+);
+
+// چیدمان اصلی صفحه
+const SignupLayout = ({ children }) => (
+    <div
+        dir='ltr'
+        className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="container mx-auto px-4 py-8">
+            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl min-h-[94vh] overflow-hidden">
+                {children}
+            </div>
+        </div>
+    </div>
+);
+
+// بخش تصویرسازی با استفاده از فایل PNG
+const SignupIllustration = ({ role }) => {
+    // برای مدرس از تصویر اختصاصی استفاده می‌کنیم
+    const imageSrc = role === 'instructor'
+        ? '/Auth/signup-instructor.png'
+        : '/Auth/signup-student.png';
+
+    const titles = {
+        student: {
+            title: "به جمع دانشجویان بپیوندید",
+            desc: "دسترسی به هزاران دوره آموزشی"
+        },
+        instructor: {
+            title: "مدرس شوید و درآمد داشته باشید",
+            desc: "دانش خود را با دیگران به اشتراک بگذارید"
+        }
+    };
+
+    const data = titles[role];
 
     return (
-        <div>
+        <div
+            className="flex-4 hidden lg:block relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 overflow-hidden">
+            {/* تصویر زمینه با افکت اوورلی */}
+            <div className="absolute inset-0 flex justify-center items-center">
+                <img
+                    src={imageSrc}
+                    alt={data.title}
+                    className="w-full h-full object-cover"
+                />
 
-            <Input inputName="major" register={register} error={instructorMajorError} />
-            <Input inputName="bio" register={register} error={instructorBioError} />
+            </div>
+
+
         </div>
-    )
-}
+    );
+};
 
+// مرحله اول: اطلاعات پایه
+const BasicInfoStep = ({ register, errors }) => (
+    <div className="space-y-4">
+        <AuthInput
+            inputName="name"
+            register={register}
+            error={errors.name?.message}
+            placeholder="نام و نام خانوادگی"
+        />
+        <AuthInput
+            inputName="email"
+            register={register}
+            error={errors.email?.message}
+            placeholder="ایمیل"
+            type="email"
+        />
+        <AuthInput
+            inputName="password"
+            register={register}
+            error={errors.password?.message}
+            placeholder="رمز عبور"
+            type="password"
+        />
+    </div>
+);
+
+// مرحله دوم: آواتار
+const AvatarStep = ({ register, errors }) => (
+    <div className="space-y-4">
+        <AuthInput
+            inputName="avatar"
+            register={register}
+            error={errors.avatar?.message}
+            placeholder="عکس پروفایل"
+            type="file"
+        />
+        <p className="text-xs text-gray-500">* می‌توانید بعداً نیز آپلود کنید</p>
+    </div>
+);
+
+// مرحله سوم: اطلاعات مدرس
+const InstructorInfoStep = ({ register, errors }) => (
+    <div className="space-y-4">
+        <AuthInput
+            inputName="major"
+            register={register}
+            error={errors.instructorProfile?.major?.message}
+            placeholder="تخصص اصلی"
+        />
+        <AuthInput
+            inputName="bio"
+            register={register}
+            error={errors.instructorProfile?.bio?.message}
+            placeholder="بیوگرافی"
+            as="textarea"
+            rows={3}
+        />
+    </div>
+);
+
+// کامپوننت اصلی
 const SignUpPage = ({ role = "student" }) => {
+    const [currentStep, setCurrentStep] = useState(1);
+    const { signUp, isLoading } = useAuthStore();
+    const navigate = useNavigate();
 
-    const [logoStep, setLogoStep] = useState(false)
-
-    const { signUp } = useAuthStore()
-
-    const navigate = useNavigate()
-
-    const isStudent = role === "student"
+    const isStudent = role === "student";
+    const totalSteps = isStudent ? 2 : 3;
 
     const {
         register,
+        trigger,
         handleSubmit,
-        formState: { errors, isSubmitting, isValid },
-        reset
+        formState: { errors, isSubmitting }
     } = useForm({
         resolver: zodResolver(registerSchema),
-        mode: 'onChange',
+        mode: "onChange",
+        reValidateMode: "onChange"
     });
 
-    const onSubmit = async (data) => {
+    const validateStep = async (step) => {
+        const fields = {
+            1: ["name", "email", "password"],
+            2: ["avatar"],
+            3: []
+        };
 
-        if (!logoStep) {
-            return setLogoStep(true)
+        const fieldsToValidate = fields[step];
+        if (fieldsToValidate?.length) {
+            return await trigger(fieldsToValidate);
+        }
+        return true;
+    };
+
+    const nextStep = async (e) => {
+        e.preventDefault();
+        if (await validateStep(currentStep)) {
+            setCurrentStep(prev => prev + 1);
+        }
+    };
+
+    const prevStep = (e) => {
+        e.preventDefault();
+        setCurrentStep(prev => prev - 1);
+    };
+
+    const prepareFormData = (data) => {
+        const formData = new FormData();
+
+        formData.append("name", data.name);
+        formData.append("email", data.email);
+        formData.append("password", data.password);
+        formData.append("role", role);
+
+        if (data.avatar?.[0]) {
+            formData.append("image", data.avatar[0]);
         }
 
-        const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('email', data.email);
-        formData.append('password', data.password);
-        formData.append('image', data.avatar[0]);
-        formData.append('role', role)
-
-        if (!isStudent) {
-            const instructorProfile = {}
-            if (data.instructorProfile?.major)
-                instructorProfile['major'] = data.instructorProfile.major
-
-            if (data.instructorProfile?.bio)
-                instructorProfile['bio'] = data.instructorProfile.bio
-
-            if (Object.keys(instructorProfile).length) {
-                formData.append('instructorProfile', JSON.stringify(instructorProfile))
+        if (!isStudent && data.instructorProfile) {
+            const { major, bio } = data.instructorProfile;
+            if (major || bio) {
+                formData.append("instructorProfile", JSON.stringify({ major, bio }));
             }
         }
 
-        const result = await signUp(formData)
-        if (result) {
-            navigate(`/${role}/login`)
-        }
-        setLogoStep(false)
+        return formData;
     };
 
+    const onSubmit = async (data) => {
+        if (currentStep !== totalSteps) return;
 
+        const formData = prepareFormData(data);
+        const result = await signUp(formData);
 
-    const avatarError = errors.avatar?.message
-    const nameError = errors.name?.message
-    const emailError = errors.email?.message
-    const passwordError = errors.password?.message
+        if (result?.success) {
+            navigate(`/${role}/login`);
+        }
+    };
 
+    const handleFormSubmit = (e) => {
+        if (currentStep === totalSteps) {
+            handleSubmit(onSubmit)(e);
+        } else {
+            e.preventDefault();
+        }
+    };
 
+    const renderStep = () => {
+        const stepProps = { register, errors };
+
+        switch (currentStep) {
+            case 1: return <BasicInfoStep {...stepProps} />;
+            case 2: return <AvatarStep {...stepProps} />;
+            case 3: return !isStudent && <InstructorInfoStep {...stepProps} />;
+            default: return null;
+        }
+    };
+
+    const getButtonText = () => {
+        if (isSubmitting) return "در حال ثبت نام...";
+        return isStudent ? "ثبت نام دانشجو" : "ثبت نام مدرس";
+    };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-orange-50 via-sky-50 to-blue-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-xl ">
-                {/* Card */}
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                    {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center p-8 py-5">
-                        <div className="flex items-center justify-center  mb-2">
-                            <Link to='/'>
-                                <Logo />
-                            </Link>
-                        </div>
-                        <p className="text-indigo-100 mt-2">به خانواده آموزشی ما بپیوندید</p>
+        <SignupLayout>
+            <div className="flex h-full">
+                <SignupIllustration role={role} />
 
+                <div className="flex-5 p-6 md:p-8 col-span-2">
+                    {/* هدر */}
+                    <div className="text-center mb-6">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-3">
+                            <UserPlus size={24} />
+                        </div>
+                        <h1 className="text-2xl font-bold">ثبت نام</h1>
+                        <p className="text-gray-500 text-sm mt-1">
+                            {isStudent ? "شروع یادگیری" : "شروع تدریس"}
+                        </p>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit(onSubmit)} className="p-8 py-6 relative">
-                        {/* User Info */}
-                        <div>
-                            {logoStep
-                                ? (
-                                    <>
-                                        <button
-                                            onClick={() => setLogoStep(false)}
-                                            className='absolute top-3 left-4 font-extrabold cursor-pointer'>
-                                            <ArrowLeft size={35} />
-                                        </button>
-                                        <AuthInput inputName="avatar" register={register} error={avatarError} />
-                                    </>
-                                )
-                                : (
-                                    <>
-                                        <AuthInput inputName="name" register={register} error={nameError} />
-                                        <AuthInput inputName="email" register={register} error={emailError} />
-                                        <AuthInput inputName="password" register={register} error={passwordError} />
-                                    </>
-                                )
-                            }
+                    {/* پیشرفت */}
+                    <SignupProgress currentStep={currentStep} totalSteps={totalSteps} />
+
+                    {/* فرم با ارتفاع ثابت */}
+                    <form onSubmit={handleFormSubmit} className="space-y-5">
+                        {/* کانتینر با min-height ثابت برای جلوگیری از تغییر ارتفاع */}
+                        <div className="animate-fadeIn min-h-[280px]">
+                            {renderStep()}
                         </div>
 
-                        {/* Instructor Info */}
-                        {logoStep && !isStudent && (
-                            <InstructorInfo register={register} errors={errors} />
-                        )}
+                        {/* دکمه‌ها */}
+                        <div className="flex gap-3 pt-2">
+                            {currentStep > 1 && (
+                                <button
+                                    type="button"
+                                    onClick={prevStep}
+                                    className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                                >
+                                    قبلی
+                                </button>
+                            )}
 
-                        <button
-                            type='submit'
-                            className="btn-primary w-full mt-4"
-                            disabled={isSubmitting || !isValid && !logoStep}
-                        >
-                            {isSubmitting ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    در حال ثبت‌نام...
-                                </span>
-                            ) : logoStep
-                                ? role === "student"
-                                    ? "عضو به عنوان فراگیر"
-                                    : "عضو به عنوان مدرس"
-                                : (
-                                    "ادامه"
-                                )
-                            }
-                        </button>
+                            {currentStep < totalSteps ? (
+                                <button
+                                    type="button"
+                                    onClick={nextStep}
+                                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+                                >
+                                    بعدی
+                                </button>
+                            ) : (
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <Loader2 size={18} className="animate-spin" />
+                                            {getButtonText()}
+                                        </span>
+                                    ) : (
+                                        getButtonText()
+                                    )}
+                                </button>
+                            )}
+                        </div>
                     </form>
 
-                    {/* Footer */}
-                    <div className="text-center p-6  pt-0 border-t border-gray-100">
-                        <p className="text-sm text-gray-600">
-                            قبلاً حساب دارید؟{' '}
-                            <Link to={`/login/${role}`} className="text-indigo-600 hover:text-indigo-700 font-semibold">
-                                ورود به پنل
+                    {/* لینک ورود */}
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-gray-500">
+                            قبلاً ثبت نام کرده‌اید؟{" "}
+                            <Link
+                                to={`/login/${role}`}
+                                className="text-blue-600 font-medium hover:underline"
+                            >
+                                وارد شوید
                             </Link>
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </SignupLayout>
     );
 };
 

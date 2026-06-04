@@ -9,17 +9,16 @@ export const useStudentStore = create((set, get) => ({
     isFetching: false,
     isMarking: false,
 
-    getStudentCourses: async () => {
-        set({ isFetching: true })
+    getStudentCourses: async (query) => {
+
         try {
             const { data } = await privateRoutes.get('/student/courses', {
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                params: query
             })
-            set({ studentCourses: data })
+            return data
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
-        } finally {
-            set({ isFetching: false })
         }
     },
     getCourseProgress: async (courseId) => {
@@ -30,15 +29,15 @@ export const useStudentStore = create((set, get) => ({
             console.error(error.response?.data?.message || "Something went wrong");
         }
     },
-    getTransactions: async () => {
-        set({ isFetching: true })
+    getTransactions: async (query) => {
+
         try {
-            const { data } = await privateRoutes.get('/student/transactions')
-            set({ studentTransactions: data })
+            const { data } = await privateRoutes.get('/student/transactions', {
+                params: query
+            })
+            return data
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
-        } finally {
-            set({ isFetching: false })
         }
     },
     markLectureAsCompleted: async (courseId, lectureId) => {

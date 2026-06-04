@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCourseStore } from '@/store/useCourseStore'
 import { useInstructorStore } from '@/store/useInstructorStore'
+import { useStudentStore } from '@/store/useStudentStore'
 import toast from 'react-hot-toast'
 
 export const useGetCourses = (debouncedFilters = {}) => {
@@ -25,6 +26,27 @@ export const useGetCourses = (debouncedFilters = {}) => {
                 : undefined,
     })
 }
+export const useGetStudentCourses = () => {
+
+    const { getStudentCourses } = useStudentStore()
+
+    return useInfiniteQuery({
+        queryKey: ['studentCourses'],
+
+        queryFn: ({ pageParam = 1 }) =>
+            getStudentCourses({
+                page: pageParam,
+                limit: 6,
+            }),
+
+        initialPageParam: 1,
+
+        getNextPageParam: (lastPage) =>
+            lastPage.hasMore
+                ? lastPage.page + 1
+                : undefined,
+    })
+}
 export const useGetInstructorCourses = (page) => {
     const { getInstrucorCourses } = useInstructorStore()
 
@@ -34,6 +56,16 @@ export const useGetInstructorCourses = (page) => {
         keepPreviousData: true
     })
 }
+export const useGetStudentTransactions = (page) => {
+    const { getTransactions } = useStudentStore()
+
+    return useQuery({
+        queryKey: ['studentTransactions', page],
+        queryFn: () => getTransactions({ page, limit: 6 }),
+        keepPreviousData: true
+    })
+}
+
 export const usePostCourseMutation = () => {
 
     const queryClient = useQueryClient()

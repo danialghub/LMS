@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Star, StarIcon, User, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
-const MyCourseCard = ({ course }) => {
+import { motion } from 'framer-motion'
 
-    const [wid, setWid] = useState(0)
+const MyCourseCard = ({ course }) => {
 
 
     const calcTotalLectures = (chapters) => {
@@ -20,15 +20,13 @@ const MyCourseCard = ({ course }) => {
     );
 
 
-    useEffect(() => {
-        setTimeout(() => {
-            setWid(70)
-        }, 5000);
-    }, [])
     return (
-        <div
-
+        <motion.div
             className='rounded-lg w-full  flex flex-col justify-between  shadow-sm group mx-auto bg-white'
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            layout
         >
             <div
                 className='rounded-lg relative cursor-pointer overflow-hidden'
@@ -48,7 +46,7 @@ const MyCourseCard = ({ course }) => {
 
                 <div className='flex items-center gap-1 mt-4 sm:mt-6  text-black/60'>
                     <User size={20} />
-                    <span className='text-[11px] sm:text-[13px]  truncate'>{course.instructor.name}</span>
+                    <span className='text-[11px] sm:text-[13px] font-medium  truncate'>{course.instructor.name}</span>
                 </div>
 
 
@@ -57,7 +55,7 @@ const MyCourseCard = ({ course }) => {
                 <div className=''>
                     <div className='flex items-center gap-4 w-full'>
                         {/* متن درصد */}
-                        <div className={`flex items-center gap-1 text-sm  shrink-0 ${progressPercent == 100 ? "text-green-500" : "text-blue-500"}`}>
+                        <div className={`flex items-center gap-1 text-sm  shrink-0 ${progressPercent == 100 ? "text-green-600" : "text-blue-500"}`}>
                             <span className='font-Dirooz-FD'>{progressPercent}%</span>
                             <span className='font-Dirooz'>تکمیل</span>
                         </div>
@@ -68,7 +66,7 @@ const MyCourseCard = ({ course }) => {
                             <div className='h-full w-0 bg-blue-500 rounded-full'></div>
                             {/* درصد پر شده */}
                             <div
-                                className={`${progressPercent == 100 ? "bg-green-500" : "bg-blue-500"} absolute top-0 right-0  h-full transition-all duration-1000 ease-out`}
+                                className={`${progressPercent == 100 ? "bg-green-600" : "bg-blue-500"} absolute top-0 right-0  h-full transition-all duration-1000 ease-out`}
                                 style={{ width: `${progressPercent}%` }}
                             ></div>
                         </div>
@@ -91,7 +89,7 @@ const MyCourseCard = ({ course }) => {
                     </button>
                 </Link>
             </div>
-        </div>
+        </motion.div>
     )
 }
 

@@ -1,46 +1,103 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CourseSkleton, MyCourseCard } from '@/components/index'
-import { useStudentStore } from '@/store/useStudentStore'
+import { useGetStudentCourses } from '@/query/courseQueries'
 import { useEffect } from 'react'
+import { AnimatePresence } from 'framer-motion'
+
 const StudentCourses = () => {
 
-    const { getStudentCourses, studentCourses, isFetching } = useStudentStore()
+    const [courses, setCourses] = useState([])
+
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading: isFetching,
+        error
+    } = useGetStudentCourses()
+
+
 
     useEffect(() => {
-        getStudentCourses()
-    }, [])
+        if (!error) return
+
+        toast.error(
+            error?.response?.data?.message ||
+            error?.message ||
+            "مشکلی رخ داده"
+        )
+    }, [error])
+
+    useEffect(() => {
+        if (!data) return
+        const fltatCourses = data?.pages?.flatMap(page => page.courses) || []
+
+        setCourses(fltatCourses)
+
+
+    }, [data])
+
+
     return (
         <div className="flex-1 min-w-0 bg-[#f3f3f3] min-h-screen">
-<div>
-    
-</div>
+
 
             {/* CONTENT */}
-            <div className="bg-white  rounded-3xl mt-10 p-8 ">
+            <div className="bg-white min-h-[100vh]  rounded-xl mt-10 p-8 ">
                 <h1 className="text-3xl  text-black/80 font-heading mb-6 text-right">
                     دوره های من
                 </h1>
 
-                <div className="grid grid-cols-4 gap-5">
-                    {isFetching
-                        ? (
-                            [1, 2, 3, 4].map((course, idx) => (
-                                <CourseSkleton key={idx} />
-                            ))
-                        )
-                        : studentCourses.length
-                            ? (
-                                studentCourses.map(course => (
-                                    <MyCourseCard key={course._id} course={course} />
-                                ))
-                            ) : <div className='text-2xl font-heading text-black/70 flex items-center justify-center '>
-                                دوره ای یافت نشد
-                            </div>
 
-                    }
-                </div>
+ {isFetching && !courses.length
+                ? (
+                    <div className="grid grid-cols-4 gap-5">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
+                            <CourseSkleton key={idx} />
+                        ))}
+                    </div>
+                ) : courses.length
+                    ? (
+                        <div className='flex flex-col items-center justify-center gap-8'>
+                            <div className="grid grid-cols-4 gap-5">
+                                <AnimatePresence>
+                                    {courses.map(course => (
+                                        <MyCourseCard key={course._id} course={course} />
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                            {hasNextPage && (
+                                <div >
+                                    <button
+                                        disabled={!hasNextPage || isFetchingNextPage}
+                                        onClick={fetchNextPage}
+                                        className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                                    >
+                                        {isFetchingNextPage ? (
+                                            <SubmitLoading />
+                                        ) : (
+                                            "مشاهده بیشتر"
+                                        )}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                    ) : (
+                        <div className='text-2xl font-heading text-black/70 flex items-center justify-center '>
+                            دوره ای یافت نشد
+                        </div>
+                    )
+            }
+
             </div>
-        </div>
+
+           
+
+
+
+        </div >
     )
 }
 

@@ -22,7 +22,7 @@ export const getInstructorCourseService = async (instructorId, page = 1, limit =
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
-    console.log(instructorCourses);
+
 
 
     // محاسبه تعداد کل صفحات

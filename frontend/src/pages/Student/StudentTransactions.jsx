@@ -7,61 +7,32 @@ import {
 } from "lucide-react";
 
 import { useStudentStore } from "@/store/useStudentStore";
-import { useEffect } from "react";
-import { PageLoader } from '@/components/index'
+import { useEffect, useState } from "react";
+import { PageLoader, Pagination } from '@/components/index'
 import { formatNumber, formatTime } from '@/lib/helper'
-// داده‌های تراکنش‌ها
-const transactions = [
-    {
-        id: 1,
-        title: "اشتراک پریمیوم - 3 ماهه",
-        date: "۱۴۰۳/۰۲/۱۵",
-        amount: "۱,۲۹۹,۰۰۰",
-        status: "موفق",
-        statusColor: "text-green-600",
-        statusBg: "bg-green-50",
-    },
-    {
-        id: 2,
-        title: "دوره React پیشرفته",
-        date: "۱۴۰۳/۰۲/۱۰",
-        amount: "۷۹۹,۰۰۰",
-        status: "موفق",
-        statusColor: "text-green-600",
-        statusBg: "bg-green-50",
-    },
-    {
-        id: 3,
-        title: "شارژ کیف پول",
-        date: "۱۴۰۳/۰۲/۰۵",
-        amount: "۵۰۰,۰۰۰",
-        status: "در انتظار",
-        statusColor: "text-yellow-600",
-        statusBg: "bg-yellow-50",
-    },
-    {
-        id: 4,
-        title: "دوره هوش مصنوعی",
-        date: "۱۴۰۳/۰۱/۲۸",
-        amount: "۱,۴۹۹,۰۰۰",
-        status: "ناموفق",
-        statusColor: "text-red-600",
-        statusBg: "bg-red-50",
-    },
-    {
-        id: 5,
-        title: "اشتراک ویژه - ۱ ماهه",
-        date: "۱۴۰۳/۰۱/۲۰",
-        amount: "۴۹۹,۰۰۰",
-        status: "موفق",
-        statusColor: "text-green-600",
-        statusBg: "bg-green-50",
-    },
-];
+import { useGetStudentTransactions } from '@/query/courseQueries'
+
 
 export default function TransactionsPage() {
 
-    const { getTransactions, isFetching, studentTransactions } = useStudentStore()
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+
+    const {
+        data,
+        isLoading,
+        isError,
+        isFetching
+    } = useGetStudentTransactions(page)
+
+
+    const studentTransactions = data?.transactions || []
+    const totalPagesInfo = data?.totalPages
+
+    useEffect(() => {
+        if (!totalPagesInfo) return
+        setTotalPages(totalPagesInfo)
+    }, [totalPagesInfo])
 
     const successfulTransactionCount = () => {
         const successFulTransaction = studentTransactions.filter(transaction => transaction.status === "successful")
@@ -71,9 +42,11 @@ export default function TransactionsPage() {
         const failedTransaction = studentTransactions.filter(transaction => transaction.status === "failed")
         return failedTransaction.length || 0
     }
-    useEffect(() => {
-        getTransactions()
-    }, [])
+    const calcTotalTransactionAmount = () => {
+        const totalAmount = studentTransactions.reduce((sum, arg) => sum + arg.value, 0)
+        return formatNumber(totalAmount)
+    }
+
 
     // تابع برای نمایش وضعیت
     const getStatusIcon = (status) => {
@@ -88,20 +61,40 @@ export default function TransactionsPage() {
                 return null;
         }
     };
-    console.log(studentTransactions);
+
 
     return (
         <div dir="rtl" className="min-h-screen bg-[#f3f3f3] p-6 flex-1 min-w-0">
             <div className="max-w-[1700px] mx-auto flex gap-8">
                 {/* MAIN CONTENT */}
                 <div className="flex-1 min-w-0 ">
+                    {/* خلاصه آماری */}
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                        <div className="flex justify-center">
+                            <div className="grid grid-cols-3 gap-6 w-full max-w-3xl">
 
+                                <div className=" bg-gradient-to-r from-sky-100 to-blue-50 rounded-2xl p-6 text-center">
+                                    <div className="text-2xl font-bold text-blue-600">{calcTotalTransactionAmount()}</div>
+                                    <div className="text-sm text-gray-600 mt-1">مجموع مبلغ تراکنش ها</div>
+                                </div>
+                                <div className="col-span-1 bg-gradient-to-r from-green-100 to-emerald-50 rounded-2xl p-6 text-center">
+                                    <div className="text-2xl font-bold text-green-600">{successfulTransactionCount()}</div>
+                                    <div className="text-sm text-gray-600 mt-1">تراکنش‌های موفق</div>
+                                </div>
+
+                                <div className="col-span-1 bg-gradient-to-r from-red-50 to-rose-100 rounded-2xl p-6 text-center">
+                                    <div className="text-2xl font-bold text-red-600">{failedTransactionCount()}</div>
+                                    <div className="text-sm text-gray-600 mt-1">تراکنش های ناموفق</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* TRANSACTIONS TABLE */}
-                    <div className="bg-white rounded-3xl p-8 shadow-sm mt-6 ">
+                    <div className="bg-white rounded-3xl p-8 shadow-sm mt-6 min-h-[90vh] relative">
                         <h2 className="text-3xl  text-black/80 font-heading mb-6 text-right">لیست تراکنش‌ها</h2>
 
-                        {isFetching
+                        {isLoading
                             ? <PageLoader />
                             : studentTransactions.length
                                 ? (
@@ -117,14 +110,14 @@ export default function TransactionsPage() {
 
                                         {/* Table Rows */}
                                         <div className="space-y-3">
-                                            {studentTransactions.map((transaction,idx) => (
+                                            {studentTransactions.map((transaction, idx) => (
                                                 <div
-                                                    key={transaction._id}
+                                                    key={idx}
                                                     className="grid grid-cols-6 gap-4 py-4 border-b border-gray-100 items-center text-right hover:bg-gray-50 transition-colors rounded-lg"
                                                 >
                                                     {/* شناسه و شرح */}
                                                     <div className="col-span-2">
-                                                        <div className="font-medium text-gray-800">#{idx+1}</div>
+                                                        <div className="font-medium text-gray-800">#{idx + 1}</div>
                                                         <div className="text-sm text-gray-500 mt-1">{transaction.courseId.courseTitle}</div>
                                                     </div>
 
@@ -154,21 +147,15 @@ export default function TransactionsPage() {
                                             ))}
                                         </div>
 
-                                        {/* خلاصه آماری */}
-                                        <div className="mt-8 pt-6 border-t border-gray-200">
-                                            <div className="flex justify-center">
-                                                <div className="grid grid-cols-2 gap-6 w-full max-w-md">
-                                                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 text-center">
-                                                        <div className="text-2xl font-bold text-green-600">{successfulTransactionCount()}</div>
-                                                        <div className="text-sm text-gray-600 mt-1">تراکنش‌های موفق</div>
-                                                    </div>
+                                        <div className="absolute left-1/2 bottom-5">
+                                            <Pagination
+                                                currentPage={page}
+                                                totalPages={totalPages}
+                                                onPageChange={(newPage) => {
+                                                    setPage(newPage)
+                                                }}
 
-                                                    <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-2xl p-6 text-center">
-                                                        <div className="text-2xl font-bold text-red-600">{failedTransactionCount()}</div>
-                                                        <div className="text-sm text-gray-600 mt-1">تراکنش های ناموفق</div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            />
                                         </div>
                                     </div>
                                 )

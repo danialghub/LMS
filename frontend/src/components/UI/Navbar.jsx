@@ -1,5 +1,5 @@
 import React from 'react';
-import {Logo} from '@/components/index';  // import پیش‌فرض
+import { Logo } from '@/components/index';  // import پیش‌فرض
 import { Link } from 'react-router';  // تغییر به react-router-dom
 import { GraduationCap, School, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -39,7 +39,7 @@ const Navbar = () => {
 
                                 {/* دکمه داشبورد بر اساس نقش */}
                                 {authUser.role === "student" ? (
-                                    <Link to="/student/dashboard">
+                                    <Link to="/student/my-courses">
                                         <button className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-teal-500 
                                             hover:from-emerald-600 hover:to-teal-600 text-white font-semibold 
                                             py-2 px-5 rounded-xl shadow-md hover:shadow-lg 

@@ -4,37 +4,28 @@ import CourseProgress from "../Models/CourseProgress.js";
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 
 //course
-export const getStudentCourseService = async (studentId,filterQueries) => {
+export const getStudentCourseService = async (studentId, filterQueries) => {
 
     const page = Number(filterQueries.page) || 1;
-    const limit = Number(filterQueries.limit) || 12;
+    const limit = Number(filterQueries.limit) || 6;
     const skip = (page - 1) * limit;
 
 
-    let studentCourses = await Course.find({
-        enrolledStudents: studentId
-    })
-        .populate([
-            { path: 'instructor', select: '-password' },
-        ])
-        .sort({ _id: -1 });
+    let [studentCourses, totalStudentCourses] = await Promise.all([
+        Course.find({ enrolledStudents: studentId })
+            .populate({
+                path: "instructor",
+                select: "name",
+            })
+            .sort({ _id: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+
+        Course.countDocuments({ enrolledStudents: studentId }),
+    ]);
 
 
-          [courses, totalCourses] = await Promise.all([
-                    Course.find(query)
-                        .select("-courseContent")
-                        .populate({
-                            path: "instructor",
-                            select: "-password",
-                        })
-                        .sort(sortOption)
-                        .skip(skip)
-                        .limit(limit)
-                        .lean(),
-        
-                    Course.countDocuments(query),
-                ]);
-                
 
     if (!studentCourses.length) {
         throw new NotFoundException('هیچ دوره ای یافت نشد');
@@ -45,15 +36,26 @@ export const getStudentCourseService = async (studentId,filterQueries) => {
         courseProgresses.map(cp => [cp.courseId.toString(), cp])
     );
 
-    // تبدیل به آرایه جدید با آبجکت‌های ساده
-    studentCourses = studentCourses.map(course => {
-        const courseObj = course.toObject(); // تبدیل هر کدام جداگانه
-        const progress = progressMap.get(courseObj._id.toString());
-        courseObj.courseProgress = progress || { completedLessons: [] };
-        return courseObj;
-    });
 
-    return studentCourses;
+    studentCourses = studentCourses.map(course => {
+        const progress = progressMap.get(course._id.toString());
+        course.courseProgress = progress || { completedLessons: [] };
+        return course;
+    });
+    console.log(studentCourses);
+
+
+    const totalPages = Math.ceil(totalStudentCourses / limit);
+
+
+    return {
+        courses: studentCourses,
+        page,
+        limit,
+        totalCourses: totalStudentCourses,
+        totalPages,
+        hasMore: page < totalPages,
+    };
 }
 
 
@@ -78,14 +80,30 @@ export const markLectureAsCompletedService = async (userId, courseId, lectureId)
     return courseProgress;
 }
 
-export const geStudentTransactionService = async (stdId) => {
+export const geStudentTransactionService = async (stdId, page = 1, limit = 6) => {
 
-    const transactions = await Transaction.find({ userId: stdId }).populate("courseId")
+    const skip = (page - 1) * limit;
+
+    const totalTransactions = await Transaction.countDocuments({
+        userId: stdId
+    });
+
+
+    const transactions = await Transaction.find({ userId: stdId })
+        .skip(skip)
+        .limit(limit)
+        .populate("courseId")
 
     if (!transactions.length)
         throw new NotFoundException("تراکنشی یافت نشد")
 
-    return transactions
+  const totalPages = Math.ceil(totalTransactions / limit);
+
+    return {
+        transactions,
+        totalPages,
+        currentPage: page,
+    };
 }
 export const rateToCourseService = async (courseId, userId, rating) => {
     const foundCourse = await Course.findById(courseId);
