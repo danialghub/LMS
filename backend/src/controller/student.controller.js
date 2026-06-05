@@ -3,7 +3,7 @@ import {
     getStudentCourseService,
     markLectureAsCompletedService,
     rateToCourseService,
-    geStudentTransactionService
+    getStudentTransactionService
 } from "../services/student.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
 
@@ -13,10 +13,6 @@ export const getStudentCourses = asyncHandler(
         const studentId = req.user._id
         const queries = req.query
         const studentCourses = await getStudentCourseService(studentId, queries)
-
-        if (!studentCourses.courses.length)
-            return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
-
 
         res.status(HTTPSTATUS.OK).json(studentCourses)
     }
@@ -43,7 +39,7 @@ export const geStudentTransaction = asyncHandler(
     async (req, res) => {
         const studentId = req.user._id
         const { page, limit } = req.query
-        const transactions = await geStudentTransactionService(studentId, page, limit)
+        const transactions = await getStudentTransactionService(studentId, page, limit)
 
         res.status(HTTPSTATUS.OK).json(transactions)
     }

@@ -14,18 +14,19 @@ import { checkFileType } from '../utils/helper.js'
 export const getCourses = asyncHandler(
     async (req, res) => {
         const filters = req.query
-         
-           const  {
-                courses,
-                page,
-                limit,
-                totalCourses,
-                totalPages,
-                hasMore
-            } = await getCourseService(filters)
+
+        const {
+            courses,
+            page,
+            limit,
+            totalCourses,
+            totalPages,
+            hasMore
+        } = await getCourseService(filters)
+
+        if (!courses.length)
+            return res.sendStatus(HTTPSTATUS.NOT_FOUND)
         
-
-
         res.status(HTTPSTATUS.OK).json({ courses, page, limit, totalCourses, totalPages, hasMore })
     }
 )

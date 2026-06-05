@@ -1,24 +1,11 @@
 import {
-    Bell,
-    ShoppingCart,
-    Moon,
-    Search,
     LogOut,
     Settings,
-    Home,
     Zap,
     Wallet,
-    Mail,
-    MessageSquare,
-    Box,
-    PlaySquare,
-    Bot,
-    Mic,
-    Folder,
-    User,
 } from "lucide-react";
-import { CourseSkleton } from '@/components/index'
-import { Link, NavLink, Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router";
+import { Navbar } from '@/components/index'
 const courses = Array.from({ length: 8 }, (_, i) => ({
     id: i + 1,
 }));
@@ -34,14 +21,15 @@ export default function MyCourses() {
     return (
         <div
 
-            className="min-h-screen bg-[#f3f3f3] p-6"
+            className="min-h-screen bg-[#f3f3f3] "
         >
-            <div className="max-w-[1700px] mx-auto flex gap-8">
+            <Navbar />
+            <div className="max-w-[1700px]  flex gap-8 p-6">
 
                 {/* SIDEBAR - Sticky */}
                 <aside
-                dir="ltr"
-                className="w-[280px] shrink-0 sticky top-18  self-start ">
+                    dir="ltr"
+                    className="w-[280px] shrink-0 sticky top-24  self-start ">
                     <div className="bg-white rounded-3xl p-6 ">
                         {/* Top */}
                         <div className="flex items-start justify-between">

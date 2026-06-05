@@ -64,12 +64,12 @@ export default function TransactionsPage() {
 
 
     return (
-        <div dir="rtl" className="min-h-screen bg-[#f3f3f3] p-6 flex-1 min-w-0">
+        <div dir="rtl" className="min-h-screen   flex-1 min-w-0">
             <div className="max-w-[1700px] mx-auto flex gap-8">
                 {/* MAIN CONTENT */}
                 <div className="flex-1 min-w-0 ">
                     {/* خلاصه آماری */}
-                    <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className=" pt-6 border-t border-gray-200">
                         <div className="flex justify-center">
                             <div className="grid grid-cols-3 gap-6 w-full max-w-3xl">
 
@@ -160,7 +160,7 @@ export default function TransactionsPage() {
                                     </div>
                                 )
                                 : <div className="text-3xl h-[75vh] font-heading text-gray-700 flex items-center justify-center ">
-                                    تراکنش یافت نشد
+                                    تراکنشی یافت نشد
                                 </div>
 
                         }

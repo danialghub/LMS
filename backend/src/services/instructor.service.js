@@ -3,10 +3,8 @@ import { NotFoundException, UnauthorizedException } from "../utils/app.error.js"
 
 //course
 export const getInstructorCourseService = async (instructorId, page = 1, limit = 6) => {
-
     const skip = (page - 1) * limit;
     console.log(page, limit);
-
 
     const totalCourses = await Course.countDocuments({
         instructor: instructorId
@@ -24,14 +22,14 @@ export const getInstructorCourseService = async (instructorId, page = 1, limit =
         .limit(limit);
 
 
-
-    // محاسبه تعداد کل صفحات
     const totalPages = Math.ceil(totalCourses / limit);
 
     return {
-        courses: instructorCourses,
+        courses: instructorCourses, 
         totalPages,
         currentPage: page,
+        hasMore: page < totalPages,
+        totalCourses,
     };
 }
 

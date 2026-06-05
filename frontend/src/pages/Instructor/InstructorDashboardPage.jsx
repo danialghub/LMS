@@ -34,12 +34,9 @@ const InstructorDashboardPage = () => {
   ]
 
   return (
-    <div className='h-screen flex flex-col' ref={dashboardRef}>
+    <div className='h-screen flex flex-col ' ref={dashboardRef}>
 
-   
         <Navbar />
-     
-
 
       <div className='flex flex-1 overflow-hidden' >
         {/* سایدبار */}

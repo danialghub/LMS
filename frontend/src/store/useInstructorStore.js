@@ -14,7 +14,7 @@ export const useInstructorStore = create((set, get) => ({
                 headers: { 'Content-Type': 'application/json' },
                 params: query
             })
-            console.log(data);
+      
 
             return data
         } catch (error) {

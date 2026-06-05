@@ -38,7 +38,7 @@ const StudentCourses = () => {
 
 
             {/* CONTENT */}
-            <div className="bg-white min-h-[100vh]  rounded-xl mt-10 p-8 ">
+            <div className="bg-white min-h-[100vh]  rounded-xl  p-8 ">
                 <h1 className="text-3xl  text-black/80 font-heading mb-6 text-right">
                     دوره های من
                 </h1>
@@ -79,7 +79,7 @@ const StudentCourses = () => {
                             </div>
 
                         ) : (
-                            <div className='text-2xl font-heading text-black/70 flex items-center justify-center '>
+                            <div className='text-3xl font-heading text-gray-700 flex items-center justify-center h-[70vh]'>
                                 دوره ای یافت نشد
                             </div>
                         )

@@ -13,10 +13,6 @@ export const getInstructorCourses = asyncHandler(
 
         const instructorCourses = await getInstructorCourseService(instructorId, Number(page), Number(limit))
 
-        if (!instructorCourses.courses.length)
-            return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
-
-
 
         res.status(HTTPSTATUS.OK).json(instructorCourses)
     }

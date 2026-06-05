@@ -316,7 +316,8 @@ const InstructorCoursesPage = () => {
                  </div>
                 )}
 
-                <Pagination
+         
+                 <Pagination
                     currentPage={page}
                     totalPages={totalPages}
                     onPageChange={(newPage) => {
@@ -324,6 +325,7 @@ const InstructorCoursesPage = () => {
                     }}
 
                 />
+             
             </div>
         </div>
     );

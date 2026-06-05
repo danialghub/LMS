@@ -83,7 +83,7 @@ const InstructorAnalytics = () => {
           <div
           dir='ltr'
           style={{ width: `${Math.max(100, courseAnalytics.length * 25)}%`, minWidth: '100%' }}>
-            <ResponsiveContainer width="100%" height={400}>
+            <ResponsiveContainer width="100%" height={450}>
               <BarChart
                 data={courseAnalytics}
                 margin={{
