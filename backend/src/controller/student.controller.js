@@ -18,7 +18,6 @@ export const getStudentCourses = asyncHandler(
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
 
-
         res.status(HTTPSTATUS.OK).json(studentCourses)
     }
 )

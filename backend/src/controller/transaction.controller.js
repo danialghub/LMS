@@ -1,38 +1,52 @@
 import { courseSchema, chapterSchema, lectureSchema } from "../validators/course.validator.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import {
-    createTransacionService,
-    updateTransactionStatusService
+    requestZarinPalService,
+    verifyZarinPalService
 } from "../services/transaction.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
 
-export const createTransaction = asyncHandler(
+
+
+export const requestZarinPal = asyncHandler(
     async (req, res) => {
-        const user = req.user
-        const { courseId } = req.body
 
-        if(!courseId)
+        const userId = req.user._id
+        const { courseId } = req.body;
+
+        if (!courseId)
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
-        
-        await createTransacionService( courseId, user._id)
 
+        const { status, authority = null, transactionId = null, paymentUrl = null, message = null } = await requestZarinPalService(userId, courseId)
+        if (status === "OK") {
 
-        res.sendStatus(HTTPSTATUS.CREATED)
+            return res.status(HTTPSTATUS.CREATED).json({ authority, transactionId, paymentUrl })
+        }
+        res.status(HTTPSTATUS.BAD_REQUEST).json({ message })
 
     }
 )
-export const updateTransactionStatus = asyncHandler(
+export const verifyZarinPal = asyncHandler(
     async (req, res) => {
-        const user = req.user
-        const { courseId } = req.params
-        const body = req.body
 
-if(!body)
-    return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
-        await updateTransactionStatusService(body, courseId, user._id)
+        const { Authority, Status } = req.query;
 
 
-        res.sendStatus(HTTPSTATUS.OK)
+        if (!Authority)
+            return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
+
+        const { status, refId = null, amount = 0, code = null, cardNumber = null, courseId = null } = await verifyZarinPalService(Authority, Status)
+
+        if (status === "OK") {
+            return res.redirect(
+                `http://localhost:5173/payment-result?status=success&ref_id=${refId}&amount=${amount}&card_number=${cardNumber}&cId=${courseId}`
+            );
+        } else if (status === "already_verified") {
+            return res.redirect('http://localhost:5173/payment-result?status=already_verified');
+        } else if (status === "failed") {
+            return res.redirect(`http://localhost:5173/payment-result?status=failed&code=${code}`);
+        }
+
 
     }
 )

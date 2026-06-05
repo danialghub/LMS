@@ -19,6 +19,7 @@ export const useStudentStore = create((set, get) => ({
             return data
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
+            
         }
     },
     getCourseProgress: async (courseId) => {

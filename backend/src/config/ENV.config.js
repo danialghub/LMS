@@ -9,5 +9,6 @@ export const Env = {
     ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN || "15m",
     REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN || "7d",
     FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
-
+    MERCHANT_ID: process.env.MERCHANT_ID,
+    IS_SANDBOX: process.env.IS_SANDBOX
 };

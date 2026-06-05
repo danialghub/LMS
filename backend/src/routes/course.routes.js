@@ -13,7 +13,7 @@ import {
 } from '../controller/course.controller.js'
 import { allowInstructor, protectRoute, courseOwner } from '../middlewares/auth.middleware.js'
 import { upload } from '../config/multer.js'
-import { createTransaction } from '../controller/transaction.controller.js'
+
 
 const router = express.Router()
 

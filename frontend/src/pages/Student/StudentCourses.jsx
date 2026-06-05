@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion'
 
 const StudentCourses = () => {
 
-    const [courses, setCourses] = useState([])
+
 
     const {
         data,
@@ -17,6 +17,7 @@ const StudentCourses = () => {
         error
     } = useGetStudentCourses()
 
+    const courses = data ? data?.pages?.flatMap(page => page.courses) : []
 
 
     useEffect(() => {
@@ -29,14 +30,7 @@ const StudentCourses = () => {
         )
     }, [error])
 
-    useEffect(() => {
-        if (!data) return
-        const fltatCourses = data?.pages?.flatMap(page => page.courses) || []
 
-        setCourses(fltatCourses)
-
-
-    }, [data])
 
 
     return (
@@ -50,50 +44,50 @@ const StudentCourses = () => {
                 </h1>
 
 
- {isFetching && !courses.length
-                ? (
-                    <div className="grid grid-cols-4 gap-5">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
-                            <CourseSkleton key={idx} />
-                        ))}
-                    </div>
-                ) : courses.length
+                {isFetching
                     ? (
-                        <div className='flex flex-col items-center justify-center gap-8'>
-                            <div className="grid grid-cols-4 gap-5">
-                                <AnimatePresence>
-                                    {courses.map(course => (
-                                        <MyCourseCard key={course._id} course={course} />
-                                    ))}
-                                </AnimatePresence>
-                            </div>
-                            {hasNextPage && (
-                                <div >
-                                    <button
-                                        disabled={!hasNextPage || isFetchingNextPage}
-                                        onClick={fetchNextPage}
-                                        className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
-                                    >
-                                        {isFetchingNextPage ? (
-                                            <SubmitLoading />
-                                        ) : (
-                                            "مشاهده بیشتر"
-                                        )}
-                                    </button>
+                        <div className="grid grid-cols-4 gap-5">
+                            {[1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
+                                <CourseSkleton key={idx} />
+                            ))}
+                        </div>
+                    ) : courses.length > 0
+                        ? (
+                            <div className='flex flex-col items-center justify-center gap-8'>
+                                <div className="grid grid-cols-4 gap-5">
+                                    <AnimatePresence>
+                                        {courses.map(course => (
+                                            <MyCourseCard key={course._id} course={course} />
+                                        ))}
+                                    </AnimatePresence>
                                 </div>
-                            )}
-                        </div>
+                                {hasNextPage && (
+                                    <div >
+                                        <button
+                                            disabled={!hasNextPage || isFetchingNextPage}
+                                            onClick={fetchNextPage}
+                                            className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                                        >
+                                            {isFetchingNextPage ? (
+                                                <SubmitLoading />
+                                            ) : (
+                                                "مشاهده بیشتر"
+                                            )}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
 
-                    ) : (
-                        <div className='text-2xl font-heading text-black/70 flex items-center justify-center '>
-                            دوره ای یافت نشد
-                        </div>
-                    )
-            }
+                        ) : (
+                            <div className='text-2xl font-heading text-black/70 flex items-center justify-center '>
+                                دوره ای یافت نشد
+                            </div>
+                        )
+                }
 
             </div>
 
-           
+
 
 
 

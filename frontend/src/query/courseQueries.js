@@ -45,6 +45,7 @@ export const useGetStudentCourses = () => {
             lastPage.hasMore
                 ? lastPage.page + 1
                 : undefined,
+                
     })
 }
 export const useGetInstructorCourses = (page) => {

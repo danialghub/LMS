@@ -159,7 +159,7 @@ export default function TransactionsPage() {
                                         </div>
                                     </div>
                                 )
-                                : <div className="text-3xl font-heading text-black/70 flex items-center justify-center ">
+                                : <div className="text-3xl h-[75vh] font-heading text-gray-700 flex items-center justify-center ">
                                     تراکنش یافت نشد
                                 </div>
 

@@ -11,7 +11,7 @@ import LoginPage from '@/pages/Auth/LoginPage'
 import CoursesPage from '@/pages/Courses/CoursesPage'
 import CoursePage from '@/pages/Courses/CoursePage'
 import LessonPage from '@/pages/Courses/LessonPage'
-import TransactionPage from '@/pages/Courses/TransactionPage'
+import TransactionResult from '@/pages/TransactionResult'
 
 import CourseSetup from '@/pages/Instructor/CourseSetup'
 import LectureSetup from '@/pages/Instructor/LectureSetup'
@@ -117,8 +117,8 @@ const routes = () => {
         },
         //transaction
         {
-            path: "/transaction/:courseId",
-            element: <ProtectedRoute requiredRole="student"><TransactionPage /></ProtectedRoute>,
+            path: "/transaction-result",
+            element: <ProtectedRoute requiredRole="student"><TransactionResult /></ProtectedRoute>,
         },
         {
             path: "/unathorized",

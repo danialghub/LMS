@@ -5,33 +5,34 @@ import toast from 'react-hot-toast'
 export const useTransactionStore = create((set, get) => ({
 
     //apis
-    createTransaction: async (courseId) => {
+    zarinPalRequest: async (courseId) => {
 
         try {
-            const { data } = await privateRoutes.post(`/transaction/place`,
-                {courseId},
-            )
-            toast.success(data.message)
+            const { data } = await privateRoutes.post('/transaction/request', {
+                courseId
+            });
+
+            window.location.href = data.paymentUrl;
 
         } catch (error) {
-            toast.error(error.response?.data?.message || "Something went wrong");
-
+            console.error('Payment error:', error);
+            toast.error(error.response?.data?.message || 'خطا در ارتباط با سرور');
         }
     },
 
-  updateTransactionStatus: async (courseId,body) => {
+    //   updateTransactionStatus: async (courseId,body) => {
 
-        try {
-            const { data } = await privateRoutes.put(`/transaction/make`,
-                body,
-            )
-            toast.success(data.message)
+    //         try {
+    //             const { data } = await privateRoutes.put(`/transaction/make`,
+    //                 body,
+    //             )
+    //             toast.success(data.message)
 
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Something went wrong");
+    //         } catch (error) {
+    //             toast.error(error.response?.data?.message || "Something went wrong");
 
-        }
-    },
+    //         }
+    //     },
 
 }))
 

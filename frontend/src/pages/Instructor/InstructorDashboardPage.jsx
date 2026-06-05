@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
-import { Logo, UserAvatar } from '@/components/index'
+import { Logo, UserAvatar ,Navbar} from '@/components/index'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useNavigate } from 'react-router'
 import { Menu, LayoutDashboard, BarChart3, Library, BookOpen } from 'lucide-react'
@@ -36,22 +36,10 @@ const InstructorDashboardPage = () => {
   return (
     <div className='h-screen flex flex-col' ref={dashboardRef}>
 
-      <nav className='flex items-center justify-between h-[50px] px-4 sm:px-10 bg-white py-8'>
-        <div className='flex items-center gap-2'>
-          <UserAvatar className="" />
-          <h4>دانیال</h4>
-        </div>
-        <div className='flex items-center gap-5'>
-          <Logo size="sm" />
-          <button
-            className='sm:hidden'
-            onClick={() => setIsOpen(prev => !prev)}
-          >
-            <Menu size={25} />
-          </button>
+   
+        <Navbar />
+     
 
-        </div>
-      </nav>
 
       <div className='flex flex-1 overflow-hidden' >
         {/* سایدبار */}

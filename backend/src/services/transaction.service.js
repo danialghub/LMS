@@ -1,85 +1,180 @@
+import { Env } from "../config/ENV.config.js";
+import { HTTPSTATUS } from "../config/http.config.js";
 import Course from "../Models/Course.js"
-import cron from 'node-cron'
 import Transaction from "../Models/Transaction.js"
-import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
+import axios from 'axios'
+import { UnauthorizedException } from "../utils/app.error.js";
 
 
-cron.schedule('* * * * *', async () => {
-    const threeMinutesAgo = new Date(Date.now() - 3 * 60 * 1000)
+export const requestZarinPalService = async (userId, courseId) => {
+    // اعتبارسنجی ورودی‌ها
+    if (!userId || !courseId) {
+        throw new Error('اطلاعات کاربر و دوره الزامی است'); // استفاده از Error معمولی به جای UnauthorizedException
+    }
 
-    await Transaction.updateMany(
-        {
-            status: 'progressing',
-            createdAt: { $lte: threeMinutesAgo }
-        },
-        {
-            $set: { status: 'failed' }
+    // پیدا کردن دوره
+    const course = await Course.findById(courseId);
+    if (!course) {
+        throw new Error('دوره نامعتبر است');
+    }
+    const foundTransaction = await Transaction.findOne({ userId, courseId })
+    const hasEnrolled = course.enrolledStudents.some(user => user.toString() === userId.toString())
+
+    if (foundTransaction.status === "successful" && hasEnrolled) {
+        throw new UnauthorizedException("شما یک بار این دوره را خریداری کردید")
+    } else if (foundTransaction.status === "pending") {
+        foundTransaction.status = "failed"
+    }
+    // محاسبه مبلغ نهایی با احتساب تخفیف
+    const discountAmount = (course.coursePrice * course.courseDiscount) / 100;
+    const amount = Math.round(course.coursePrice - discountAmount); // round برای جلوگیری از اعشار
+
+
+    // اعتبارسنجی مبلغ
+    if (amount <= 0) {
+        throw new Error('مبلغ پرداختی نامعتبر است');
+    }
+
+    // داده‌های درخواست به زرین‌پال
+    const paymentData = {
+        merchant_id: Env.MERCHANT_ID,
+        amount: amount,
+        description: course.courseTitle || `پرداخت دوره با شناسه ${courseId}`,
+        callback_url: `http://localhost:${Env.PORT}/api/transaction/verify`, // بهتر است از متغیر محیطی استفاده کنید
+        currency: "IRT"
+    };
+
+
+    try {
+        // ارسال درخواست به زرین‌پال
+        const response = await axios.post(
+            'https://sandbox.zarinpal.com/pg/v4/payment/request.json',
+            paymentData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+
+            }
+        );
+
+        // بررسی موفقیت آمیز بودن درخواست
+        if (response.data?.data?.code === 100 && response.data?.data?.authority) {
+            const authority = response.data.data.authority;
+
+            // ایجاد تراکنش جدید
+            const transaction = new Transaction({
+                userId,
+                courseId,
+                authority,
+                amount,
+                status: 'pending',
+                paymentData: {
+                    requestData: paymentData,
+                    zarinpalResponse: response.data
+                },
+
+
+            });
+
+            await transaction.save();
+
+
+            return {
+                status: "OK", // استفاده از success به جای status
+                authority,
+                transactionId: transaction._id,
+                paymentUrl: `https://sandbox.zarinpal.com/pg/StartPay/${authority}`,
+                amount
+            };
+        } else {
+            // خطای برگشتی از زرین‌پال
+            const errorMessage = response.data?.data?.message || 'خطا در ایجاد تراکنش';
+            console.error('ZarinPal error:', response.data);
+
+            return {
+                status: "failed",
+                message: errorMessage,
+                code: response.data?.data?.code
+            };
         }
-    )
-})
+    } catch (error) {
+        // مدیریت خطاهای شبکه و سرور
+        console.error('Request error:', error.message);
 
-export const createTransacionService = async (courseId, userId) => {
+        if (error.code === 'ECONNABORTED') {
+            throw new Error('ارتباط با درگاه پرداخت با خطا مواجه شد (timeout)');
+        }
 
-    const course = await Course.findOne({ _id: courseId })
-
-    if (!course)
-        throw new NotFoundException('همچین دوره ای وجود ندارد')
-
-    const foundTransaction = await Transaction.findOne({ userId, courseId, status: "successful" })
-    const foundEnrolledUser = course.enrolledStudents.some(std => std.toString() === userId.toString())
-
-    if (foundTransaction || foundEnrolledUser)
-        throw new UnauthorizedException('شما یکبار این دوره را خریداری کردید')
-
-
-    const transaction = {
-        userId,
-        courseId,
-        value: course.coursePrice - (course.coursePrice * course.courseDiscount / 100),
-        status: "progressing"
+        throw new Error(`خطا در ارتباط با زرین‌پال: ${error.message}`);
     }
-    const newTransaction = await Transaction.create(transaction)
+};
+export const verifyZarinPalService = async (Authority, Status) => {
 
+    // در کنترلر پرداخت
 
+    if (Status !== 'OK') {
+        await Transaction.findOneAndUpdate(
+            { authority: Authority },
+            { status: 'failed' }
+        );
 
-    return newTransaction
-}
-export const updateTransactionStatusService = async (cardInfo, courseId, userId) => {
-
-    const dummyCardInfo = {
-        cardNumber: "1111111111111111",
-        cvv2: "1111",
-        expireMonth: '12',
-        expireYear: "04"
+        // ری‌دایرکت به فرانت با وضعیت failed
+        return res.redirect('http://localhost:5173/payment-result?status=failed');
     }
 
-    const course = await Course.findOne({ _id: courseId })
-    if (!course)
-        throw new NotFoundException('همچین دوره ای وجود ندارد')
+    const transaction = await Transaction.findOne({ authority: Authority });
+    const foundCourse = await Course.findById({ _id: transaction.courseId });
 
-    const foundTransaction = await Transaction.findOne({ userId, courseId, status: "progressing" })
-    const foundFailedTransaction = await Transaction.findOne({ userId, courseId, status: "failed" })
+    if (!transaction) {
+        return res.redirect('http://localhost:5173/transaction-result?status=failed&error=transaction_not_found');
+    }
+
+    if (!foundCourse) {
+        return res.redirect('http://localhost:5173/transaction-result?status=failed&error=course_not_found');
+    }
+
+    const verifyData = {
+        merchant_id: Env.MERCHANT_ID,
+        amount: transaction.amount,
+        authority: Authority
+    };
+
+    const response = await axios.post('https://sandbox.zarinpal.com/pg/v4/payment/verify.json',
+        verifyData
+    );
+
+    if (response.data.data.code === 100) {
+        const refId = response.data.data.ref_id;
+        const cardNumber = response.data.data.card_pan || 'نامشخص';
+
+        transaction.status = 'successful';
+        transaction.verifiedAt = new Date();
+        transaction.paymentData = {
+            ...transaction.paymentData,
+            verifyResponse: response.data
+        };
+        foundCourse.enrolledStudents.push(transaction.userId);
+
+        await transaction.save();
+        await foundCourse.save();
 
 
-    if (!foundTransaction || foundFailedTransaction) {
-        throw new NotFoundException("تراکنش نامعتبر است");
+        return { status: "OK", refId, amount: transaction.amount, cardNumber, courseId: foundCourse._id }
+
+    } else if (response.data.data.code === 101) {
+        // تراکنش قبلاً تایید شده
+        return { status: "already_verified" }
+
+    } else {
+        transaction.status = 'failed';
+        await transaction.save();
+
+        // ری‌دایرکت به فرانت با وضعیت failed
+        return { status: "failed", code: response.data.data.code }
     }
 
 
-    if (
-        dummyCardInfo.cardNumber !== cardInfo.cardNumber ||
-        dummyCardInfo.cvv2 !== cardInfo.cvv2 ||
-        dummyCardInfo.expireMonth !== cardInfo.expireMonth ||
-        dummyCardInfo.expireYear !== cardInfo.expireYear
-    ) {
-        throw new UnauthorizedException("اطلاعات کارت شما نادرست است")
-    }
 
-    foundTransaction.status = "successful"
-
-    course.enrolledStudents = [...course.enrolledStudents, userId]
-    await course.save()
-    await foundTransaction.save()
-
-    return foundTransaction
 }

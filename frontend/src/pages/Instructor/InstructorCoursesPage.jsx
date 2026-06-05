@@ -168,7 +168,7 @@ const InstructorCoursesPage = () => {
             </div>
 
             {/* جدول دوره‌ها */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[60vh] relative">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[70vh] relative">
                 {isError
                     ? <div>خطا در دریافت دوره‌ها</div>
                     : isLoading
@@ -302,8 +302,9 @@ const InstructorCoursesPage = () => {
 
                 {/* وضعیت خالی بودن جدول */}
                 {!isFetching && courses.length === 0 && (
-                    <div className="text-center py-12">
-                        <p className="text-gray-500">هیچ دوره‌ای یافت نشد</p>
+                 <div className='h-[70vh] flex items-center justify-center'>
+                       <div className="text-center py-12">
+                        <p className="text-gray-500 text-2xl font-heading">هیچ دوره‌ای یافت نشد</p>
                         <button
                             onClick={() => setIsCreateModalOpen(true)}
                             className="mt-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
@@ -312,6 +313,7 @@ const InstructorCoursesPage = () => {
                             <span>ایجاد اولین دوره</span>
                         </button>
                     </div>
+                 </div>
                 )}
 
                 <Pagination

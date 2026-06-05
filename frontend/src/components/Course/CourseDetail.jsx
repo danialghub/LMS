@@ -14,6 +14,7 @@ import { useAuthStore } from '@/store/useAuthStore'
 import { useStudentStore } from '@/store/useStudentStore'
 import { formatPrice, formatTime } from '@/lib/helper'
 import toast from "react-hot-toast";
+import { useTransactionStore } from "@/store/useTransactionStore";
 
 
 const celebrate = () => {
@@ -47,19 +48,15 @@ const celebrate = () => {
 const CourseDetail = ({ isPreviewPage, course }) => {
 
     const [theme, setTheme] = useState(localStorage.getItem('theme') || "dark");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('')
 
     const { authUser } = useAuthStore()
     const { markLectureAsCompleted, isMarking } = useStudentStore()
+    const { zarinPalRequest } = useTransactionStore()
     const { lectureId, chapterId } = useParams()
     const navigate = useNavigate()
 
-    const goToTransactionPageHandler = () => {
-        if (!authUser?._id || authUser?.role !== "student") {
-            toast.error('ابتدا به عنوان دانشجو وارد شوید')
-            return
-        }
-        navigate(`/transaction/${course._id}`)
-    }
     const calcDiscount = (price, discount) => {
         return (price - (price * discount / 100))
     }
@@ -95,6 +92,18 @@ const CourseDetail = ({ isPreviewPage, course }) => {
         const sum = courseRatings.reduce((total, arg) => total + arg.rating, 0)
         return Math.floor(sum / courseRatings.length)
     }
+
+    const handlePayment = async () => {
+        setLoading(true);
+        setError('');
+
+        if (!authUser?._id || authUser?.role !== "student") {
+            toast.error('ابتدا به عنوان دانشجو وارد شوید')
+            return
+        }
+        await zarinPalRequest(course._id)
+        setLoading(false);
+    };
 
     const progressPercent = Math.round(
         ((course?.courseProgress?.completedLectures?.length || 0) / calcTotalLectures(course.courseContent)) * 100
@@ -287,7 +296,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                             {!course.enrolledStudents.includes(authUser?._id) ? (
                                 <div className="flex items-end justify-between mb-10 gap-6">
                                     <button
-                                        onClick={goToTransactionPageHandler}
+                                        onClick={handlePayment}
                                         className="group relative overflow-hidden rounded-lg shadow-lg shadow-blue-500/40 hover:shadow-blue-500/60 transition-all duration-300 hover:scale-[1.02] active:scale-95"
                                     >
                                         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:via-blue-700 group-hover:to-indigo-700 transition-all duration-300"></div>
