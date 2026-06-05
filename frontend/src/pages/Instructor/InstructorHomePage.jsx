@@ -1,46 +1,6 @@
 import React from 'react'
 import { TrendingUp, Calendar, DollarSign } from 'lucide-react';
 
-const dummyData = [
-  {
-    month: 'فروردین',
-    sales: 42000000,
-    students: 28,
-    courseName: 'React'
-  },
-  {
-    month: 'اردیبهشت',
-    sales: 58000000,
-    students: 35,
-    courseName: 'Next.js'
-  },
-  {
-    month: 'خرداد',
-    sales: 65000000,
-    students: 42,
-    courseName: 'TypeScript'
-  },
-  {
-    month: 'تیر',
-    sales: 49000000,
-    students: 31,
-    courseName: 'Node.js'
-  },
-  {
-    month: 'مرداد',
-    sales: 72000000,
-    students: 48,
-    courseName: 'Python'
-  },
-  {
-    month: 'شهریور',
-    sales: 85000000,
-    students: 56,
-    courseName: 'Django'
-  }
-];
-
-
 
 const InstructorHomePage = () => {
 
