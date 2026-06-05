@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 
 export const useAuthStore = create((set, get) => ({
     token: null,
-    authUser: null,
+    authUser: undefined,
     users: null,
     isCheckingAuth: false,
 
@@ -70,6 +70,7 @@ export const useAuthStore = create((set, get) => ({
 
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
+            set({ authUser: null })
         } finally {
             set({ isCheckingAuth: false })
         }

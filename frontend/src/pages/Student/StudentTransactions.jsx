@@ -43,7 +43,7 @@ export default function TransactionsPage() {
         return failedTransaction.length || 0
     }
     const calcTotalTransactionAmount = () => {
-        const totalAmount = studentTransactions.reduce((sum, arg) => sum + arg.value, 0)
+        const totalAmount = studentTransactions.reduce((sum, arg) => sum + arg.amount, 0)
         return formatNumber(totalAmount)
     }
 
@@ -131,7 +131,7 @@ export default function TransactionsPage() {
                                                         {/* مبلغ */}
                                                         <div className="flex items-center gap-2 text-gray-700 font-medium">
 
-                                                            <span>{formatNumber(transaction.value)}</span>
+                                                            <span>{formatNumber(transaction.amount)}</span>
                                                             <span className="text-xs text-gray-400">تومان</span>
                                                         </div>
 

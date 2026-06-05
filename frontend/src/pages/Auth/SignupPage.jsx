@@ -229,8 +229,8 @@ const SignUpPage = ({ role = "student" }) => {
         const formData = prepareFormData(data);
         const result = await signUp(formData);
 
-        if (result?.success) {
-            navigate(`/${role}/login`);
+        if (result) {
+            navigate(`/login/${role}`);
         }
     };
 

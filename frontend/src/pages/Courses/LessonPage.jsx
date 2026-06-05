@@ -29,24 +29,31 @@ const LessonPage = () => {
   }, [courseId, authUser])
 
   useEffect(() => {
-    if (!authUser) {
-      navigate("/unathorized")
-
+    // اگر هنوز وضعیت احراز هویت مشخص نشده، هیچ کاری نکن
+    if (authUser === undefined) {
+      return; // یا میتونید یک loading state برگردونید
     }
-    
-    if (!course._id || !lectureId || !chapterId) return
-    const chapter = course.courseContent[chapterId]
-    const lecture = chapter.chapterContent[lectureId]
 
+   
+    if (!authUser) {
+      navigate("/unathorized");
+      return;
+    }
 
+    // بررسی وجود course, lectureId, chapterId
+    if (!course._id || !lectureId || !chapterId) return;
+
+    const chapter = course.courseContent[chapterId];
+    const lecture = chapter?.chapterContent[lectureId];
 
     if (!lecture || !chapter) {
-      toast.error('جلسه نامعتبر است')
-      navigate(-1)
+      toast.error('جلسه نامعتبر است');
+      navigate(-1);
+      return;
     }
-    setLecture(lecture)
 
-  }, [course._id, chapterId, authUser])
+    setLecture(lecture);
+  }, [course._id, chapterId, authUser, navigate, toast]);
 
 
   return lecture?.lectureId ? (

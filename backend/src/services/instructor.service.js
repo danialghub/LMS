@@ -1,4 +1,5 @@
 import Course from "../Models/Course.js"
+import Transaction from "../Models/Transaction.js"
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 
 //course
@@ -25,7 +26,7 @@ export const getInstructorCourseService = async (instructorId, page = 1, limit =
     const totalPages = Math.ceil(totalCourses / limit);
 
     return {
-        courses: instructorCourses, 
+        courses: instructorCourses,
         totalPages,
         currentPage: page,
         hasMore: page < totalPages,
@@ -60,19 +61,23 @@ export const getInstructorCourseByIdService = async (courseId) => {
 export const getAnalyticsService = async (instructorId) => {
     const courses = await Course.find({ instructor: instructorId })
 
+
     if (!courses.length)
         throw new NotFoundException("هیچ دوره ای یافت نشد")
 
-    const analytics = courses.map(course => {
-        const finalPrice = course.coursePrice - (course.coursePrice * course.courseDiscount / 100);
-        const sales = course.enrolledStudents.length * finalPrice
+    const analytics = await Promise.all(courses.map(async (course) => {
+
+        const transactions = await Transaction.find({ courseId: course._id, status: "successful" }) || [];
+
+
+        const totalSales = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+
         return {
             courseName: course.courseTitle,
-            sales,
+            sales: totalSales,
             students: course.enrolledStudents.length,
-        }
-    })
-
+        };
+    }));
     if (!analytics.length) {
         throw new NotFoundException("مشکلی رخ داد")
     }

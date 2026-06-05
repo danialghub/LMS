@@ -1,22 +1,172 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { CheckCircle, XCircle, AlertCircle, Clock, CreditCard, DollarSign, Hash, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Clock, CreditCard, DollarSign, Hash, ArrowLeft, HelpCircle, RefreshCw, Phone, Mail } from 'lucide-react';
 
-function TransactionResult() {
+const TransactionResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [result, setResult] = useState(null);
   const [countdown, setCountdown] = useState(5);
   const [courseId, setCourseId] = useState(null);
 
+  // دیکشنری کامل خطاهای زرین‌پال
+  const errorMessages = {
+    '-1': {
+      title: 'خطای داخلی',
+      message: 'خطای داخلی در پرداختگاه زرین‌پال رخ داده است',
+      suggestion: 'لطفاً چند دقیقه دیگر مجدداً تلاش کنید',
+      solution: 'در صورت تکرار خطا، با پشتیبانی تماس بگیرید',
+      type: 'system'
+    },
+    '-2': {
+      title: 'خطا در ارسال داده‌ها',
+      message: 'داده‌های ارسالی به درگاه پرداخت معتبر نیست',
+      suggestion: 'لطفاً مجدداً از صفحه پرداخت اقدام کنید',
+      solution: 'اطلاعات دوره و مبلغ را بررسی کنید',
+      type: 'validation'
+    },
+    '-3': {
+      title: 'پذیرنده نامعتبر',
+      message: 'پذیرنده در سیستم زرین‌پال ثبت نشده است',
+      suggestion: 'مشکل از سامانه آموزشی می‌باشد',
+      solution: 'لطفاً با پشتیبانی تماس بگیرید',
+      type: 'configuration'
+    },
+    '-4': {
+      title: 'پایان یافتن زمان مجاز',
+      message: 'زمان مجاز برای انجام تراکنش به پایان رسیده است',
+      suggestion: 'لطفاً مجدداً اقدام به ثبت سفارش کنید',
+      solution: 'عملیات پرداخت را از ابتدا شروع کنید',
+      type: 'timeout'
+    },
+    '-5': {
+      title: 'خطای وریفای',
+      message: 'مشکل در تایید تراکنش',
+      suggestion: 'لطفاً از صحت اطلاعات کارت خود اطمینان حاصل کنید',
+      solution: 'در صورت نیاز با بانک خود تماس بگیرید',
+      type: 'verification'
+    },
+    '-6': {
+      title: 'عدم پوشش تراکنش',
+      message: 'تراکنش توسط بانک صادرکننده کارت پوشش داده نمی‌شود',
+      suggestion: 'از کارت بانکی دیگر استفاده کنید',
+      solution: 'با بانک خود در مورد محدودیت‌های خرید اینترنتی مشورت کنید',
+      type: 'bank'
+    },
+    '-7': {
+      title: 'لغو تراکنش توسط کاربر',
+      message: 'شما عملیات پرداخت را لغو کردید',
+      suggestion: 'در صورت تمایل مجدداً تلاش کنید',
+      solution: 'در ادامه فرآیند را کامل کنید',
+      type: 'user_cancel'
+    },
+    '-8': {
+      title: 'آدرس آی‌پی نامعتبر',
+      message: 'آدرس آی‌پی درخواست کننده معتبر نمی‌باشد',
+      suggestion: 'از اتصال اینترنت پایدار استفاده کنید',
+      solution: 'VPN یا پروکسی خود را غیرفعال کنید',
+      type: 'security'
+    },
+    '-9': {
+      title: 'مبلغ تراکنش نامعتبر',
+      message: 'مبلغ وارد شده برای تراکنش معتبر نمی‌باشد',
+      suggestion: 'لطفاً مبلغ را بررسی کنید',
+      solution: 'در صورت صحت مبلغ، با پشتیبانی تماس بگیرید',
+      type: 'validation'
+    },
+    '-10': {
+      title: 'تراکنش نامعتبر',
+      message: 'تراکنش مورد نظر در سیستم وجود ندارد',
+      suggestion: 'لطفاً مجدداً از طریق سایت اقدام به خرید کنید',
+      solution: 'از صحت لینک پرداخت اطمینان حاصل کنید',
+      type: 'not_found'
+    },
+    '-11': {
+      title: 'خطای وریفای',
+      message: 'مشکل در فرآیند تایید نهایی تراکنش',
+      suggestion: 'لطفاً وضعیت تراکنش را در حساب کاربری بررسی کنید',
+      solution: 'در صورت کسر وجه، خودکار ظرف 72 ساعت برگشت می‌خورد',
+      type: 'system'
+    },
+    '-12': {
+      title: 'کارت بانکی مسدود',
+      message: 'کارت بانکی شما قادر به انجام تراکنش نمی‌باشد',
+      suggestion: 'از کارت بانکی دیگر استفاده کنید',
+      solution: 'با بانک خود برای رفع مشکل تماس بگیرید',
+      type: 'bank'
+    },
+    '-13': {
+      title: 'رمز پویا نامعتبر',
+      message: 'رمز پویای وارد شده صحیح نمی‌باشد',
+      suggestion: 'رمز جدیدی از بانک خود دریافت کنید',
+      solution: 'حتماً از رمز یکبار مصرف استفاده کنید',
+      type: 'bank'
+    },
+    '-50': {
+      title: 'عدم تطابق مبلغ',
+      message: 'مبلغ تراکنش با مبلغ درخواستی مطابقت ندارد',
+      suggestion: 'لطفاً مجدداً از صحت مبلغ اطمینان حاصل کنید',
+      solution: 'در صورت تکرار خطا، با پشتیبانی تماس بگیرید',
+      type: 'validation'
+    },
+    '-51': {
+      title: 'تراکنش تکراری',
+      message: 'این تراکنش قبلاً با موفقیت انجام شده است',
+      suggestion: 'لطفاً از تکراری بودن پرداخت خودداری کنید',
+      solution: 'در صورت کسر دوباره وجه، به پشتیبانی اطلاع دهید',
+      type: 'duplicate'
+    },
+    '-52': {
+      title: 'عدم موجودی کافی',
+      message: 'موجودی کارت بانکی شما کافی نمی‌باشد',
+      suggestion: 'مبلغ مورد نیاز را به کارت خود انتقال دهید',
+      solution: 'از کارت دیگری با موجودی کافی استفاده کنید',
+      type: 'bank'
+    },
+    '-53': {
+      title: 'سقف مجاز روزانه رد شده',
+      message: 'مبلغ تراکنش از سقف مجاز روزانه بیشتر است',
+      suggestion: 'با بانک خود برای افزایش سقف تراکنش تماس بگیرید',
+      solution: 'از کارت دیگری با سقف بالاتر استفاده کنید',
+      type: 'bank'
+    },
+    '-54': {
+      title: 'سقف مجاز ماهانه رد شده',
+      message: 'مبلغ تراکنش از سقف مجاز ماهانه بیشتر است',
+      suggestion: 'با بانک خود برای افزایش سقف تراکنش تماس بگیرید',
+      solution: 'از کارت دیگری استفاده کنید یا ماه آینده اقدام کنید',
+      type: 'bank'
+    }
+  };
+
+  // تابع دریافت پیام خطا
+  const getErrorMessage = (errorCode) => {
+    if (!errorCode) return null;
+
+    const error = errorMessages[errorCode];
+    if (!error) {
+      return {
+        title: 'خطای ناشناخته',
+        message: `خطا با کد ${errorCode} رخ داده است`,
+        suggestion: 'لطفاً اطلاعات خطا را با پشتیبانی به اشتراک بگذارید',
+        solution: 'در اسرع وقت مشکل بررسی خواهد شد',
+        type: 'unknown'
+      };
+    }
+    return error;
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const status = params.get('status');
     const refId = params.get('ref_id');
     const amount = params.get('amount');
-    const errorCode = params.get('code')  ;
+    const errorCode = params.get('code');
     const cardNumber = params.get('card_number') || '**** **** **** 1234';
+    const cardHash = params.get('card_hash');
+    const paymentDate = params.get('payment_date') || new Date().toLocaleString('fa-IR');
     const courseIdParam = params.get('cId');
+    const message = params.get('message');
 
     setCourseId(courseIdParam);
 
@@ -28,47 +178,75 @@ function TransactionResult() {
           subtitle: 'دوره آموزشی شما فعال شد',
           refId: refId,
           cardNumber: cardNumber,
+          cardHash: cardHash,
           amount: amount,
+          paymentDate: paymentDate,
           icon: CheckCircle,
-          color: '#10b981'
+          color: '#10b981',
+          gradient: 'from-emerald-500 to-teal-600'
         });
         break;
+
       case 'already_verified':
         setResult({
           success: false,
           message: 'تراکنش قبلاً تایید شده است',
-          subtitle: 'این پرداخت قبلاً ثبت شده',
+          subtitle: 'این پرداخت قبلاً در سیستم ثبت شده',
+          refId: refId,
+          amount: amount,
           isWarning: true,
           icon: AlertCircle,
-          color: '#f59e0b'
+          color: '#f59e0b',
+          gradient: 'from-amber-500 to-orange-600'
         });
         break;
+
       case 'failed':
-        let errorMessage = 'پرداخت ناموفق بود';
-        let errorSubtitle = 'مشکلی در انجام تراکنش پیش آمده';
-        if (errorCode === '-50') {
-          errorMessage = 'خطا در تایید مبلغ تراکنش';
-          errorSubtitle = 'لطفاً با پشتیبانی تماس بگیرید';
-        } else if (errorCode === '-51') {
-          errorMessage = 'تراکنش قبلاً تایید شده است';
-          errorSubtitle = 'این پرداخت تکراری می‌باشد';
+        const error = getErrorMessage(errorCode);
+
+        if (error) {
+          setResult({
+            success: false,
+            message: error.title,
+            subtitle: error.message,
+            suggestion: error.suggestion,
+            solution: error.solution,
+            errorType: error.type,
+            errorCode: errorCode,
+            refId: refId,
+            amount: amount,
+            rawMessage: message,
+            icon: XCircle,
+            color: '#ef4444',
+            gradient: 'from-red-500 to-rose-600'
+          });
+        } else {
+          setResult({
+            success: false,
+            message: message || 'پرداخت ناموفق بود',
+            subtitle: 'مشکلی در انجام تراکنش پیش آمده است',
+            suggestion: 'لطفاً مجدداً تلاش کنید',
+            solution: 'در صورت تکرار خطا با پشتیبانی تماس بگیرید',
+            errorCode: errorCode || 'unknown',
+            refId: refId,
+            amount: amount,
+            icon: XCircle,
+            color: '#ef4444',
+            gradient: 'from-red-500 to-rose-600'
+          });
         }
-        setResult({
-          success: false,
-          message: errorMessage,
-          subtitle: errorSubtitle,
-          errorCode: errorCode,
-          icon: XCircle,
-          color: '#ef4444'
-        });
         break;
+
       default:
         setResult({
           success: false,
-          message: 'خطای ناشناخته',
-          subtitle: 'لطفاً دوباره تلاش کنید',
+          message: 'وضعیت نامشخص',
+          subtitle: 'پاسخ دریافتی از درگاه پرداخت معتبر نیست',
+          suggestion: 'لطفاً دوباره تلاش کنید',
+          solution: 'در صورت تکرار مشکل، با پشتیبانی تماس بگیرید',
           icon: XCircle,
-          color: '#ef4444'
+          color: '#ef4444',
+          gradient: 'from-red-500 to-rose-600'
         });
     }
   }, [location]);
@@ -91,6 +269,13 @@ function TransactionResult() {
     }
   }, [result, courseId, navigate]);
 
+  // تابع کپی کردن کد رهگیری
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    // می‌توانید یک نوتیفیکیشن اضافه کنید
+    alert('کد رهگیری کپی شد');
+  };
+
   if (!result) {
     return (
       <div className="overflow-hidden font-vazir min-h-screen bg-gradient-to-br from-blue-600 via-sky-700 to-indigo-800 flex items-center justify-center p-5">
@@ -106,6 +291,8 @@ function TransactionResult() {
 
   const IconComponent = result.icon;
   const isSuccess = result.success && !result.isWarning;
+  const isUserCancel = result.errorCode === '-7';
+  const showSupport = !isSuccess && (!result.errorType === 'user_cancel');
 
   return (
     <div className="overflow-hidden min-h-screen bg-gradient-to-br from-blue-600 via-sky-700 to-indigo-800 flex items-center justify-center p-5 font-sans">
@@ -135,12 +322,34 @@ function TransactionResult() {
 
           {/* Content */}
           <div className="relative z-10">
-            <h1 className="text-3xl md:text-4xl  text-center text-gray-700 mb-2 font-heading">
+            <h1 className="text-3xl md:text-4xl text-center text-gray-700 mb-2 font-heading">
               {result.message}
             </h1>
-            <p className="text-center text-gray-500 mb-8">
+            <p className="text-center text-gray-500 mb-4">
               {result.subtitle}
             </p>
+
+            {/* راهکار پیشنهادی برای خطاها */}
+            {!isSuccess && result.suggestion && (
+              <div className={`rounded-xl p-4 mb-6 ${result.errorType === 'bank' ? 'bg-blue-50' : 'bg-amber-50'}`}>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {result.errorType === 'bank' ? (
+                      <CreditCard size={18} className="text-blue-600" />
+                    ) : (
+                      <RefreshCw size={18} className="text-amber-600" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800 mb-1">راهکار پیشنهادی:</p>
+                    <p className="text-gray-600 text-sm">{result.suggestion}</p>
+                    {result.solution && (
+                      <p className="text-gray-500 text-xs mt-2">{result.solution}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Success Details */}
             {isSuccess && (
@@ -160,9 +369,14 @@ function TransactionResult() {
                     <Hash size={20} style={{ color: result.color }} />
                   </div>
                   <span className="flex-1 text-gray-500 text-sm">کد رهگیری:</span>
-                  <span className="font-mono font-bold" style={{ color: result.color }}>
+                  <button
+                    onClick={() => copyToClipboard(result.refId)}
+                    className="font-mono font-bold hover:opacity-80 transition-opacity flex items-center gap-1"
+                    style={{ color: result.color }}
+                  >
                     {result.refId}
-                  </span>
+                    <span className="text-xs">(کپی)</span>
+                  </button>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -174,13 +388,54 @@ function TransactionResult() {
                     {result.cardNumber}
                   </span>
                 </div>
+
+                {result.paymentDate && (
+                  <div className="flex items-center gap-3 pt-2">
+                    <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                      <Clock size={20} style={{ color: result.color }} />
+                    </div>
+                    <span className="flex-1 text-gray-500 text-sm">تاریخ پرداخت:</span>
+                    <span className="text-gray-800 text-sm">
+                      {result.paymentDate}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Error Code */}
-            {result.errorCode !== null && (
-              <div className="bg-red-50 rounded-xl p-4 mb-8 text-center">
-                <span className="text-red-600 text-sm">کد خطا: {result.errorCode}</span>
+            {/* Error Details */}
+            {!isSuccess && result.errorCode && result.errorCode !== 'unknown' && (
+              <div className={`rounded-xl p-4 mb-8 ${result.errorType === 'bank' ? 'bg-red-50' : result.errorType === 'user_cancel' ? 'bg-gray-50' : 'bg-yellow-50'}`}>
+                <div className="text-center">
+                  <span className={`text-sm font-mono ${result.errorType === 'bank' ? 'text-red-600' : 'text-gray-600'}`}>
+                    کد خطا: {result.errorCode}
+                  </span>
+                  {result.refId && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      کد پیگیری: {result.refId}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Support Section برای خطاهای غیر از لغو توسط کاربر */}
+            {!isSuccess && !isUserCancel && (
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 mb-8">
+                <div className="flex items-center gap-3 mb-3">
+                  <HelpCircle size={18} className="text-indigo-600" />
+                  <span className="font-semibold text-gray-700">نیاز به کمک دارید؟</span>
+                </div>
+                <div className="flex flex-col gap-2 text-sm text-gray-600">
+                  <button className="flex items-center gap-2 p-2 hover:bg-white rounded-lg transition-colors text-right">
+                    <Phone size={16} className="text-indigo-600" />
+                    <span>تماس با پشتیبانی: ۰۲۱-۱۲۳۴۵۶۷۸</span>
+                  </button>
+                  <button className="flex items-center gap-2 p-2 hover:bg-white rounded-lg transition-colors text-right">
+                    <Mail size={16} className="text-indigo-600" />
+                    <span>ایمیل: support@yoursite.com</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -207,13 +462,22 @@ function TransactionResult() {
 
             {/* Buttons */}
             <div className="flex gap-3 flex-col sm:flex-row font-Dirooz">
-              {!isSuccess && (
+              {!isSuccess && !isUserCancel && (
                 <button
                   onClick={() => navigate(-1)}
                   className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  <ArrowLeft size={18} />
-                  بازگشت و تلاش مجدد
+                  <RefreshCw size={18} />
+                  تلاش مجدد
+                </button>
+              )}
+
+              {isUserCancel && (
+                <button
+                  onClick={() => navigate(-1)}
+                  className="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  بازگشت و ادامه خرید
                 </button>
               )}
 
@@ -221,7 +485,7 @@ function TransactionResult() {
                 onClick={() => navigate('/')}
                 className={`flex-1 px-6 py-3 font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${isSuccess
                   ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                  : 'border-2 hover:text-white transition-colors'
+                  : 'border-2 hover:bg-opacity-10 transition-colors'
                   }`}
                 style={!isSuccess ? { borderColor: result.color, color: result.color } : {}}
               >

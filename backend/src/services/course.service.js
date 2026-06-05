@@ -143,6 +143,7 @@ export const getCourseService = async (filterQueries = {}) => {
 export const getCourseByIdService = async (userId, courseId) => {
     let course;
     let studentCourse;
+
     if (userId) {
         studentCourse = await Course.findOne({
             _id: courseId,
@@ -171,9 +172,13 @@ export const getCourseByIdService = async (userId, courseId) => {
             ])
 
         course.courseContent.forEach(ch => ch.chapterContent.forEach(lec => {
+            
             if (!lec.isLectureFree) {
                 lec.lectureUrl = "";
             }
+            console.log(ch.chapterContent);
+          
+            
         }))
 
     }
@@ -198,7 +203,7 @@ export const getCourseByIdService = async (userId, courseId) => {
             chapter.chapterContent = chapter.chapterContent.filter(lec => lec.isLecturePublished)
         });
     }
-console.log(userId);
+
 
     return course;
 }

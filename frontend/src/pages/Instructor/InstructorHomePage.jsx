@@ -21,7 +21,7 @@ const InstructorHomePage = () => {
           <div>
             <p className="text-gray-500 text-sm">کل درآمد</p>
             <p className="text-xl font-bold text-gray-800">
-              {/* {formatPrice(dummyData.reduce((sum, item) => sum + item.sales, 0))} */}
+   
               300
             </p>
           </div>
@@ -34,7 +34,7 @@ const InstructorHomePage = () => {
           <div>
             <p className="text-gray-500 text-sm">مجموع دانشجویان</p>
             <p className="text-xl font-bold text-gray-800">
-              {formatNumber(dummyData.reduce((sum, item) => sum + item.students, 0))} نفر
+         
             </p>
           </div>
         </div>
@@ -46,7 +46,7 @@ const InstructorHomePage = () => {
           <div>
             <p className="text-gray-500 text-sm">میانگین ماهانه</p>
             <p className="text-xl font-bold text-gray-800">
-              {formatPrice(dummyData.reduce((sum, item) => sum + item.sales, 0) / dummyData.length)}
+            
             </p>
           </div>
         </div>

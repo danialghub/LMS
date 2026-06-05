@@ -18,8 +18,17 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
             toast.error('ابتدا  به عنوان دانشجو وارد شوید')
             return
         }
+        const lecture = chapters[chapterId].chapterContent[lectureId]
+        if (!lecture) {
+            toast.error("جلسه نامعتبر است")
+            return
+        }
+        if (!lecture.isLectureFree && !course?.enrolledStudents?.includes(authUser?._id)) {
+            toast.error("این جلسه قفل است")
+            return
+        }
 
-        navigate(`/course/${course._id}/${chapterId}/${lectureId}`)
+            navigate(`/course/${course._id}/${chapterId}/${lectureId}`)
     }
 
     return (
