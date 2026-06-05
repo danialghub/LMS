@@ -35,16 +35,17 @@ export const verifyZarinPal = asyncHandler(
         if (!Authority)
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
-        const { status, refId = null, amount = 0, code = null, cardNumber = null, courseId = null } = await verifyZarinPalService(Authority, Status)
+        const { status, refId = null, amount = 0, code = 400, cardNumber = null, courseId = null } = await verifyZarinPalService(Authority, Status)
+        console.log(code);
 
         if (status === "OK") {
             return res.redirect(
-                `http://localhost:5173/payment-result?status=success&ref_id=${refId}&amount=${amount}&card_number=${cardNumber}&cId=${courseId}`
+                `http://localhost:5173/transaction-result?status=success&ref_id=${refId}&amount=${amount}&card_number=${cardNumber}&cId=${courseId}`
             );
         } else if (status === "already_verified") {
-            return res.redirect('http://localhost:5173/payment-result?status=already_verified');
+            return res.redirect('http://localhost:5173/transaction-result?status=already_verified');
         } else if (status === "failed") {
-            return res.redirect(`http://localhost:5173/payment-result?status=failed&code=${code}`);
+            return res.redirect(`http://localhost:5173/transaction-result?status=failed&code=${code}`);
         }
 
 

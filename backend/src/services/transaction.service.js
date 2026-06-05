@@ -20,9 +20,9 @@ export const requestZarinPalService = async (userId, courseId) => {
     const foundTransaction = await Transaction.findOne({ userId, courseId })
     const hasEnrolled = course.enrolledStudents.some(user => user.toString() === userId.toString())
 
-    if (foundTransaction.status === "successful" && hasEnrolled) {
+    if (foundTransaction && foundTransaction.status === "successful" && hasEnrolled) {
         throw new UnauthorizedException("شما یک بار این دوره را خریداری کردید")
-    } else if (foundTransaction.status === "pending") {
+    } else if (foundTransaction && foundTransaction.status === "pending") {
         foundTransaction.status = "failed"
     }
     // محاسبه مبلغ نهایی با احتساب تخفیف
@@ -120,19 +120,21 @@ export const verifyZarinPalService = async (Authority, Status) => {
             { status: 'failed' }
         );
 
-        // ری‌دایرکت به فرانت با وضعیت failed
-        return res.redirect('http://localhost:5173/payment-result?status=failed');
+
+        return { status: "failed" }
+
     }
 
     const transaction = await Transaction.findOne({ authority: Authority });
     const foundCourse = await Course.findById({ _id: transaction.courseId });
 
     if (!transaction) {
-        return res.redirect('http://localhost:5173/transaction-result?status=failed&error=transaction_not_found');
+
+        return { status: "failed" }
     }
 
     if (!foundCourse) {
-        return res.redirect('http://localhost:5173/transaction-result?status=failed&error=course_not_found');
+        return { status: "failed" }
     }
 
     const verifyData = {
@@ -172,6 +174,8 @@ export const verifyZarinPalService = async (Authority, Status) => {
         await transaction.save();
 
         // ری‌دایرکت به فرانت با وضعیت failed
+  
+
         return { status: "failed", code: response.data.data.code }
     }
 

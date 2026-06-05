@@ -14,7 +14,7 @@ function TransactionResult() {
     const status = params.get('status');
     const refId = params.get('ref_id');
     const amount = params.get('amount');
-    const errorCode = params.get('code');
+    const errorCode = params.get('code')  ;
     const cardNumber = params.get('card_number') || '**** **** **** 1234';
     const courseIdParam = params.get('cId');
 
@@ -178,7 +178,7 @@ function TransactionResult() {
             )}
 
             {/* Error Code */}
-            {result.errorCode && (
+            {result.errorCode !== null && (
               <div className="bg-red-50 rounded-xl p-4 mb-8 text-center">
                 <span className="text-red-600 text-sm">کد خطا: {result.errorCode}</span>
               </div>
@@ -220,8 +220,8 @@ function TransactionResult() {
               <button
                 onClick={() => navigate('/')}
                 className={`flex-1 px-6 py-3 font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${isSuccess
-                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                    : 'border-2 hover:text-white transition-colors'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                  : 'border-2 hover:text-white transition-colors'
                   }`}
                 style={!isSuccess ? { borderColor: result.color, color: result.color } : {}}
               >

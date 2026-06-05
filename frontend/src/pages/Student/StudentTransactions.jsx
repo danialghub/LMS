@@ -98,56 +98,58 @@ export default function TransactionsPage() {
                             ? <PageLoader />
                             : studentTransactions.length
                                 ? (
-                                    <div>
-                                        {/* Table Header */}
-                                        <div className="grid grid-cols-6 gap-4 py-4 border-b-2 border-gray-200 mb-2 text-right">
-                                            <div className="col-span-2 text-gray-600 font-semibold">شناسه / شرح تراکنش</div>
-                                            <div className="text-gray-600 font-semibold">تاریخ</div>
-                                            <div className="text-gray-600 font-semibold">مبلغ</div>
-                                            <div className="text-gray-600 font-semibold">وضعیت</div>
+                                    <div className="h-full flex flex-col justify-between">
+                                        <div>
+                                            {/* Table Header */}
+                                            <div className="grid grid-cols-6 gap-4 py-4 border-b-2 border-gray-200 mb-2 text-right">
+                                                <div className="col-span-2 text-gray-600 font-semibold">شناسه / شرح تراکنش</div>
+                                                <div className="text-gray-600 font-semibold">تاریخ</div>
+                                                <div className="text-gray-600 font-semibold">مبلغ</div>
+                                                <div className="text-gray-600 font-semibold">وضعیت</div>
 
+                                            </div>
+
+                                            {/* Table Rows */}
+                                            <div className="space-y-3">
+                                                {studentTransactions.map((transaction, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="grid grid-cols-6 gap-4 py-4 border-b border-gray-100 items-center text-right hover:bg-gray-50 transition-colors rounded-lg"
+                                                    >
+                                                        {/* شناسه و شرح */}
+                                                        <div className="col-span-2">
+                                                            <div className="font-medium text-gray-800">#{idx + 1}</div>
+                                                            <div className="text-sm text-gray-500 mt-1">{transaction.courseId.courseTitle}</div>
+                                                        </div>
+
+                                                        {/* تاریخ */}
+                                                        <div className="flex items-center gap-2 text-gray-700">
+                                                            <Calendar size={16} className="text-gray-400" />
+                                                            <span>{formatTime(transaction.createdAt)}</span>
+                                                        </div>
+
+                                                        {/* مبلغ */}
+                                                        <div className="flex items-center gap-2 text-gray-700 font-medium">
+
+                                                            <span>{formatNumber(transaction.value)}</span>
+                                                            <span className="text-xs text-gray-400">تومان</span>
+                                                        </div>
+
+                                                        {/* وضعیت */}
+                                                        <div>
+                                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium  ${transaction.status === "failed" ? "text-red-600 bg-red-60" : "text-green-600 bg-green-50"}`}>
+                                                                {getStatusIcon(transaction.status)}
+                                                                {transaction.status}
+                                                            </span>
+                                                        </div>
+
+
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
 
-                                        {/* Table Rows */}
-                                        <div className="space-y-3">
-                                            {studentTransactions.map((transaction, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className="grid grid-cols-6 gap-4 py-4 border-b border-gray-100 items-center text-right hover:bg-gray-50 transition-colors rounded-lg"
-                                                >
-                                                    {/* شناسه و شرح */}
-                                                    <div className="col-span-2">
-                                                        <div className="font-medium text-gray-800">#{idx + 1}</div>
-                                                        <div className="text-sm text-gray-500 mt-1">{transaction.courseId.courseTitle}</div>
-                                                    </div>
-
-                                                    {/* تاریخ */}
-                                                    <div className="flex items-center gap-2 text-gray-700">
-                                                        <Calendar size={16} className="text-gray-400" />
-                                                        <span>{formatTime(transaction.createdAt)}</span>
-                                                    </div>
-
-                                                    {/* مبلغ */}
-                                                    <div className="flex items-center gap-2 text-gray-700 font-medium">
-
-                                                        <span>{formatNumber(transaction.value)}</span>
-                                                        <span className="text-xs text-gray-400">تومان</span>
-                                                    </div>
-
-                                                    {/* وضعیت */}
-                                                    <div>
-                                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium  ${transaction.status === "failed" ? "text-red-600 bg-red-60" : "text-green-600 bg-green-50"}`}>
-                                                            {getStatusIcon(transaction.status)}
-                                                            {transaction.status}
-                                                        </span>
-                                                    </div>
-
-
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        <div className="absolute left-1/2 bottom-5">
+                                        <div className="mt-6">
                                             <Pagination
                                                 currentPage={page}
                                                 totalPages={totalPages}
