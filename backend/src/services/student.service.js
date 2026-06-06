@@ -107,12 +107,9 @@ export const rateToCourseService = async (courseId, userId, rating) => {
         throw new UnauthorizedException("شما یکبار امتیاز دادید");
     }
 
-    foundCourse.courseRatings.push({
-        userId,
-        rating
-    });
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, {
+        $addToSet : { courseRatings: { rating, userId } },
+    }, { timestamps: false, returnDocument: "after" });
 
-    await foundCourse.save();
-
-    return foundCourse.courseRatings;
+    return updatedCourse.courseRatings;
 };

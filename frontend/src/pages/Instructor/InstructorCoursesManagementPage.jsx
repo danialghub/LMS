@@ -1,0 +1,335 @@
+import { useState } from 'react';
+import { Plus, Edit, Users, DollarSign, CheckSquare, Square, Loader, X } from 'lucide-react';
+import { useCourseStore } from '@/store/useCourseStore'
+import { useAuthStore } from '@/store/useAuthStore'
+import { Link } from 'react-router'
+import { useEffect } from 'react';
+import { SubmitLoading, Pagination } from '@/components/index'
+import { useInstructorStore } from '@/store/useInstructorStore';
+import { usePostCourseMutation, useGetInstructorCourses } from '@/query/courseQueries';
+
+
+const NewCourseModal = ({ isOpen, onClose }) => {
+
+    const [title, setTitle] = useState('');
+    const [error, setError] = useState('');
+
+
+
+    const { mutate: createCourse, isPending: isCreating } = usePostCourseMutation()
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!title.trim()) {
+            setError('عنوان دوره الزامی است');
+            return;
+        }
+
+        if (title.trim().length < 3) {
+            setError('عنوان دوره باید حداقل 3 کاراکتر باشد');
+            return;
+        }
+        // ایجاد دوره جدید
+        const newCourse = {
+            courseTitle: title,
+        };
+
+        createCourse(newCourse);
+        setTitle('');
+        setError('');
+        onClose();
+    };
+
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50" dir="rtl">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4">
+
+                {/* هدر مودال */}
+                <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <Plus size={24} className="text-blue-600" />
+                        ایجاد دوره جدید
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="p-1 hover:bg-gray-100 rounded-lg transition"
+                    >
+                        <X size={20} className="text-gray-500" />
+                    </button>
+                </div>
+
+                {/* فرم */}
+                <form onSubmit={handleSubmit} className="p-6">
+                    <div className="mb-6">
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            عنوان دوره
+                        </label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => {
+                                setTitle(e.target.value);
+                                setError('');
+                            }}
+                            placeholder="مثال: دوره جامع React"
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-right ${error ? 'border-red-500' : 'border-gray-300'
+                                }`}
+                            autoFocus
+                        />
+                        {error && (
+                            <p className="text-red-500 text-sm mt-1">{error}</p>
+                        )}
+                    </div>
+
+                    {/* دکمه‌ها */}
+                    <div className="flex gap-3">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                        >
+                            انصراف
+                        </button>
+                        <button
+                            type="submit"
+                            className="flex-1 px-4 py-2 min-w-[120px] min-h-[40px] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                        >
+                            {isCreating
+                                ? <SubmitLoading />
+                                : (
+                                    <>
+                                        <Plus size={18} />
+                                        <span> ایجاد دوره</span>
+                                    </>
+                                )
+                            }
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+// تابع فرمت کننده اعداد به تومان
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('fa-IR').format(price) + ' تومان';
+};
+
+const InstructorCoursesManagementPage = () => {
+
+    const { authUser } = useAuthStore()
+
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+
+    const { data, isLoading, isError, isFetching } = useGetInstructorCourses(page)
+
+
+    const courses = data?.courses || []
+    const totalPagesInfo = data?.totalPages
+
+    const calcDiscount = (price, discount) => {
+        return (price - (price * discount / 100))
+    }
+    const calcTotalEarning = course => {
+        const totalEarning = course.enrolledStudents.length * (calcDiscount(course.coursePrice, course.courseDiscount))
+
+        return formatPrice(totalEarning)
+    }
+
+    console.log(courses);
+
+    useEffect(() => {
+        if (!totalPagesInfo) return
+        setTotalPages(totalPagesInfo)
+    }, [totalPagesInfo])
+
+    return (
+        <div className="container max-w-7xl p-6 bg-gray-50 " dir="rtl">
+            {/* هدر و دکمه ایجاد دوره جدید */}
+            <NewCourseModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">مدیریت دوره‌ها</h1>
+                <button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md"
+                >
+                    <Plus size={20} />
+                    <span>دوره جدید</span>
+                </button>
+            </div>
+
+            {/* جدول دوره‌ها */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[70vh] relative">
+                {isError
+                    ? <div>خطا در دریافت دوره‌ها</div>
+                    : isLoading
+                        ? <div className='flex items-center justify-center h-[60vh]'>
+                            <Loader className='animate-spin size-10 text-blue-500' />
+                        </div>
+                        : (
+                            <div className="overflow-x-auto pb-14">
+                                <table className="w-full">
+                                    <thead className="bg-gray-100 border-b-2 border-gray-200">
+                                        <tr>
+                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">دوره</th>
+                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
+                                                <div className="flex items-center gap-1">
+                                                    <DollarSign size={16} />
+                                                    <span>درآمد دوره</span>
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
+                                                <div className="flex items-center gap-1">
+                                                    <Users size={16} />
+                                                    <span>تعداد دانشجو</span>
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <CheckSquare size={16} />
+                                                    <span>وضعیت انتشار</span>
+                                                </div>
+                                            </th>
+                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">عملیات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {courses.map((course, index) => (
+                                            <tr
+                                                key={index}
+                                                className={`border-b border-gray-200 hover:bg-gray-50 transition duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                                                    }`}
+                                            >
+                                                {/* ستون دوره (عکس + عنوان کنار هم) */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        {/* عکس دوره */}
+                                                        <div className="w-14 h-10 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
+                                                            {course.courseThumbnail ? (
+                                                                <img
+                                                                    src={course.courseThumbnail}
+                                                                    alt={course.courseTitle}
+                                                                    className="w-full h-full object-center"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-full  flex items-center justify-center text-gray-400 text-xs">
+                                                                    بدون عکس
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {/* عنوان دوره */}
+                                                        <span className="font-medium text-gray-800">{course.courseTitle}</span>
+                                                    </div>
+                                                </td>
+
+                                                {/* درآمد دوره */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-1 text-green-600 font-semibold">
+
+                                                        {course?.enrolledStudents.length
+                                                            ? <span>{formatPrice(course.sales)}</span>
+                                                            : <span>________</span>
+                                                        }
+                                                    </div>
+                                                </td>
+
+                                                {/* تعداد دانشجو */}
+                                                <td className="px-6 py-4 ">
+                                                    <div className="flex items-center gap-1 text-blue-600 ">
+                                                        <Users size={16} />
+                                                        <span className="font-semibold">{
+                                                            course?.enrolledStudents?.length
+                                                                ? <>
+                                                                    <span>{course?.enrolledStudents?.length.toLocaleString('fa-IR')}</span>
+                                                                    <span className="text-gray-500 text-sm"> نفر</span>
+                                                                </>
+                                                                : <span>________</span>
+
+                                                        }
+                                                        </span>
+
+                                                    </div>
+                                                </td>
+
+                                                {/* وضعیت انتشار (Checkbox) */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center justify-center">
+                                                        <button
+                                                            className="flex items-center gap-2 group"
+                                                        >
+                                                            {course.isCoursePublished ? (
+                                                                <CheckSquare size={22} className="text-green-600 group-hover:text-green-700 transition" />
+                                                            ) : (
+                                                                <Square size={22} className="text-gray-400 group-hover:text-gray-500 transition" />
+                                                            )}
+                                                            <span className={`text-sm ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'}`}>
+                                                                {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </td>
+
+                                                {/* دکمه ویرایش */}
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center justify-center">
+                                                        <Link
+                                                            to={`/instructor/courses/course-setup/${course._id}`}
+                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-150 group"
+                                                            title="ویرایش دوره"
+                                                        >
+                                                            <Edit size={18} className="group-hover:scale-110 transition" />
+                                                        </Link>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        )
+
+                }
+
+                {/* وضعیت خالی بودن جدول */}
+                {!isFetching && courses.length === 0 && (
+                    <div className='h-[70vh] flex items-center justify-center'>
+                        <div className="text-center py-12">
+                            <p className="text-gray-500 text-2xl font-heading">هیچ دوره‌ای یافت نشد</p>
+                            <button
+                                onClick={() => setIsCreateModalOpen(true)}
+                                className="mt-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                            >
+                                <Plus size={18} />
+                                <span>ایجاد اولین دوره</span>
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={(newPage) => {
+                        setPage(newPage)
+                    }}
+
+                />
+
+            </div>
+        </div>
+    );
+};
+
+export default InstructorCoursesManagementPage;

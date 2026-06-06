@@ -1,334 +1,218 @@
-import { useState } from 'react';
-import { Plus, Edit, Users, DollarSign, CheckSquare, Square, Loader, X } from 'lucide-react';
-import { useCourseStore } from '@/store/useCourseStore'
-import { useAuthStore } from '@/store/useAuthStore'
-import { Link } from 'react-router'
-import { useEffect } from 'react';
-import { SubmitLoading, Pagination } from '@/components/index'
-import { useInstructorStore } from '@/store/useInstructorStore';
-import { usePostCourseMutation, useGetInstructorCourses } from '@/query/courseQueries';
+import React from 'react';
+import { User, BookOpen, Users, Clock, Star, ChevronLeft, ChevronRight, MapPin, Briefcase, Award } from 'lucide-react';
 
-
-const NewCourseModal = ({ isOpen, onClose }) => {
-
-    const [title, setTitle] = useState('');
-    const [error, setError] = useState('');
-
-
-
-    const { mutate: createCourse, isPending: isCreating } = usePostCourseMutation()
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (!title.trim()) {
-            setError('عنوان دوره الزامی است');
-            return;
+const SleekInstructorProfile = () => {
+    const instructor = {
+        name: "دنیل کریگ",
+        title: "معمار ارشد فرانت‌اند",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
+        bio: "توسعه‌دهنده ارشد با ۱۲ سال تجربه. متخصص React، Next.js و معماری scalable. مدرس رسمی در ۲۰+ دوره آنلاین.",
+        specialty: "React • Next.js • TypeScript",
+        location: "تهران، ایران",
+        experience: "۱۲ سال تجربه",
+        stats: {
+            students: "۱۲,۴۵۰",
+            courses: "۱۸"
         }
-
-        if (title.trim().length < 3) {
-            setError('عنوان دوره باید حداقل 3 کاراکتر باشد');
-            return;
-        }
-        // ایجاد دوره جدید
-        const newCourse = {
-            courseTitle: title,
-        };
-
-        createCourse(newCourse);
-        setTitle('');
-        setError('');
-        onClose();
     };
 
-
-    if (!isOpen) return null;
+    const courses = [
+        {
+            id: 1,
+            title: "React از پایه تا پیشرفته",
+            description: "مفاهیم پایه تا تکنیک‌های پیشرفته React با پروژه‌های عملی",
+            duration: "۲۴ ساعت",
+            students: "۳,۲۴۰",
+            level: "مقدماتی تا پیشرفته",
+            image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=240&fit=crop"
+        },
+        {
+            id: 2,
+            title: "Next.js 14 با رویکرد عملی",
+            description: "ساخت اپلیکیشن‌های scalable با App Router و Server Components",
+            duration: "۱۸ ساعت",
+            students: "۲,۱۸۰",
+            level: "متوسط",
+            image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=240&fit=crop"
+        },
+        {
+            id: 3,
+            title: "TypeScript پیشرفته",
+            description: "تایپ‌های پیشرفته، Utility Types و معماری تایپ سیف",
+            duration: "۱۲ ساعت",
+            students: "۱,۹۵۰",
+            level: "پیشرفته",
+            image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=240&fit=crop"
+        },
+        {
+            id: 4,
+            title: "Tailwind CSS Mastery",
+            description: "طراحی حرفه‌ای با Tailwind، سفارشی‌سازی و بهینه‌سازی",
+            duration: "۸ ساعت",
+            students: "۲,۸۰۰",
+            level: "مقدماتی تا پیشرفته",
+            image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=240&fit=crop"
+        }
+    ];
 
     return (
-        <div className="fixed inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center z-50" dir="rtl">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4">
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white" dir="rtl">
+            <div className="max-w-6xl mx-auto px-4 py-12">
 
-                {/* هدر مودال */}
-                <div className="flex justify-between items-center p-6 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <Plus size={24} className="text-blue-600" />
-                        ایجاد دوره جدید
-                    </h2>
-                    <button
-                        onClick={onClose}
-                        className="p-1 hover:bg-gray-100 rounded-lg transition"
-                    >
-                        <X size={20} className="text-gray-500" />
-                    </button>
+                {/* بخش پروفایل استاد - طراحی مدرن و شیک */}
+                <div className="relative mb-20">
+                    {/* Background decorative elements */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 to-transparent rounded-3xl -z-10"></div>
+                    <div className="absolute top-20 right-10 w-72 h-72 bg-blue-100/30 rounded-full blur-3xl -z-20"></div>
+
+                    <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8 p-6 lg:p-8 bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-100 shadow-lg">
+
+                        {/* آواتار با افکت هولوگرافیک */}
+                        <div className="relative group">
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="relative w-36 h-36 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-[3px] shadow-xl">
+                                <div className="w-full h-full rounded-2xl bg-white overflow-hidden">
+                                    <img
+                                        src={instructor.avatar}
+                                        alt={instructor.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 w-5 h-5 bg-green-500 rounded-full border-3 border-white shadow-md"></div>
+                        </div>
+
+                        {/* اطلاعات اصلی با طراحی بهتر */}
+                        <div className="flex-1">
+                            <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                                <div>
+                                    <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">
+                                        {instructor.name}
+                                    </h1>
+                                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+                                            <Briefcase className="w-3.5 h-3.5" />
+                                            {instructor.title}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm">
+                                            <MapPin className="w-3.5 h-3.5" />
+                                            {instructor.location}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-sm">
+                                            <Award className="w-3.5 h-3.5" />
+                                            {instructor.experience}
+                                        </span>
+                                    </div>
+                                    <p className="text-blue-600 font-mono text-sm">{instructor.specialty}</p>
+                                </div>
+
+                                {/* آمار به صورت کارت‌های مدرن */}
+                                <div className="flex gap-4">
+                                    <div className="text-center px-6 py-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
+                                        <div className="text-3xl font-bold text-blue-700">{instructor.stats.students}</div>
+                                        <div className="text-xs text-blue-600 font-medium mt-1">دانشجو</div>
+                                    </div>
+                                    <div className="text-center px-6 py-3 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl">
+                                        <div className="text-3xl font-bold text-indigo-700">{instructor.stats.courses}</div>
+                                        <div className="text-xs text-indigo-600 font-medium mt-1">دوره</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* بایو با نقل قول و استایل بهتر */}
+                            <div className="relative mt-4">
+                                <div className="absolute -right-2 -top-2 text-6xl text-blue-100 font-serif">"</div>
+                                <p className="text-gray-700 leading-relaxed text-sm pr-6 py-2 border-r-3 border-blue-400">
+                                    {instructor.bio}
+                                </p>
+                            </div>
+
+                            {/* مهارت‌های کلیدی */}
+                            <div className="flex flex-wrap gap-2 mt-4">
+                                {instructor.specialty.split(' • ').map((skill, index) => (
+                                    <span key={index} className="px-2 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-mono">
+                                        {skill}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* فرم */}
-                <form onSubmit={handleSubmit} className="p-6">
-                    <div className="mb-6">
-                        <label className="block text-gray-700 font-semibold mb-2">
-                            عنوان دوره
-                        </label>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => {
-                                setTitle(e.target.value);
-                                setError('');
-                            }}
-                            placeholder="مثال: دوره جامع React"
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-right ${error ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                            autoFocus
-                        />
-                        {error && (
-                            <p className="text-red-500 text-sm mt-1">{error}</p>
-                        )}
+                {/* هدر دوره‌ها */}
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">دوره‌های آموزشی</h2>
+                        <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mt-2 rounded-full"></div>
                     </div>
-
-                    {/* دکمه‌ها */}
-                    <div className="flex gap-3">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-                        >
-                            انصراف
+                    <div className="flex gap-2">
+                        <button className="p-2 rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200">
+                            <ChevronRight className="w-5 h-5 text-gray-600" />
                         </button>
-                        <button
-                            type="submit"
-                            className="flex-1 px-4 py-2 min-w-[120px] min-h-[40px] bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
-                        >
-                            {isCreating
-                                ? <SubmitLoading />
-                                : (
-                                    <>
-                                        <Plus size={18} />
-                                        <span> ایجاد دوره</span>
-                                    </>
-                                )
-                            }
+                        <button className="p-2 rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200">
+                            <ChevronLeft className="w-5 h-5 text-gray-600" />
                         </button>
                     </div>
-                </form>
-            </div>
-        </div>
-    )
-}
+                </div>
 
-// تابع فرمت کننده اعداد به تومان
-const formatPrice = (price) => {
-    return new Intl.NumberFormat('fa-IR').format(price) + ' تومان';
-};
-
-const InstructorCoursesPage = () => {
-
-    const { authUser } = useAuthStore()
-
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-    const [page, setPage] = useState(1)
-    const [totalPages, setTotalPages] = useState(0)
-
-    const { data, isLoading, isError, isFetching } = useGetInstructorCourses(page)
-
-
-    const courses = data?.courses || []
-    const totalPagesInfo = data?.totalPages
-
-    const calcDiscount = (price, discount) => {
-        return (price - (price * discount / 100))
-    }
-    const calcTotalEarning = course => {
-        const totalEarning = course.enrolledStudents.length * (calcDiscount(course.coursePrice, course.courseDiscount))
-
-        return formatPrice(totalEarning)
-    }
-
-
-    useEffect(() => {
-        if (!totalPagesInfo) return
-        setTotalPages(totalPagesInfo)
-    }, [totalPagesInfo])
-
-    return (
-        <div className="container max-w-7xl p-6 bg-gray-50 " dir="rtl">
-            {/* هدر و دکمه ایجاد دوره جدید */}
-            <NewCourseModal
-                isOpen={isCreateModalOpen}
-                onClose={() => setIsCreateModalOpen(false)}
-            />
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">مدیریت دوره‌ها</h1>
-                <button
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md"
-                >
-                    <Plus size={20} />
-                    <span>دوره جدید</span>
-                </button>
-            </div>
-
-            {/* جدول دوره‌ها */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[70vh] relative">
-                {isError
-                    ? <div>خطا در دریافت دوره‌ها</div>
-                    : isLoading
-                        ? <div className='flex items-center justify-center h-[60vh]'>
-                            <Loader className='animate-spin size-10 text-blue-500' />
-                        </div>
-                        : (
-                            <div className="overflow-x-auto pb-14">
-                                <table className="w-full">
-                                    <thead className="bg-gray-100 border-b-2 border-gray-200">
-                                        <tr>
-                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">دوره</th>
-                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                                <div className="flex items-center gap-1">
-                                                    <DollarSign size={16} />
-                                                    <span>درآمد دوره</span>
-                                                </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                                <div className="flex items-center gap-1">
-                                                    <Users size={16} />
-                                                    <span>تعداد دانشجو</span>
-                                                </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">
-                                                <div className="flex items-center justify-center gap-1">
-                                                    <CheckSquare size={16} />
-                                                    <span>وضعیت انتشار</span>
-                                                </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">عملیات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {courses.map((course, index) => (
-                                            <tr
-                                                key={index}
-                                                className={`border-b border-gray-200 hover:bg-gray-50 transition duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                                                    }`}
-                                            >
-                                                {/* ستون دوره (عکس + عنوان کنار هم) */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        {/* عکس دوره */}
-                                                        <div className="w-14 h-10 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
-                                                            {course.courseThumbnail ? (
-                                                                <img
-                                                                    src={course.courseThumbnail}
-                                                                    alt={course.courseTitle}
-                                                                    className="w-full h-full object-center"
-                                                                />
-                                                            ) : (
-                                                                <div className="w-full h-full  flex items-center justify-center text-gray-400 text-xs">
-                                                                    بدون عکس
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        {/* عنوان دوره */}
-                                                        <span className="font-medium text-gray-800">{course.courseTitle}</span>
-                                                    </div>
-                                                </td>
-
-                                                {/* درآمد دوره */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-1 text-green-600 font-semibold">
-
-                                                        {course?.enrolledStudents.length
-                                                            ? <span>{calcTotalEarning(course)}</span>
-                                                            : <span>________</span>
-                                                        }
-                                                    </div>
-                                                </td>
-
-                                                {/* تعداد دانشجو */}
-                                                <td className="px-6 py-4 ">
-                                                    <div className="flex items-center gap-1 text-blue-600 ">
-                                                        <Users size={16} />
-                                                        <span className="font-semibold">{
-                                                            course?.enrolledStudents?.length
-                                                                ? <>
-                                                                    <span>{course?.enrolledStudents?.length.toLocaleString('fa-IR')}</span>
-                                                                    <span className="text-gray-500 text-sm"> نفر</span>
-                                                                </>
-                                                                : <span>________</span>
-
-                                                        }
-                                                        </span>
-
-                                                    </div>
-                                                </td>
-
-                                                {/* وضعیت انتشار (Checkbox) */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center justify-center">
-                                                        <button
-                                                            className="flex items-center gap-2 group"
-                                                        >
-                                                            {course.isCoursePublished ? (
-                                                                <CheckSquare size={22} className="text-green-600 group-hover:text-green-700 transition" />
-                                                            ) : (
-                                                                <Square size={22} className="text-gray-400 group-hover:text-gray-500 transition" />
-                                                            )}
-                                                            <span className={`text-sm ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'}`}>
-                                                                {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                </td>
-
-                                                {/* دکمه ویرایش */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center justify-center">
-                                                        <Link
-                                                            to={`/instructor/courses/course-setup/${course._id}`}
-                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-150 group"
-                                                            title="ویرایش دوره"
-                                                        >
-                                                            <Edit size={18} className="group-hover:scale-110 transition" />
-                                                        </Link>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
+                {/* گرید دوره‌ها */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {courses.map((course) => (
+                        <div
+                            key={course.id}
+                            className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                        >
+                            <div className="relative h-48 overflow-hidden">
+                                <img
+                                    src={course.image}
+                                    alt={course.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                                <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-lg">
+                                    {course.level}
+                                </div>
                             </div>
-                        )
 
-                }
+                            <div className="p-5">
+                                <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-1">
+                                    {course.title}
+                                </h3>
+                                <p className="text-gray-500 text-sm mb-4 line-clamp-2">
+                                    {course.description}
+                                </p>
 
-                {/* وضعیت خالی بودن جدول */}
-                {!isFetching && courses.length === 0 && (
-                 <div className='h-[70vh] flex items-center justify-center'>
-                       <div className="text-center py-12">
-                        <p className="text-gray-500 text-2xl font-heading">هیچ دوره‌ای یافت نشد</p>
-                        <button
-                            onClick={() => setIsCreateModalOpen(true)}
-                            className="mt-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
-                        >
-                            <Plus size={18} />
-                            <span>ایجاد اولین دوره</span>
-                        </button>
+                                <div className="flex items-center justify-between text-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1 text-gray-500">
+                                            <Clock className="w-4 h-4" />
+                                            <span>{course.duration}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-gray-500">
+                                            <Users className="w-4 h-4" />
+                                            <span>{course.students}</span>
+                                        </div>
+                                    </div>
+
+                                    <button className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors">
+                                        مشاهده دوره →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* CTA ساده */}
+                <div className="mt-12 text-center">
+                    <div className="inline-flex items-center gap-2 text-sm text-gray-400">
+                        <span className="w-8 h-px bg-gray-200"></span>
+                        <span>تمامی دوره‌ها با گواهی معتبر</span>
+                        <span className="w-8 h-px bg-gray-200"></span>
                     </div>
-                 </div>
-                )}
-
-         
-                 <Pagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={(newPage) => {
-                        setPage(newPage)
-                    }}
-
-                />
-             
+                </div>
             </div>
         </div>
     );
 };
 
-export default InstructorCoursesPage;
+export default SleekInstructorProfile;

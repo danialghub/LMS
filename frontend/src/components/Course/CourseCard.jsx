@@ -9,12 +9,12 @@ import { motion } from 'framer-motion'
 const CourseCard = ({ course }) => {
 
     const { authUser } = useAuthStore()
+    
     const calcDiscount = (price, discount) => {
         console.log(price, discount);
-
         const res = price - (price * discount / 100)
-        const calc = res === 0 ? <span className='text-[16px]'>رایگان</span> : formatPrice(res)
-        return calc
+        // بازگردوندن مقدار عددی به جای JSX
+        return res === 0 ? 0 : res
     }
 
     const calcTotalCourseRTating = (courseRatings) => {
@@ -22,7 +22,10 @@ const CourseCard = ({ course }) => {
         const sum = courseRatings.reduce((total, arg) => total + arg.rating, 0)
         return Math.floor(sum / courseRatings.length)
     }
-
+    
+    // محاسبه قیمت نهایی
+    const finalPrice = calcDiscount(course.coursePrice, course.courseDiscount)
+    const isFree = finalPrice === 0
 
     return (
 
@@ -110,26 +113,34 @@ const CourseCard = ({ course }) => {
                                     <span className='font-Dirooz-FD'>{course.enrolledStudents.length}</span>
                                 </div>
 
-                                <div className='flex items-center gap-2 sm:gap-4'>
-                                    <div className='flex flex-col items-end gap-0.5 sm:gap-1 font-Dirooz-FD'>
-                                        <del className='text-[10px] sm:text-[15px] text-black/40'>
-                                            {formatNumber(course.coursePrice)}
-                                        </del>
-                                        <div className='text-xs sm:text-[16px] flex items-center gap-1 text-blue-500'>
-                                            <span className='font-bold'>
-                                                {calcDiscount(course.coursePrice, course.courseDiscount)}
+                                {isFree ? (
+                                    // حالت رایگان - فقط نمایش متن رایگان
+                                    <div className='text-lg sm:text-[20px] font-heading text-blue-500'>
+                                        رایگان
+                                    </div>
+                                ) : (
+                                    // حالت غیر رایگان - نمایش قیمت و تخفیف
+                                    <div className='flex items-center gap-2 sm:gap-4'>
+                                        <div className='flex flex-col items-end gap-0.5 sm:gap-1 font-Dirooz-FD'>
+                                            <del className='text-[10px] sm:text-[15px] text-black/40'>
+                                                {formatNumber(course.coursePrice)}
+                                            </del>
+                                            <div className='text-xs sm:text-[16px] flex items-center gap-1 text-blue-500'>
+                                                <span className='font-bold'>
+                                                    {formatPrice(finalPrice)}
+                                                </span>
+                                                <span className='font-ghalam text-lg'>تومان</span>
+                                            </div>
+                                        </div>
+
+                                        <div className='flex flex-col items-center gap-0.5 sm:gap-1'>
+                                            <span className='font-Dirooz-FD text-[10px] sm:text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
+                                                {course.courseDiscount}%
                                             </span>
-                                            <span className='font-ghalam text-lg'>تومان</span>
+                                            <span className='text-[10px] sm:text-sm text-blue-500 font-vazir'>تخفیف</span>
                                         </div>
                                     </div>
-
-                                    <div className='flex flex-col items-center gap-0.5 sm:gap-1'>
-                                        <span className='font-Dirooz-FD text-[10px] sm:text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
-                                            {course.courseDiscount}%
-                                        </span>
-                                        <span className='text-[10px] sm:text-sm text-blue-500 font-vazir'>تخفیف</span>
-                                    </div>
-                                </div>
+                                )}
                             </div>
                         )
                     }

@@ -17,9 +17,12 @@ class AxiosPrivateService {
     static setupInterceptors() {
 
         this.instance.interceptors.request.use(
-            (config) => {
-                const token = useAuthStore.getState().token;
+            async (config) => {
+                let token = useAuthStore.getState().token;
                 if (token && !config.headers["Authorization"]) {
+                    config.headers["Authorization"] = `Bearer ${token}`;
+                } else {
+                    token = await useAuthStore.getState().issueRefreshToken()
                     config.headers["Authorization"] = `Bearer ${token}`;
                 }
                 return config;
@@ -42,7 +45,7 @@ class AxiosPrivateService {
                     try {
                         const newToken = this.refreshPromise;
                         prevRequest.headers["Authorization"] = `Bearer ${newToken}`;
-                        
+
 
                         return this.instance(prevRequest);
                     } finally {

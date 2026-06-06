@@ -7,7 +7,7 @@ import { PageLoader } from '@/components/index'
 import { useLocation } from 'react-router'
 
 const App = () => {
-  const { isCheckingAuth, checkAuthStatus, isAuthenticated } = useAuthStore()
+  const { isCheckingAuth, checkAuthStatus } = useAuthStore()
 
 
   useEffect(() => {

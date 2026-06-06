@@ -52,7 +52,7 @@ const InstructorAnalytics = () => {
     getCourseAnalytics()
   }, [])
   console.log(courseAnalytics);
-  
+
   return (
     <div className="bg-white rounded-xl max-w-7xl mt-8 mx-4 shadow-lg p-6" dir="rtl">
       {/* هدر نمودار */}
@@ -81,8 +81,8 @@ const InstructorAnalytics = () => {
         ? <PageLoader />
         : (<div className="overflow-x-auto overflow-y-hidden">
           <div
-          dir='ltr'
-          style={{ width: `${Math.max(100, courseAnalytics.length * 25)}%`, minWidth: '100%' }}>
+            dir='ltr'
+            style={{ width: `${Math.max(100, courseAnalytics.length * 25)}%`, minWidth: '100%' }}>
             <ResponsiveContainer width="100%" height={450}>
               <BarChart
                 data={courseAnalytics}
@@ -120,7 +120,9 @@ const InstructorAnalytics = () => {
                   orientation="right"
                   stroke="#666"
                   fontSize={12}
-                  tickFormatter={(value) => formatNumber(value)}
+                  allowDecimals={false}
+                  domain={[0, 'dataMax']}
+                  interval={0}
                 />
 
                 <Tooltip

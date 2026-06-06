@@ -6,6 +6,7 @@ import { upload } from '../config/multer.js'
 const router = express.Router()
 
 router.get('/refresh', issueRefreshToken)
+router.get('/check', protectRoute, (req, res) => res.sendStatus(200))
 
 
 router.post("/signup", upload.single('image'), signup);

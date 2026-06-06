@@ -43,7 +43,8 @@ export default function TransactionsPage() {
         return failedTransaction.length || 0
     }
     const calcTotalTransactionAmount = () => {
-        const totalAmount = studentTransactions.reduce((sum, arg) => sum + arg.amount, 0)
+        const successfulTransactions = studentTransactions.filter(t => t.status === "successful")
+        const totalAmount = successfulTransactions.reduce((sum, arg) => sum + arg.amount, 0)
         return formatNumber(totalAmount)
     }
 

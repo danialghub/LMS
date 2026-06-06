@@ -6,7 +6,7 @@ import { useInstructorStore } from './useInstructorStore'
 
 export const useCourseStore = create((set, get) => ({
     courses: [],
-    course: {},
+    course: null,
     lecture: {},
     isCreating: false,
     isFetching: false,

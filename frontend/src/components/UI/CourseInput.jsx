@@ -285,6 +285,7 @@ const CourseThumbnailInput = ({ courseId, value }) => {
 
 const CoursePriceInput = ({ courseId, value }) => {
     const [isEditing, setIsEditing] = useState(false)
+    const [displayValue, setDisplayValue] = useState(Number(value) || 0)
     const { patchCourseFields } = useCourseStore()
     const {
         register,
@@ -294,14 +295,14 @@ const CoursePriceInput = ({ courseId, value }) => {
     } = useForm(
         {
             resolver: zodResolver(coursePriceSchema),
-            values: { coursePrice: Number(value) || 0 },
+            values: { coursePrice: Number(displayValue) || 0 },
             mode: "onChange"
         }
     )
 
     const onSubmit = async (data) => {
         await patchCourseFields(courseId, data)
-
+        setDisplayValue(data.coursePrice)
         setIsEditing(false)
 
     }
@@ -337,15 +338,20 @@ const CoursePriceInput = ({ courseId, value }) => {
                             disabled={isSubmitting || !isValid}
                             className='btn-primary' type='submit'>ذخیره</button>
                     </form >
-                    : <h4 className='text-black/70 text-[15px] mt-3 p-2'>{formatPrice(watch('coursePrice'))}</h4>
+                    : value
+                        ? <h4 className={`text-black/70 w-fit rounded-md text-[15px] mt-3 p-2 ${displayValue === 0 && "text-blue-700 bg-blue-100"} `}>
+                            {displayValue === 0 ? "رایگان" : `${formatPrice(displayValue)} تومان`}
+                        </h4>
+                        : <h4 className='text-black/70 text-[15px] mt-3 p-2'>مبلغی تعریف نشده</h4>
 
                 }
             </div>
-        </div>
+        </div >
     )
 }
 const CourseDiscountInput = ({ courseId, value }) => {
     const [isEditing, setIsEditing] = useState(false)
+    const [displayValue, setDisplayValue] = useState(value || 0)
     const { patchCourseFields } = useCourseStore()
     const {
         register,
@@ -355,14 +361,14 @@ const CourseDiscountInput = ({ courseId, value }) => {
     } = useForm(
         {
             resolver: zodResolver(courseDiscountSchema),
-            values: { courseDiscount: Number(value) || 0 },
+            values: { courseDiscount: Number(displayValue) || 0 },
             mode: "onChange"
         }
     )
 
     const onSubmit = async (data) => {
         await patchCourseFields(courseId, data)
-
+        setDisplayValue(data.courseDiscount)
         setIsEditing(false)
 
     }
@@ -400,9 +406,10 @@ const CourseDiscountInput = ({ courseId, value }) => {
                             disabled={isSubmitting || !isValid}
                             className='btn-primary' type='submit'>ذخیره</button>
                     </form >
-                    : value
-                        ? <h4 className='text-blue-700 w-fit rounded-md  text-sm bg-blue-100  mt-3 p-2 font-bold font-Dirooz-FD'>{watch('courseDiscount')}%</h4>
-                        : <h4 className='text-black/70 text-sm mt-3 p-2'>تخفیفی ثبت نشده</h4>
+                    :
+                    <h4 className='text-blue-700 w-fit rounded-md  text-sm bg-blue-100  mt-3 p-2 font-bold font-Dirooz-FD'>{displayValue}%
+                    </h4>
+
 
                 }
             </div>

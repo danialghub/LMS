@@ -57,11 +57,10 @@ export const useStudentStore = create((set, get) => ({
         }
     },
     rateToCourse: async (courseId, rating) => {
-        console.log(rating);
-
+   
         try {
             const { data } = await privateRoutes.post(`/student/${courseId}/rate-to-course`, { rating })
-            set(({ course }) => (
+            useCourseStore.setState(({ course }) => (
                 { course: { ...course, courseRatings: data } }
             ))
             toast.success('ممنون از امتیازدهی شما')

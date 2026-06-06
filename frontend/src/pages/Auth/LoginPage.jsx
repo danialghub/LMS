@@ -39,7 +39,7 @@ const LoginIllustration = ({ role }) => {
 
     return (
         <div className="flex-4 hidden lg:block relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 overflow-hidden">
-            <div className="absolute inset-0 flex justify-center items-center">
+            <div className="absolute inset-0 flex justify-center items-center ">
                 <img
                     src={imageSrc}
                     alt={data.title}
@@ -96,7 +96,7 @@ const LoginPage = ({ role = "student" }) => {
                     </div>
 
                     {/* فرم */}
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 min-h-[280px]">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 min-h-[345px]">
                         {/* فیلد ایمیل */}
                         <div>
                           
@@ -124,7 +124,7 @@ const LoginPage = ({ role = "student" }) => {
                         {/* دکمه ورود */}
                         <button
                             type='submit'
-                            className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
+                            className="w-full px-4 py-3 mt-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
                             disabled={isSubmitting || !isValid}
                         >
                             {isSubmitting ? (
@@ -151,15 +151,7 @@ const LoginPage = ({ role = "student" }) => {
                         </p>
                     </div>
 
-                    {/* لینک فراموشی رمز عبور (اختیاری) */}
-                    <div className="mt-4 text-center">
-                        <Link
-                            to="/forgot-password"
-                            className="text-xs text-gray-400 hover:text-blue-500 transition-colors"
-                        >
-                            رمز عبور خود را فراموش کرده‌اید؟
-                        </Link>
-                    </div>
+                   
                 </div>
             </div>
         </LoginLayout>

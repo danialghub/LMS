@@ -157,10 +157,12 @@ export const verifyZarinPalService = async (Authority, Status) => {
             ...transaction.paymentData,
             verifyResponse: response.data
         };
-        foundCourse.enrolledStudents.push(transaction.userId);
+
 
         await transaction.save();
-        await foundCourse.save();
+        await Course.findByIdAndUpdate(transaction.courseId, {
+            $addToSet: { enrolledStudents: transaction.userId },
+        }, { timestamps: false });
 
 
         return { status: "OK", refId, amount: transaction.amount, cardNumber, courseId: foundCourse._id }
@@ -174,7 +176,7 @@ export const verifyZarinPalService = async (Authority, Status) => {
         await transaction.save();
 
         // ری‌دایرکت به فرانت با وضعیت failed
-  
+
 
         return { status: "failed", code: response.data.data.code }
     }

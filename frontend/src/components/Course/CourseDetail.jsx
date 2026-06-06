@@ -199,6 +199,8 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     }, [])
 
     const isDark = theme === "dark";
+    const finalPrice = calcDiscount(course.coursePrice, course.courseDiscount)
+    const isFree = finalPrice === 0
 
     return (
         <div dir="rtl" className="min-h-screen overflow-hidden transition-all duration-300 bg-[#f4f7fb] text-zinc-900 dark:bg-[#0b0f19] dark:text-white">
@@ -312,23 +314,42 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                         </div>
                                     </button>
 
-                                    <div className="flex items-baseline gap-3 flex-wrap">
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-4xl font-black bg-gradient-to-r from-blue-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
-                                                {formatPrice(calcDiscount(course.coursePrice, course.courseDiscount))}
-                                            </span>
-                                            <span className="text-base font-medium text-gray-500 dark:text-gray-400">تومان</span>
+                                    {isFree ? (
+
+                                        <h4 className="ml-20 text-4xl font-black bg-gradient-to-r from-blue-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent ">
+                                            رایگان
+                                        </h4>
+
+                                    ) : (
+                                        <div className="flex items-center gap-3 flex-wrap">
+                                            {/* قیمت نهایی */}
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-4xl font-black bg-gradient-to-r from-blue-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+                                                    {formatPrice(finalPrice)}
+                                                </span>
+                                                <span className="text-base font-medium text-gray-500 dark:text-gray-400">تومان</span>
+                                            </div>
+
+                                            {/* بخش تخفیف و قیمت اصلی در کنار هم */}
+                                            <div className="flex items-center gap-2">
+                                                {/* درصد تخفیف به صورت عمودی بالای SVG */}
+                                                <div className="flex flex-col items-center">
+                                                    <span className=" font-bold text-blue-500">{course.courseDiscount}%</span>
+                                                    <svg className="size-8 mb-4 text-gray-300 dark:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                    </svg>
+                                                </div>
+
+                                                {/* قیمت اصلی در یک خط با SVG */}
+                                                <div className="flex items-baseline gap-1">
+                                                    <span className="text-2xl font-bold text-gray-400 line-through decoration-2 decoration-red-500/50 dark:text-gray-500">
+                                                        {formatPrice(course.coursePrice)}
+                                                    </span>
+                                                    <span className="text-sm text-gray-400 dark:text-gray-600">تومان</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <svg className="w-5 h-5 text-gray-300 dark:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                        </svg>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-2xl font-bold text-gray-400 line-through decoration-2 decoration-red-500/50 dark:text-gray-500">
-                                                {formatPrice(course.coursePrice)}
-                                            </span>
-                                            <span className="text-sm text-gray-400 dark:text-gray-600">تومان</span>
-                                        </div>
-                                    </div>
+                                    )}
                                 </div>
                             ) : (
                                 <div>

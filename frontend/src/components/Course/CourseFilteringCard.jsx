@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { useCourseStore } from '@/store/useCourseStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { Grip, Search } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -31,6 +31,9 @@ const ToggleButton = () => {
 const CourseFilteringCard = ({ sortBy, setSortBy }) => {
     const location = useLocation()
     const navigate = useNavigate()
+
+    const { authUser } = useAuthStore()
+
     const sortOptions = [
         { label: 'جدیدترین', value: 'newest' },
         { label: 'قدیمی‌ترین', value: 'oldest' },
@@ -93,10 +96,14 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                 <p className='text-[17px] font-Dirooz'>فقط دوره های رایگان</p>
                 <ToggleButton />
             </div>
-            <div className='bg-white shadow p-8 py-6 rounded-lg flex items-center justify-between'>
-                <p className='text-[17px] font-Dirooz'>فقط دوره های من</p>
-                <ToggleButton />
-            </div>
+            {authUser && authUser.role === "student" && (
+                <div className='bg-white shadow p-8 py-6 rounded-lg flex items-center justify-between'>
+                    <p className='text-[17px] font-Dirooz'>فقط دوره های من</p>
+                    <ToggleButton />
+                </div>
+            )
+
+            }
         </div>
     )
 }

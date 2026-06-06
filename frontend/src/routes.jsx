@@ -16,9 +16,10 @@ import TransactionResult from '@/pages/TransactionResult'
 import CourseSetup from '@/pages/Instructor/CourseSetup'
 import LectureSetup from '@/pages/Instructor/LectureSetup'
 
+import InstructorCoursesPage from '@/pages/Instructor/InstructorCoursesPage'
 import InstructorDashboardPage from '@/pages/Instructor/InstructorDashboardPage'
 import InstructorAnalytics from '@/pages/Instructor/InstructorAnalytics'
-import InstructorCoursesPage from '@/pages/Instructor/InstructorCoursesPage'
+import InstructorCoursesManagementPage from '@/pages/Instructor/InstructorCoursesManagementPage'
 import InstructorHomePage from '@/pages/instructor/InstructorHomePage'
 
 import StudentDashboardPage from '@/pages/Student/StudentDashboardPage'
@@ -63,6 +64,10 @@ const routes = () => {
             element: <CoursesPage />
         },
         {
+            path: "/courses/:instructorName",
+            element: <InstructorCoursesPage />
+        },
+        {
             path: "/course/:courseId",
             element: <CoursePage />
         },
@@ -87,7 +92,7 @@ const routes = () => {
                 },
                 {
                     path: "courses",
-                    element: <InstructorCoursesPage />
+                    element: <InstructorCoursesManagementPage />
                 },
                 {
                     path: "courses/course-setup/:courseId",

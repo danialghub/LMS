@@ -20,13 +20,25 @@ export const getInstructorCourseService = async (instructorId, page = 1, limit =
         ])
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit);
+        .limit(limit)
+        .lean();
 
+    const finalInstructorCourses = await Promise.all(instructorCourses.map(async (course) => {
+
+        const transactions = await Transaction.find({ courseId: course._id, status: "successful" }) || [];
+
+        const totalSales = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+
+        return {
+            ...course,
+            sales: totalSales,
+        };
+    }));
 
     const totalPages = Math.ceil(totalCourses / limit);
 
     return {
-        courses: instructorCourses,
+        courses: finalInstructorCourses,
         totalPages,
         currentPage: page,
         hasMore: page < totalPages,
@@ -78,6 +90,8 @@ export const getAnalyticsService = async (instructorId) => {
             students: course.enrolledStudents.length,
         };
     }));
+
+
     if (!analytics.length) {
         throw new NotFoundException("مشکلی رخ داد")
     }

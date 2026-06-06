@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { publicAxios } from '@/lib/axios'
+import { privateRoutes } from '@/lib/privateRoutes'
 import toast from 'react-hot-toast'
 
 export const useAuthStore = create((set, get) => ({
@@ -62,15 +63,11 @@ export const useAuthStore = create((set, get) => ({
     checkAuthStatus: async () => {
         set({ isCheckingAuth: true })
         try {
-            const { data } = await publicAxios.get('/auth/refresh')
-            set({
-                token: data.accessToken,
-                authUser: data.user
-            })
-
+            const { data } = await privateRoutes.get('/auth/check')
+           
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
-            set({ authUser: null })
+            
         } finally {
             set({ isCheckingAuth: false })
         }

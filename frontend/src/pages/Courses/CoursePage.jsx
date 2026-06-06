@@ -25,7 +25,7 @@ const CoursePage = () => {
 
 
 
-    return !isFetching && course?._id ? (
+    return !isFetching && course ? (
         <CourseDetail course={course} isPreviewPage={true} />
     ) : <PageLoader />
 }
