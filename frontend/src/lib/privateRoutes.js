@@ -19,10 +19,7 @@ class AxiosPrivateService {
         this.instance.interceptors.request.use(
             async (config) => {
                 let token = useAuthStore.getState().token;
-                if (token && !config.headers["Authorization"]) {
-                    config.headers["Authorization"] = `Bearer ${token}`;
-                } else {
-                    token = await useAuthStore.getState().issueRefreshToken()
+                if (!config.headers["Authorization"]) {
                     config.headers["Authorization"] = `Bearer ${token}`;
                 }
                 return config;

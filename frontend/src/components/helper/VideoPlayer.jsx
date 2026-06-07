@@ -249,9 +249,9 @@ const VideoPlayer = ({ video, className, allowDownload = true }) => {
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-10">
                     <button
                         onClick={togglePlay}
-                        className="bg-blue-600/90 backdrop-blur-sm p-6 rounded-full text-white hover:bg-blue-500 transition-all hover:scale-110 shadow-2xl"
+                        className="bg-blue-600/90 backdrop-blur-sm p-4 rounded-full text-white hover:bg-blue-500 transition-all hover:scale-110 shadow-2xl"
                     >
-                        <Play size={56} />
+                        <Play size={40} />
                     </button>
                 </div>
             )}

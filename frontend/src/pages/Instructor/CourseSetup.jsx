@@ -38,12 +38,14 @@ const CourseSetup = () => {
     }, [courseId])
 
     const hasAtLeastOneLecture = course?.courseContent?.find(ch => ch.chapterContent.some(lec => lec.isLecturePublished))
+
+
     const requiredFieldes = [
         course?.courseTitle,
         course?.courseDescription,
-        course?.coursePrice,
+        course?.coursePrice >= 0,
         course?.courseThumbnail,
-        course?.courseDiscount,
+        Number(course?.courseDiscount) >=0 ,
         hasAtLeastOneLecture,
     ]
 

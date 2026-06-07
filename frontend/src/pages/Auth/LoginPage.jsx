@@ -96,7 +96,7 @@ const LoginPage = ({ role = "student" }) => {
                     </div>
 
                     {/* فرم */}
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 min-h-[345px]">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 min-h-[380px]">
                         {/* فیلد ایمیل */}
                         <div>
                           

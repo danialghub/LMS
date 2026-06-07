@@ -83,7 +83,7 @@ export const patchCourseFields = asyncHandler(
         }
         if (body?.courseDiscount) {
             body["courseDiscount"] = Number(body.courseDiscount)
-            console.log(body.courseDiscount);
+         
             
         }
 

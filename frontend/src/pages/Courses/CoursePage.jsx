@@ -7,7 +7,7 @@ import { PageLoader, CourseDetail } from '@/components/index'
 const CoursePage = () => {
 
     const { courseId } = useParams()
-    const { authUser,isCheckingAuth } = useAuthStore()
+    const { authUser, isCheckingAuth } = useAuthStore()
     const { getCourseById, course, isFetching } = useCourseStore()
 
     useEffect(() => {
@@ -16,12 +16,12 @@ const CoursePage = () => {
 
         if (authUser && authUser.role === "student") {
             getCourseById(courseId, { userId: authUser._id })
-     
+
 
         } else {
             getCourseById(courseId)
         }
-    }, [authUser, courseId])
+    }, [courseId])
 
 
 

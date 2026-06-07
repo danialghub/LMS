@@ -28,9 +28,22 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
             return
         }
 
-            navigate(`/course/${course._id}/${chapterId}/${lectureId}`)
+        navigate(`/course/${course._id}/${chapterId}/${lectureId}`)
     }
 
+    const getLectureIcon = (lecture, isPlaying) => {
+        if (course.enrolledStudents.includes(authUser?._id) || lecture.isLectureFree) {
+            if (completedLectures?.includes(lecture.lectureId)) {
+                return <CheckCircle2 size={22} className="text-green-400 shrink-0" />
+            } else if (isPlaying) {
+                return <PlayCircle size={22} className="text-blue-400 shrink-0" />
+            } else {
+                return <Circle size={22} className="text-blue-500 shrink-0" />
+            }
+        } else {
+            return <Lock />
+        }
+    }
     return (
         <div className="px-3 pb-5 overflow-y-auto">
             <h3 className="text-xl px-3 my-2 font-bold font-Dirooz text-zinc-900 dark:text-white">جلسات</h3>
@@ -101,27 +114,7 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                                                 onClick={() => handleGoToLecture(chapIdx, lecIdx)}
                                                 className="flex items-center gap-3 flex-1 min-w-0 text-right"
                                             >
-                                                {completedLectures?.includes(lec.lectureId) ? (
-                                                    <CheckCircle2
-                                                        size={22}
-                                                        className="text-green-400 shrink-0"
-                                                    />
-                                                ) : chapterId == chapIdx && lectureId == lecIdx ? (
-                                                    <PlayCircle
-                                                        size={22}
-                                                        className="text-blue-400 shrink-0"
-                                                    />
-                                                ) : lec.isLectureFree ? (
-                                                    <Circle
-                                                        size={22}
-                                                        className="text-blue-500 shrink-0"
-                                                    />
-                                                ) : (
-                                                    <Lock
-                                                        size={18}
-                                                        className="text-gray-500 shrink-0"
-                                                    />
-                                                )}
+                                                {getLectureIcon(lec, chapterId == chapIdx && lectureId == lecIdx)}
 
                                                 <div className="min-w-0 flex-1">
                                                     <h4

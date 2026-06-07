@@ -166,7 +166,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const foundFirstLecture = () => {
         const chapterIndex = course.courseContent.findIndex(ch => ch.chapterContent.some(lec => lec.lectureUrl))
         const lectureIndex = course.courseContent[chapterIndex].chapterContent.findIndex(lec => lec.lectureUrl)
-        console.log(lectureIndex);
+      
 
         if (!chapterIndex && !lectureIndex) {
             toast.error('جلسه ای برای مشاهده موجود نیست')

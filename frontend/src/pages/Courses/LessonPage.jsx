@@ -17,14 +17,9 @@ const LessonPage = () => {
 
   useEffect(() => {
     if (!courseId || isCheckingAuth || !(authUser && authUser.role === "student")) return
-    if (course._id) return
+    if (course?._id) return
 
-
-
-    getCourseById(courseId, { userId: authUser._id })
-
-
-
+    getCourseById(courseId, { userId: authUser?._id })
 
   }, [courseId, authUser])
 
@@ -41,7 +36,7 @@ const LessonPage = () => {
     }
 
     // بررسی وجود course, lectureId, chapterId
-    if (!course._id || !lectureId || !chapterId) return;
+    if (!course?._id || !lectureId || !chapterId) return;
 
     const chapter = course.courseContent[chapterId];
     const lecture = chapter?.chapterContent[lectureId];
@@ -53,7 +48,7 @@ const LessonPage = () => {
     }
 
     setLecture(lecture);
-  }, [course._id, chapterId, authUser, navigate, toast]);
+  }, [course?._id, chapterId, authUser, navigate, toast]);
 
 
   return lecture?.lectureId ? (
