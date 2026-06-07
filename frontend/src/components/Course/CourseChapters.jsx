@@ -41,7 +41,7 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                 return <Circle size={22} className="text-blue-500 shrink-0" />
             }
         } else {
-            return <Lock />
+            return <Lock size={22} className='text-gray-500 shrink-0'/>
         }
     }
     return (

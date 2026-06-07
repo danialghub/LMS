@@ -53,7 +53,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
 
     const { authUser } = useAuthStore()
     const { markLectureAsCompleted, isMarking } = useStudentStore()
-    const { zarinPalRequest } = useTransactionStore()
+    const { zarinPalRequest, isEnrolling } = useTransactionStore()
     const { lectureId, chapterId } = useParams()
     const navigate = useNavigate()
 
@@ -166,7 +166,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const foundFirstLecture = () => {
         const chapterIndex = course.courseContent.findIndex(ch => ch.chapterContent.some(lec => lec.lectureUrl))
         const lectureIndex = course.courseContent[chapterIndex].chapterContent.findIndex(lec => lec.lectureUrl)
-      
+
 
         if (!chapterIndex && !lectureIndex) {
             toast.error('جلسه ای برای مشاهده موجود نیست')
@@ -299,19 +299,30 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                 <div className="flex items-end justify-between mb-10 gap-6">
                                     <button
                                         onClick={handlePayment}
-                                        className="group relative overflow-hidden rounded-lg shadow-lg shadow-blue-500/40 hover:shadow-blue-500/60 transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                                        disabled={isEnrolling}
+                                        className="min-w-[150px] min-h-[45px] group relative overflow-hidden rounded-lg shadow-lg shadow-blue-500/40 hover:shadow-blue-500/60 transition-all duration-300 hover:scale-[1.02] active:scale-95"
                                     >
+
                                         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:via-blue-700 group-hover:to-indigo-700 transition-all duration-300"></div>
                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                                        <div className="relative px-6 py-3 flex items-center gap-3">
-                                            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                            </svg>
-                                            <span className="text-white font-bold text-base tracking-wide">ثبت‌نام در دوره</span>
-                                            <svg className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5l-7 7 7 7" />
-                                            </svg>
-                                        </div>
+                                        {isEnrolling
+                                            ? <div className="flex items-center justify-center">
+                                                <SubmitLoading />
+                                            </div>
+                                            : (
+                                                <div className="relative px-6 py-3  flex items-center gap-3">
+                                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                    </svg>
+                                                    <span className="text-white font-bold text-base tracking-wide">ثبت‌نام در دوره</span>
+                                                    <svg className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5l-7 7 7 7" />
+                                                    </svg>
+                                                </div>
+                                            )
+
+                                        }
+
                                     </button>
 
                                     {isFree ? (

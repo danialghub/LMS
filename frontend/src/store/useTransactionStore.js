@@ -4,10 +4,10 @@ import toast from 'react-hot-toast'
 import { useCourseStore } from '@/store/useCourseStore';
 
 export const useTransactionStore = create((set, get) => ({
-
+    isEnrolling: false,
     //apis
     zarinPalRequest: async (courseId) => {
-
+        set({ isEnrolling: true })
         try {
             const { data } = await privateRoutes.post('/transaction/request', {
                 courseId
@@ -27,6 +27,8 @@ export const useTransactionStore = create((set, get) => ({
         } catch (error) {
             console.error('Payment error:', error);
             toast.error(error.response?.data?.message || 'خطا در ارتباط با سرور');
+        } finally {
+            set({ isEnrolling: false })
         }
     },
 

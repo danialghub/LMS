@@ -25,9 +25,12 @@ const CourseRating = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            document.body.style.overflow = "hidden"
+
             setIsRatingModalOpen(true)
         }, 3000);
+        setTimeout(() => {
+            document.body.style.overflow = "hidden"
+        }, 4500);
 
         return () => {
             document.body.style.overflow = "auto"
@@ -57,7 +60,7 @@ const CourseRating = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onSubmit={handleSubmit(onSubmit)}
-                    className="min-h-screen w-full bg-gradient-to-br from-slate-900/30 via-slate-700/30 to-blue-900/30 dark:from-slate-900/30 dark:via-slate-700/30 dark:to-blue-900/30 absolute top-0 right-0 z-[100] backdrop-blur-sm flex items-center justify-center p-4"
+                    className="min-h-screen w-full bg-gradient-to-br from-slate-900/30 via-slate-700/30 to-blue-900/30 dark:from-slate-900/30 dark:via-slate-700/30 dark:to-blue-900/30 fixed inset-0 z-[100] backdrop-blur-sm flex items-center justify-center p-4"
                 >
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
