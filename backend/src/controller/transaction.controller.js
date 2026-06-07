@@ -17,10 +17,13 @@ export const requestZarinPal = asyncHandler(
         if (!courseId)
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
-        const { status, authority = null, transactionId = null, paymentUrl = null, message = null } = await requestZarinPalService(userId, courseId)
+        const { status, authority = null, transactionId = null, paymentUrl = null, message = null, isEnrolledForFree = false, course } = await requestZarinPalService(userId, courseId)
         if (status === "OK") {
 
             return res.status(HTTPSTATUS.CREATED).json({ authority, transactionId, paymentUrl })
+        }
+        if (isEnrolledForFree && course?._id) {
+            return res.status(HTTPSTATUS.OK).json({ message: "با موفقیت در دوره ثبت نام کردید", course })
         }
         res.status(HTTPSTATUS.BAD_REQUEST).json({ message })
 

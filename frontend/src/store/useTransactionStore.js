@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { privateRoutes } from '@/lib/privateRoutes'
 import toast from 'react-hot-toast'
+import { useCourseStore } from '@/store/useCourseStore';
 
 export const useTransactionStore = create((set, get) => ({
 
@@ -11,8 +12,17 @@ export const useTransactionStore = create((set, get) => ({
             const { data } = await privateRoutes.post('/transaction/request', {
                 courseId
             });
-
-            window.location.href = data.paymentUrl;
+            if (data?.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            }
+            if (data?.course) {
+                useCourseStore.setState(
+                    {
+                        course: data.course
+                    }
+                )
+                toast.success(data.message)
+            }
 
         } catch (error) {
             console.error('Payment error:', error);
@@ -20,19 +30,6 @@ export const useTransactionStore = create((set, get) => ({
         }
     },
 
-    //   updateTransactionStatus: async (courseId,body) => {
-
-    //         try {
-    //             const { data } = await privateRoutes.put(`/transaction/make`,
-    //                 body,
-    //             )
-    //             toast.success(data.message)
-
-    //         } catch (error) {
-    //             toast.error(error.response?.data?.message || "Something went wrong");
-
-    //         }
-    //     },
 
 }))
 

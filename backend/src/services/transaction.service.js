@@ -32,83 +32,94 @@ export const requestZarinPalService = async (userId, courseId) => {
 
     // اعتبارسنجی مبلغ
     if (amount <= 0) {
-        throw new Error('مبلغ پرداختی نامعتبر است');
-    }
+        if (course.enrolledStudents.includes(userId)) {
+            throw new UnauthorizedException("شما یکبار در دوره ثبت نام کردید")
+        } else {
+            let updatedCourse = await Course.findByIdAndUpdate(courseId, {
+                $addToSet: { enrolledStudents: userId },
+            }, { timestamps: false, returnDocument: "after" });
+            updatedCourse = await updatedCourse.populate("instructor" , "-password")
+            return { isEnrolledForFree: true, course: updatedCourse }
+        }
+    } else {
 
-    // داده‌های درخواست به زرین‌پال
-    const paymentData = {
-        merchant_id: Env.MERCHANT_ID,
-        amount: amount,
-        description: course.courseTitle || `پرداخت دوره با شناسه ${courseId}`,
-        callback_url: `http://localhost:${Env.PORT}/api/transaction/verify`, // بهتر است از متغیر محیطی استفاده کنید
-        currency: "IRT"
-    };
+        // داده‌های درخواست به زرین‌پال
+        const paymentData = {
+            merchant_id: Env.MERCHANT_ID,
+            amount: amount,
+            description: course.courseTitle || `پرداخت دوره با شناسه ${courseId}`,
+            callback_url: `http://localhost:${Env.PORT}/api/transaction/verify`, // بهتر است از متغیر محیطی استفاده کنید
+            currency: "IRT"
+        };
 
 
-    try {
-        // ارسال درخواست به زرین‌پال
-        const response = await axios.post(
-            'https://sandbox.zarinpal.com/pg/v4/payment/request.json',
-            paymentData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+        try {
+            // ارسال درخواست به زرین‌پال
+            const response = await axios.post(
+                'https://sandbox.zarinpal.com/pg/v4/payment/request.json',
+                paymentData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+
+                }
+            );
+
+            // بررسی موفقیت آمیز بودن درخواست
+            if (response.data?.data?.code === 100 && response.data?.data?.authority) {
+                const authority = response.data.data.authority;
+
+                // ایجاد تراکنش جدید
+                const transaction = new Transaction({
+                    userId,
+                    courseId,
+                    authority,
+                    amount,
+                    status: 'pending',
+                    paymentData: {
+                        requestData: paymentData,
+                        zarinpalResponse: response.data
+                    },
+
+
+                });
+
+                await transaction.save();
+
+
+                return {
+                    status: "OK", // استفاده از success به جای status
+                    authority,
+                    transactionId: transaction._id,
+                    paymentUrl: `https://sandbox.zarinpal.com/pg/StartPay/${authority}`,
+                    amount
+                };
+            } else {
+                // خطای برگشتی از زرین‌پال
+                const errorMessage = response.data?.data?.message || 'خطا در ایجاد تراکنش';
+                console.error('ZarinPal error:', response.data);
+
+                return {
+                    status: "failed",
+                    message: errorMessage,
+                    code: response.data?.data?.code
+                };
 
             }
-        );
+        } catch (error) {
+            // مدیریت خطاهای شبکه و سرور
+            console.error('Request error:', error.message);
 
-        // بررسی موفقیت آمیز بودن درخواست
-        if (response.data?.data?.code === 100 && response.data?.data?.authority) {
-            const authority = response.data.data.authority;
+            if (error.code === 'ECONNABORTED') {
+                throw new Error('ارتباط با درگاه پرداخت با خطا مواجه شد (timeout)');
+            }
 
-            // ایجاد تراکنش جدید
-            const transaction = new Transaction({
-                userId,
-                courseId,
-                authority,
-                amount,
-                status: 'pending',
-                paymentData: {
-                    requestData: paymentData,
-                    zarinpalResponse: response.data
-                },
-
-
-            });
-
-            await transaction.save();
-
-
-            return {
-                status: "OK", // استفاده از success به جای status
-                authority,
-                transactionId: transaction._id,
-                paymentUrl: `https://sandbox.zarinpal.com/pg/StartPay/${authority}`,
-                amount
-            };
-        } else {
-            // خطای برگشتی از زرین‌پال
-            const errorMessage = response.data?.data?.message || 'خطا در ایجاد تراکنش';
-            console.error('ZarinPal error:', response.data);
-
-            return {
-                status: "failed",
-                message: errorMessage,
-                code: response.data?.data?.code
-            };
+            throw new Error(`خطا در ارتباط با زرین‌پال: ${error.message}`);
         }
-    } catch (error) {
-        // مدیریت خطاهای شبکه و سرور
-        console.error('Request error:', error.message);
-
-        if (error.code === 'ECONNABORTED') {
-            throw new Error('ارتباط با درگاه پرداخت با خطا مواجه شد (timeout)');
-        }
-
-        throw new Error(`خطا در ارتباط با زرین‌پال: ${error.message}`);
     }
+
 };
 export const verifyZarinPalService = async (Authority, Status) => {
 

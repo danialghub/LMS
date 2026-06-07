@@ -129,7 +129,6 @@ const CourseDescriptionInput = ({ courseId, value }) => {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='my-3 max-h-[20vh] overflow-y-auto'>
 
-                                {/* <input type='text'  {...register('courseDescription')} className='form-input' /> */}
                                 <RichTextEditor
                                     name="courseDescription"
                                     control={control}
