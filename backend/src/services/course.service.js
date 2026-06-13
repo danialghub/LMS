@@ -13,7 +13,6 @@ export const getCourseService = async (filterQueries = {}) => {
     };
 
     const sortBy = filterQueries?.sortBy || "newest";
-    console.log(sortBy);
 
 
     let courses = [];
@@ -176,7 +175,7 @@ export const getCourseByIdService = async (userId, courseId) => {
             if (!lec.isLectureFree) {
                 lec.lectureUrl = "";
             }
-            console.log(ch.chapterContent);
+          
           
             
         }))

@@ -10,6 +10,7 @@ import courseRoutes from './routes/course.routes.js'
 import transactionRoutes from './routes/transaction.routes.js'
 import instructorRoutes from './routes/instructor.routes.js'
 import studentRoutes from './routes/student.routes.js'
+import commentRoutes from './routes/comment.routes.js'
 import { asyncHandler } from './middlewares/asyncHandler.middleware.js'
 
 
@@ -57,6 +58,7 @@ app.use('/api/course', courseRoutes)
 app.use('/api/transaction', transactionRoutes)
 app.use('/api/instructor', instructorRoutes)
 app.use('/api/student', studentRoutes)
+app.use('/api/comment', commentRoutes)
 
 
 app.all('/*splat', (req, res) => {

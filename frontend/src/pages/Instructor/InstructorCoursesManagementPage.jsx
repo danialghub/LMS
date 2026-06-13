@@ -14,8 +14,6 @@ const NewCourseModal = ({ isOpen, onClose }) => {
     const [title, setTitle] = useState('');
     const [error, setError] = useState('');
 
-
-
     const { mutate: createCourse, isPending: isCreating } = usePostCourseMutation()
 
     const handleSubmit = (e) => {
@@ -143,7 +141,7 @@ const InstructorCoursesManagementPage = () => {
         return formatPrice(totalEarning)
     }
 
-    console.log(courses);
+   
 
     useEffect(() => {
         if (!totalPagesInfo) return

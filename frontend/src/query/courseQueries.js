@@ -91,23 +91,3 @@ export const usePostCourseMutation = () => {
         },
     })
 }
-const useRateToCourse = (courseId, rating) => {
-    const queryClient = useQueryClient()
-    const { rateToCourse } = useCourseStore()
-    return useMutation({
-        mutationFn: () => rateToCourse(courseId, rating),
-
-        onSuccess: (_, variables) => {
-            toast.success(
-                'ممنون از امتیازدهی شما'
-            )
-
-            queryClient.invalidateQueries({
-                queryKey: [
-                    'course',
-                    variables.courseId
-                ]
-            })
-        }
-    })
-}

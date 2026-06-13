@@ -140,6 +140,36 @@
     animation-delay: -0.25s;
   }
 
+  #nprogress {
+    pointer-events: none;
+  }
+
+  #nprogress .bar {
+    background: linear-gradient(90deg, #447def, #0b70f5, #1048b9);
+    height: 6px !important;
+    /* ← اینجا ضخامت رو تنظیم کن */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+  }
+
+  #nprogress .peg {
+    display: block;
+    position: absolute;
+    right: 0px;
+    width: 100px;
+    height: 100%;
+    box-shadow: 0 0 12px #ef4444, 0 0 8px #f59e0b;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px);
+  }
+
+  #nprogress .spinner {
+    display: none !important;
+  }
+
 
 }
 

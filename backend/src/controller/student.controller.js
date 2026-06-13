@@ -23,7 +23,7 @@ export const markLectureAsCompleted = asyncHandler(
     async (req, res) => {
         const { lectureId, courseId } = req.body
         const userId = req.user._id
-        console.log(lectureId, courseId);
+       
 
         const courseProgress = await markLectureAsCompletedService(userId, courseId, lectureId)
 

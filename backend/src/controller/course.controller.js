@@ -34,7 +34,7 @@ export const getCourseById = asyncHandler(
     async (req, res) => {
         const { courseId } = req.params
         const { userId = "" } = req.query
-        console.log("courseId", courseId, "userId", userId);
+
 
         const course = await getCourseByIdService(userId, courseId)
 
@@ -104,10 +104,10 @@ export const patchCourseFields = asyncHandler(
 )
 export const updateCoursePublishStatus = asyncHandler(
     async (req, res) => {
-        console.log('hellooo');
+      
 
         const course = req.course
-        console.log(course);
+       
 
         const updatedCourse = await updateCoursePublishStatusService(course)
 
@@ -152,7 +152,6 @@ export const createLecture = asyncHandler(
         const { chapterId } = req.params
         const course = req.course
 
-        console.log(req.body);
 
         const body = lectureSchema.safeParse(req.body)
 
@@ -180,8 +179,6 @@ export const patchChapterFields = asyncHandler(
 
 
         const parsedFields = chapterSchema.safeParse(body)
-
-        console.log(parsedFields);
 
 
         if (!parsedFields.success) {
@@ -288,8 +285,6 @@ export const removeAttachment = asyncHandler(
 
         if (!chapterId || !lectureId || !courseId)
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
-
-        console.log('attach');
 
         await removeAttachmentFileService(courseId, chapterId, lectureId)
 

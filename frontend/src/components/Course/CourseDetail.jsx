@@ -8,7 +8,10 @@ import {
     Check,
 } from "lucide-react";
 
-import { VideoPlayer, LectureAttachment, CourseChapters, CourseRating, SubmitLoading } from "@/components/index";
+import {
+    VideoPlayer, LectureAttachment, CourseChapters,
+    CourseRating, SubmitLoading, CourseComment
+} from "@/components/index";
 import { Link, useNavigate, useParams } from "react-router";
 import { useAuthStore } from '@/store/useAuthStore'
 import { useStudentStore } from '@/store/useStudentStore'
@@ -50,6 +53,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const [theme, setTheme] = useState(localStorage.getItem('theme') || "dark");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('')
+    const [activeTab, setActiveTab] = useState('description');
 
     const { authUser } = useAuthStore()
     const { markLectureAsCompleted, isMarking } = useStudentStore()
@@ -292,7 +296,6 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                             )}
                         </div>
 
-                        {/* CONTENT */}
                         <div className="p-8 py-5">
                             {/* قیمت و دکمه ثبت نام */}
                             {!course.enrolledStudents.includes(authUser?._id) ? (
@@ -302,7 +305,6 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                         disabled={isEnrolling}
                                         className="min-w-[150px] min-h-[45px] group relative overflow-hidden rounded-lg shadow-lg shadow-blue-500/40 hover:shadow-blue-500/60 transition-all duration-300 hover:scale-[1.02] active:scale-95"
                                     >
-
                                         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-600 group-hover:from-blue-700 group-hover:via-blue-700 group-hover:to-indigo-700 transition-all duration-300"></div>
                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                                         {isEnrolling
@@ -310,7 +312,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                 <SubmitLoading />
                                             </div>
                                             : (
-                                                <div className="relative px-6 py-3  flex items-center gap-3">
+                                                <div className="relative px-6 py-3 flex items-center gap-3">
                                                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                                     </svg>
@@ -320,38 +322,28 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                     </svg>
                                                 </div>
                                             )
-
                                         }
-
                                     </button>
 
                                     {isFree ? (
-
                                         <h4 className="ml-20 text-4xl font-black bg-gradient-to-r from-blue-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent ">
                                             رایگان
                                         </h4>
-
                                     ) : (
                                         <div className="flex items-center gap-3 flex-wrap">
-                                            {/* قیمت نهایی */}
                                             <div className="flex items-baseline gap-1">
                                                 <span className="text-4xl font-black bg-gradient-to-r from-blue-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
                                                     {formatPrice(finalPrice)}
                                                 </span>
                                                 <span className="text-base font-medium text-gray-500 dark:text-gray-400">تومان</span>
                                             </div>
-
-                                            {/* بخش تخفیف و قیمت اصلی در کنار هم */}
                                             <div className="flex items-center gap-2">
-                                                {/* درصد تخفیف به صورت عمودی بالای SVG */}
                                                 <div className="flex flex-col items-center">
-                                                    <span className=" font-bold text-blue-500">{course.courseDiscount}%</span>
+                                                    <span className="font-bold text-blue-500">{course.courseDiscount}%</span>
                                                     <svg className="size-8 mb-4 text-gray-300 dark:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                                     </svg>
                                                 </div>
-
-                                                {/* قیمت اصلی در یک خط با SVG */}
                                                 <div className="flex items-baseline gap-1">
                                                     <span className="text-2xl font-bold text-gray-400 line-through decoration-2 decoration-red-500/50 dark:text-gray-500">
                                                         {formatPrice(course.coursePrice)}
@@ -412,74 +404,118 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                 !course.courseRatings.some(rate => rate.userId === authUser._id) &&
                                 <CourseRating />
                             }
+                        </div>
+                        {/* CONTENT WITH TABS */}
+                        <div className="p-8 py-5">
+                            {/* TABS */}
+                            <div className="flex gap-2  border-b border-zinc-200 dark:border-[#1a2233]">
+                                <button
+                                    onClick={() => setActiveTab('description')}
+                                    className={`px-6 py-3 font-medium transition-all relative ${activeTab === 'description'
+                                        ? 'text-blue-500'
+                                        : 'text-zinc-500 hover:text-zinc-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                        }`}
+                                >
+                                    توضیحات دوره
+                                    {activeTab === 'description' && (
+                                        <div className="absolute bottom-0 right-0 left-0 h-0.5 bg-blue-500 rounded-full" />
+                                    )}
+                                </button>
 
-                            {/* COURSE INFO */}
-                            <div className="mt-8">
-                                {course?.lecture?.attachment && (
-                                    <LectureAttachment isDark={theme === "dark"} attachmentFile={course.lecture.attachment} />
-                                )}
-                                <h1 className="text-4xl mt-28 font-heading font-normal leading-[70px]">{course.courseTitle}</h1>
-                                <p dangerouslySetInnerHTML={{ __html: course.courseDescription }} className="font- leading-9 mt-5 max-w-5xl text-[18px] text-zinc-600 dark:!text-white/70" />
+                                <button
+                                    onClick={() => setActiveTab('comments')}
+                                    className={`px-6 py-3 font-medium transition-all relative ${activeTab === 'comments'
+                                        ? 'text-blue-500'
+                                        : 'text-zinc-500 hover:text-zinc-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                        }`}
+                                >
+                                    نظرات
+                                    {activeTab === 'comments' && (
+                                        <div className="absolute bottom-0 right-0 left-0 h-0.5 bg-blue-500 rounded-full" />
+                                    )}
+                                </button>
                             </div>
 
-                            {/* COURSE META */}
-                            <div className="mt-10">
-                                {/* INSTRUCTOR */}
-                                <div className="rounded-3xl border p-5 transition-all duration-300 hover:-translate-y-1 bg-zinc-50 border-zinc-200 hover:bg-white dark:bg-[#121826] dark:border-[#1b2538] dark:hover:bg-[#151d2d]">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="relative">
-                                                {course.instructor?.avatar ? (
-                                                    <img src={course.instructor.avatar} alt="teacher" className="w-20 h-20 rounded-xl object-cover border-2 border-blue-500" />
-                                                ) : (
-                                                    <span className="size-16 rounded-xl bg-indigo-500 text-white text-4xl flex items-center justify-center">
-                                                        {course.instructor.name[0]}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div>
-                                                <h3 className="text-xl font-bold">{course.instructor.name}</h3>
-                                                <p className="mt-2 text-sm text-zinc-500 dark:text-gray-400">
-                                                    {course.instructor.instructorProfile.major}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="mt-5">
-                                            <Link to={`/instructor/${course.instructor.name}/courses`} className="py-2.5 px-4 rounded-md text-sm font-medium transition-all duration-200 bg-blue-500 hover:bg-blue-600 text-white shadow-sm hover:shadow-md active:scale-95">
-                                                مشاهده همه دوره‌های مدرس
-                                            </Link>
-                                        </div>
+
+                            {/* DESCRIPTION TAB CONTENT */}
+                            {activeTab === 'description' && (
+                                <>
+
+
+                                    {/* COURSE INFO */}
+                                    <div className="mt-4">
+                                        {course?.lecture?.attachment && (
+                                            <LectureAttachment isDark={theme === "dark"} attachmentFile={course.lecture.attachment} />
+                                        )}
+                                        <h1 className="text-4xl mt-12 font-heading font-normal leading-[70px]">{course.courseTitle}</h1>
+                                        <p dangerouslySetInnerHTML={{ __html: course.courseDescription }} className="font- leading-9 mt-5 max-w-5xl text-[18px] text-zinc-600 dark:!text-white/70" />
                                     </div>
 
-                                    <div className="mt-5 pt-5 border-t text-sm leading-8 line-clamp-2 border-zinc-200 text-zinc-600 dark:border-[#1b2538] dark:text-gray-400">
-                                        {course.instructor.instructorProfile.bio}
-                                    </div>
-                                </div>
-
-                                {/* STATS */}
-                                <div className="grid grid-cols-2 xl:grid-cols-4 gap-5 mt-4">
-                                    {statistician.map((item, index) => (
-                                        <div key={index} className={`relative overflow-hidden rounded-3xl border p-5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-2xl bg-white border-zinc-200 dark:bg-[#121826] ${item.border}`}>
-                                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 bg-gradient-to-br ${item.color}`} />
-                                            <div className="relative z-10">
-                                                <div className="flex items-start justify-between">
+                                    {/* COURSE META */}
+                                    <div className="mt-4">
+                                        {/* INSTRUCTOR */}
+                                        <div className="rounded-3xl border p-5 transition-all duration-300 hover:-translate-y-1 bg-zinc-50 border-zinc-200 hover:bg-white dark:bg-[#121826] dark:border-[#1b2538] dark:hover:bg-[#151d2d]">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="relative">
+                                                        {course.instructor?.avatar ? (
+                                                            <img src={course.instructor.avatar} alt="teacher" className="w-20 h-20 rounded-xl object-cover border-2 border-blue-500" />
+                                                        ) : (
+                                                            <span className="size-16 rounded-xl bg-indigo-500 text-white text-4xl flex items-center justify-center">
+                                                                {course.instructor.name[0]}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     <div>
-                                                        <p className={`text-sm text-zinc-500 dark:text-gray-400`}>{item.title}</p>
-                                                        <h3 className="text-3xl font-black mt-4 tracking-tight">{item.value}</h3>
-                                                        <span className={`text-xs mt-2 block text-zinc-400 dark:text-gray-500`}>{item.suffix}</span>
-                                                    </div>
-                                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl backdrop-blur-xl border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 bg-zinc-100 border-zinc-200 dark:bg-white/5 dark:border-white/10`}>
-                                                        {item.icon}
+                                                        <h3 className="text-xl font-bold">{course.instructor.name}</h3>
+                                                        <p className="mt-2 text-sm text-zinc-500 dark:text-gray-400">
+                                                            {course.instructor.instructorProfile.major}
+                                                        </p>
                                                     </div>
                                                 </div>
-                                                <div className={`mt-5 h-[3px] w-full rounded-full overflow-hidden bg-zinc-100 dark:bg-white/5`}>
-                                                    <div className={`h-full rounded-full w-[70%] bg-gradient-to-r ${item.color}`} />
+                                                <div className="mt-5">
+                                                    <Link to={`/instructor/${course.instructor.name}/courses`} className="py-2.5 px-4 rounded-md text-sm font-medium transition-all duration-200 bg-blue-500 hover:bg-blue-600 text-white shadow-sm hover:shadow-md active:scale-95">
+                                                        مشاهده همه دوره‌های مدرس
+                                                    </Link>
                                                 </div>
                                             </div>
+
+                                            <div className="mt-5 pt-5 border-t text-sm leading-8 line-clamp-2 border-zinc-200 text-zinc-600 dark:border-[#1b2538] dark:text-gray-400">
+                                                {course.instructor.instructorProfile.bio}
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+
+                                        {/* STATS */}
+                                        <div className="grid grid-cols-2 xl:grid-cols-4 gap-5 mt-4">
+                                            {statistician.map((item, index) => (
+                                                <div key={index} className={`relative overflow-hidden rounded-3xl border p-5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-2xl bg-white border-zinc-200 dark:bg-[#121826] ${item.border}`}>
+                                                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 bg-gradient-to-br ${item.color}`} />
+                                                    <div className="relative z-10">
+                                                        <div className="flex items-start justify-between">
+                                                            <div>
+                                                                <p className={`text-sm text-zinc-500 dark:text-gray-400`}>{item.title}</p>
+                                                                <h3 className="text-3xl font-black mt-4 tracking-tight">{item.value}</h3>
+                                                                <span className={`text-xs mt-2 block text-zinc-400 dark:text-gray-500`}>{item.suffix}</span>
+                                                            </div>
+                                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl backdrop-blur-xl border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 bg-zinc-100 border-zinc-200 dark:bg-white/5 dark:border-white/10`}>
+                                                                {item.icon}
+                                                            </div>
+                                                        </div>
+                                                        <div className={`mt-5 h-[3px] w-full rounded-full overflow-hidden bg-zinc-100 dark:bg-white/5`}>
+                                                            <div className={`h-full rounded-full w-[70%] bg-gradient-to-r ${item.color}`} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {/* COMMENTS TAB CONTENT */}
+                            {activeTab === 'comments' && course && (
+                                <CourseComment course={course} />
+                            )}
                         </div>
                     </div>
                 </main>

@@ -39,7 +39,7 @@ export const verifyZarinPal = asyncHandler(
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
         const { status, refId = null, amount = 0, code = 400, cardNumber = null, courseId = null } = await verifyZarinPalService(Authority, Status)
-        console.log(code);
+      
 
         if (status === "OK") {
             return res.redirect(

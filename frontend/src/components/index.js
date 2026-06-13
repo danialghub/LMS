@@ -15,6 +15,7 @@ export { default as VideoPlayer } from './helper/VideoPlayer'
 export { default as SubmitLoading } from './helper/SubmitLoading'
 export { default as CourseSkleton } from './helper/CourseSkleton'
 export { default as WarningModal } from './helper/WarningModal'
+export { default as CommentsListSkeleton } from './helper/CommentsListSkeleton'
 
 
 //Home
@@ -31,6 +32,11 @@ export { default as CourseFilteringCard } from './Course/CourseFilteringCard'
 export { default as CourseChapters } from './Course/CourseChapters'
 export { default as LectureAttachment } from './Course/LectureAttachment'
 export { default as CourseRating } from './Course/CourseRating'
+//comment
+export { default as CourseComment } from './Course/comment/CourseComment'
+export { default as CommentList } from './Course/comment/CommentList'
+export { default as CommentItem } from './Course/comment/CommentItem'
+export { default as CommentInput } from './Course/comment/CommentInput'
 
 //Instructor
 //Student

@@ -25,16 +25,11 @@ const CourseRating = () => {
 
     useEffect(() => {
         setTimeout(() => {
-
             setIsRatingModalOpen(true)
         }, 3000);
-        setTimeout(() => {
-            document.body.style.overflow = "hidden"
-        }, 4500);
+     
 
-        return () => {
-            document.body.style.overflow = "auto"
-        }
+      
     }, [])
 
     const onSubmit = async (data) => {
