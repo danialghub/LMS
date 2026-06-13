@@ -35,6 +35,15 @@ export const useCommentStore = create((set, get) => ({
             console.error(error.response?.data?.message || "Something went wrong");
             throw error;
         }
+    },
+    deleteComment: async (courseId, commentId) => {
+        try {
+            const { data } = await privateRoutes.delete(`/comment/${courseId}/${commentId}/remove`)
+            return data
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+            throw error;
+        }
     }
 
 }))

@@ -16,7 +16,7 @@ import {
     Trash
 } from 'lucide-react';
 import { formatTime } from "@/lib/helper";
-import { useApproveCommentMutation } from '@/query/commentQueries'
+import { useApproveCommentMutation,useDeleteCommentMutation } from '@/query/commentQueries'
 import { motion } from 'framer-motion'
 
 
@@ -33,31 +33,18 @@ const CommentItem = ({
 
     const isExpanded = expandedReplies.has(comment._id);
 
+    const { mutateAsync: approveComment, isPending: isApproving } = useApproveCommentMutation()
+    const { mutateAsync: deleteComment, isPending: isDeletting } = useDeleteCommentMutation()
+
 
     const handleDeleteComment = async (commentId) => {
         if (!window.confirm('آیا از حذف این نظر مطمئن هستید؟')) return;
 
-        if (useDummyData) {
-            setComments(prev => prev.filter(comment => {
-                if (comment._id === commentId) return false;
-                if (comment.replies) {
-                    comment.replies = comment.replies.filter(reply => reply._id !== commentId);
-                }
-                return true;
-            }));
-        } else {
-            try {
-                const response = await fetch(`/api/courses/${courseId}/comments/${commentId}`, {
-                    method: 'DELETE'
-                });
+        await deleteComment({ courseId, commentId })
+    };
 
-                if (response.ok) {
-                    fetchComments();
-                }
-            } catch (error) {
-                console.error('Error deleting comment:', error);
-            }
-        }
+    const handleApproveComment = async (commentId) => {
+        await approveComment({ courseId, commentId })
     };
 
     const getStatusBadge = (status) => {
@@ -67,14 +54,6 @@ const CommentItem = ({
         return <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-600 dark:text-yellow-400">در انتظار تایید</span>;
     };
 
-    const { mutateAsync: approveComment, isPending: isApproving } = useApproveCommentMutation()
-
-
-    const handleApproveComment = async (commentId) => {
-
-
-        await approveComment({ courseId, commentId })
-    };
 
 
     return (
@@ -144,7 +123,8 @@ const CommentItem = ({
                                 )}
                                 <button
                                     onClick={() => handleDeleteComment(comment._id)}
-                                    className="w-full px-4 py-2 text-right text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center gap-2 cursor-pointer"
+                                    disabled={isDeletting}
+                                    className="w-full px-4 py-2 text-right text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center gap-2 cursor-pointer dark:disabled:text-red-600/60"
                                 >
                                     <Trash size={14} /> حذف
                                 </button>

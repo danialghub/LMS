@@ -165,24 +165,17 @@ export const approveCommentService = async (commentId) => {
     return comment;
 
 }
-export const rateToCourseService = async (courseId, userId, rating) => {
-    const foundCourse = await Course.findById(courseId);
+export const deleteCommentService = async (commentId) => {
 
-    if (!foundCourse) {
-        throw new NotFoundException("دوره پیدا نشد");
+    const comment = await Comment.findById(commentId);
+
+
+    if (!comment) {
+        throw new NotFoundException('نظر یافت نشد')
     }
 
-    const alreadyRated = foundCourse.courseRatings.find(
-        item => item.userId === userId
-    );
+    await Comment.deleteMany({ parentId: commentId });
+    await comment.deleteOne();
 
-    if (alreadyRated) {
-        throw new UnauthorizedException("شما یکبار امتیاز دادید");
-    }
 
-    const updatedCourse = await Course.findByIdAndUpdate(courseId, {
-        $addToSet: { courseRatings: { rating, userId } },
-    }, { timestamps: false, returnDocument: "after" });
-
-    return updatedCourse.courseRatings;
 };

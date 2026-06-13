@@ -1,7 +1,7 @@
 // controllers/commentController.js
 import Comment from '../Models/Comment.js';
 import Course from '../Models/Course.js';
-import { approveCommentService, getCourseCommentsService, postCourseCommentService } from '../services/comment.service.js';
+import { approveCommentService, deleteCommentService, getCourseCommentsService, postCourseCommentService } from '../services/comment.service.js';
 import { asyncHandler } from '../middlewares/asyncHandler.middleware.js'
 import { HTTPSTATUS } from '../config/http.config.js';
 
@@ -23,9 +23,6 @@ export const postCourseComment = async (req, res) => {
     try {
         const { courseId } = req.params;
         const userId = req.user._id;
-
-
-
         const comment = await postCourseCommentService(courseId, userId, req.body)
 
         res.status(201).json(comment);
@@ -37,33 +34,17 @@ export const postCourseComment = async (req, res) => {
 
 
 // حذف نظر
-export const deleteComment = async (req, res) => {
-    try {
+export const deleteComment = asyncHandler(
+    async (req, res) => {
+
         const { commentId } = req.params;
-        const userId = req.user._id;
-        const userRole = req.user.role;
 
-        const comment = await Comment.findById(commentId);
-
-        if (!comment) {
-            return res.status(404).json({ error: 'نظر یافت نشد' });
-        }
-
-        // فقط نویسنده یا ادمین/مدرس می‌تواند حذف کند
-        if (comment.userId.toString() !== userId.toString() &&
-            userRole !== 'admin' && userRole !== 'instructor') {
-            return res.status(403).json({ error: 'شما اجازه حذف این نظر را ندارید' });
-        }
-
-        // حذف همه پاسخ‌ها
-        await Comment.deleteMany({ parentId: commentId });
-        await comment.deleteOne();
+        await deleteCommentService(commentId)
 
         res.json({ message: 'نظر با موفقیت حذف شد' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+
     }
-};
+);
 
 // لایک/دیسلایک
 export const toggleReaction = async (req, res) => {

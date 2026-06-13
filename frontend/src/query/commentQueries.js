@@ -71,3 +71,26 @@ export const useApproveCommentMutation = () => {
         }
     })
 }
+export const useDeleteCommentMutation = () => {
+    const queryClient = useQueryClient()
+
+    const { deleteComment } = useCommentStore()
+
+    return useMutation({
+        mutationFn: ({ courseId, commentId }) => {
+            return deleteComment(courseId, commentId)
+        },
+
+        onSuccess: (data, variables) => {
+            toast.success('نظر با موفقیت حذف شد')
+
+            queryClient.invalidateQueries({
+                queryKey: ['courseComments', variables.courseId]
+            })
+        },
+
+        onError: (error) => {
+            toast.error('خطا در ثبت نظر: ' + error.message)
+        }
+    })
+}

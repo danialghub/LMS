@@ -30,7 +30,7 @@ export const protectRoute = asyncHandler(
 
 
             if (!user) throw new NotFoundException()
-          
+
 
             req.user = user
             next()
@@ -64,6 +64,7 @@ export const courseOwner = asyncHandler(
             throw new UnauthorizedException('مدرس دوره نامعتبر')
 
 
+        
 
         req.course = course
         next()
