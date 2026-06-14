@@ -8,8 +8,8 @@ export const lectureDurationSchema = z.string()
 
 export const lectureUrlSchema = z.object({
     lectureUrl: z.instanceof(File, { message: "ویدئو دوره الزامیست" })
-        .refine((file) => file.size <= 256 * 1024 * 1024, {
-            message: "حجم ویدئو  نباید بیشتر از 256 مگابایت باشد",
+        .refine((file) => file.size <= 100 * 1024 * 1024, {
+            message: "حجم ویدئو  نباید بیشتر از 100 مگابایت باشد",
         })
         .refine((file) => file.type.startsWith("video/"), {
             message: "فایل انتخابی باید از نوع ویدئو  باشد",
@@ -69,8 +69,8 @@ export const courseTitleSchema = z.object({
 export const courseThumbnailSchema = z.object({
     courseThumbnail: z
         .instanceof(File, { message: "پوستر دوره الزامیست" })
-        .refine((file) => file.size <= 4 * 1024 * 1024, {
-            message: "حجم فایل پوستر نباید بیشتر از ۴ مگابایت باشد",
+        .refine((file) => file.size <= 10 * 1024 * 1024, {
+            message: "حجم فایل پوستر نباید بیشتر از 10 مگابایت باشد",
         })
         .refine((file) => file.type.startsWith("image/"), {
             message: "فایل انتخابی باید از نوع تصویر باشد",

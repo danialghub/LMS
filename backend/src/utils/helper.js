@@ -47,27 +47,16 @@ export const uploadImage = async (image, isThumbnail) => {
     return secure_url;
 }
 export const uploadVideo = async (video) => {
-    const transformations = [
-        {
-            crop: "fill",
-            aspect_ratio: "16:9"
-        },
-        {
-            quality: "auto",
-            fetch_format: "auto"
-        }
-    ];
-
+   
     const { secure_url } = await cloudinary.uploader.upload(video, {
         resource_type: "video",
-        transformation: transformations
     });
 
     return secure_url;
 }
 export const uploadFile = async (file) => {
     const result = await cloudinary.uploader.upload(file, {
-        resource_type: "raw",
+        resource_type: "auto",
         transformation: [
             {
                 quality: "auto"
@@ -78,6 +67,5 @@ export const uploadFile = async (file) => {
     return {
         url: result.secure_url,
         bytes: result.bytes,
-        format: result.format,
     };
 }

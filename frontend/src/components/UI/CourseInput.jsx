@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Edit, Image, ImageIcon, Loader2, MinusCircle, Plus, PlusCircle, UploadCloud, XIcon } from 'lucide-react'
 import {
     courseTitleSchema, courseDescriptionSchema, courseThumbnailSchema, coursePriceSchema, courseDiscountSchema,
@@ -17,7 +17,6 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
-    DragOverlay,
 } from '@dnd-kit/core';
 import {
     SortableContext,
@@ -249,7 +248,7 @@ const CourseThumbnailInput = ({ courseId, value }) => {
                                         />
                                         <div className='flex flex-col justify-center items-center gap-2 text-black/70'>
                                             <UploadCloud size={40} className='cursor-pointer' />
-                                            <p className='text-sm'>حداکثر 4 مگابایت</p>
+                                            <p className='text-sm'>حداکثر 10 مگابایت</p>
                                         </div>
                                     </label>
 

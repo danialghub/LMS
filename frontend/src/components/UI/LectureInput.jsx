@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Edit, File, Image, ImageIcon, MinusCircle, Plus, PlusCircle, UploadCloud, VideoIcon, XIcon } from 'lucide-react'
+import React, {  useState } from 'react'
+import { Edit, File, Plus, UploadCloud, VideoIcon, XIcon } from 'lucide-react'
 import {
     lectureTitleSchema, isLecureFreeSchema, lectureUrlSchema, attachmentSchema
 } from '@/validators/courseSchema'
@@ -9,7 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useCourseStore } from '../../store/useCourseStore'
 import { VideoPlayer } from '@/components/index'
 
-import { chapterContent } from '../../validators/courseSchema'
 
 const LectureTitleInput = ({ courseId, chapterId, lectureId, value }) => {
     const [isEditing, setIsEditing] = useState(false)
@@ -192,7 +191,7 @@ const LectureVideoInput = ({ courseId, chapterId, lectureId, value }) => {
                                         />
                                         <div className='flex flex-col justify-center items-center gap-2 text-black/70'>
                                             <UploadCloud size={40} className='cursor-pointer' />
-                                            <p className='text-sm'>حداکثر 256 مگابایت</p>
+                                            <p className='text-sm'>حداکثر 100 مگابایت</p>
                                         </div>
                                     </label>
                                 )}

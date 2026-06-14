@@ -9,25 +9,15 @@ import {
 
 } from "../services/course.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
-import {  uploadFile, uploadImage, uploadVideo } from '../utils/helper.js'
+import { uploadFile, uploadImage, uploadVideo } from '../utils/helper.js'
 
 export const getCourses = asyncHandler(
     async (req, res) => {
         const filters = req.query
 
-        const {
-            courses,
-            page,
-            limit,
-            totalCourses,
-            totalPages,
-            hasMore
-        } = await getCourseService(filters)
+        const data = await getCourseService(filters)
 
-        if (!courses.length)
-            return res.sendStatus(HTTPSTATUS.NOT_FOUND)
-
-        res.status(HTTPSTATUS.OK).json({ courses, page, limit, totalCourses, totalPages, hasMore })
+        res.status(HTTPSTATUS.OK).json(data)
     }
 )
 export const getCourseById = asyncHandler(
@@ -223,18 +213,21 @@ export const patchLectureFields = asyncHandler(
         }
         else if (file) {
             const safeName = Buffer.from(file.originalname, "latin1").toString("utf8");
-        
+
             // body["attachment"] = {
             //     url: `http://localhost:3000/${file.path.replace(/\\/g, '/')}`,
             //     name: safeName,
             //     fileType: type,
             //     size: Number(file.size)
             // }
-            const { url, bytes, format } = await uploadFile(file.path)
+            const { url, bytes } = await uploadFile(file.path)
+
+            console.log(file.name?.split('.').pop());
+
             body["attachment"] = {
                 url,
                 name: safeName,
-                fileType: format,
+                fileType: file.name?.split('.').pop(),
                 size: Number(bytes)
             }
         }

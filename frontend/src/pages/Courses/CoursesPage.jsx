@@ -59,7 +59,6 @@ const Banner = ({ studentCount = 0, courseCount, instructorCount = 0 }) => {
 
 const CoursesPage = () => {
     const [sortBy, setSortBy] = useState('newest')
-    const [courses, setCourses] = useState([])
     const [debouncedFilters] = useDebounce(sortBy, 700)
 
     const {
@@ -72,6 +71,8 @@ const CoursesPage = () => {
     } = useGetCourses({ sortBy: debouncedFilters })
 
 
+    const courses = data?.pages?.flatMap(page => page.courses) || []
+    const totalCourses = data?.pages?.[0]?.totalCourses || 0
 
     useEffect(() => {
         if (!error) return
@@ -83,19 +84,13 @@ const CoursesPage = () => {
         )
     }, [error])
 
-    useEffect(() => {
-        if (!data) return
-        const fltatCourses = data?.pages?.flatMap(page => page.courses) || []
 
-        setCourses(fltatCourses)
-
-    }, [data])
     return (
         <div className='bg-neutral-100'>
             <Navbar />
             <div className='px-6 md:px-32  py-52 pt-4'>
                 <div className='my-12 relative'>
-                    <Banner courseCount={courses?.length} />
+                    <Banner courseCount={totalCourses} />
                 </div>
                 <div className='flex flex-col md:flex-row items-start  gap-8 relative'>
 
@@ -105,19 +100,22 @@ const CoursesPage = () => {
                     />
 
                     <div className='md:flex-3 flex flex-col items-center gap-6'>
-                        {isFetching && !courses.length
+                        {isFetching && courses.length === 0
                             ? <div > <PageLoader /></div>
-                            : (
-                                <div className='grid grid-cols-1 px-10  md:px-0 md:grid-cols-2 xl:grid-cols-3  gap-6 md:flex-3 ' >
-                                    <AnimatePresence>
-                                        {courses?.length && courses.map(course => (
-                                            <CourseCard key={course._id} course={course} />
-                                        ))
+                            : courses?.length > 0
+                                ? (
+                                    <div className='grid grid-cols-1 px-10  md:px-0 md:grid-cols-2 xl:grid-cols-3  gap-6 md:flex-3 ' >
+                                        <AnimatePresence>
+                                            {courses.map(course => (
+                                                <CourseCard key={course._id} course={course} />
+                                            ))
 
-                                        }
-                                    </AnimatePresence>
+                                            }
+                                        </AnimatePresence>
+                                    </div>
+                                ) : <div className='flex items-center justify-center text-4xl text-gray-800 min-h-[70vh] font-heading'>
+                                    دوره ای یافت نشد
                                 </div>
-                            )
                         }
                         {hasNextPage && (
                             <div >

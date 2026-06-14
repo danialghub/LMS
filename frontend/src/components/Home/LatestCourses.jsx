@@ -16,8 +16,8 @@ const LatestCourses = () => {
     const getcourse = async () => {
       setIsfetching(true)
       const data = await getCourses({ page: 1, limit: 4 })
-      setTotalCourses(data.totalCourses)
-      setRecenlyCourses(data.courses)
+      setTotalCourses(data?.totalCourses || 0)
+      setRecenlyCourses(data?.courses || [])
       setIsfetching(false)
     }
     getcourse()
@@ -63,7 +63,7 @@ const LatestCourses = () => {
                 <CourseCard key={course._id} course={course} />
               ))}
             </div>)
-            : <div className='flex items-center justify-center text-4xl text-white/80 my-10'>فعلا محتوایی برای نمایش نیست</div>
+            : <div className='flex items-center justify-center text-3xl text-white/70 my-20'>فعلا محتوایی برای نمایش نیست</div>
         }
 
         {/* دکمه همه دوره‌ها */}

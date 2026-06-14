@@ -122,10 +122,8 @@ export const getCourseService = async (filterQueries = {}) => {
             Course.countDocuments(query),
         ]);
     }
+    
 
-    if (courses.length === 0 && page === 1) {
-        throw new NotFoundException("هیچ دوره‌ای یافت نشد");
-    }
 
     const totalPages = Math.ceil(totalCourses / limit);
 
@@ -171,13 +169,13 @@ export const getCourseByIdService = async (userId, courseId) => {
             ])
 
         course.courseContent.forEach(ch => ch.chapterContent.forEach(lec => {
-            
+
             if (!lec.isLectureFree) {
                 lec.lectureUrl = "";
             }
-          
-          
-            
+
+
+
         }))
 
     }

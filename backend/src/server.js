@@ -84,12 +84,11 @@ if (Env.NODE_ENV === "production") {
             if (err) next(err);
         });
     });
+} else {
+    app.all('/*splat', (req, res) => {
+        res.status(HTTPSTATUS.NOT_FOUND).json({ message: '404 not found' })
+    })
 }
-
-
-app.all('/*splat', (req, res) => {
-    res.status(HTTPSTATUS.NOT_FOUND).json({ message: '404 not found' })
-})
 
 
 app.use(errorHandler);
