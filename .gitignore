@@ -7,8 +7,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-frontend/.env
-backend/.env
+.env
+.env.local
+.env.*.local
 
 # Build outputs
 dist/

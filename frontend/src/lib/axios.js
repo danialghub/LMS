@@ -2,13 +2,13 @@
 import axios from 'axios';
 
 const publicAxios = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true, 
+    baseURL: import.meta.env.MODE === "development" ? "http://localhost:3000/api" : "/api",
+    withCredentials: true,
 });
 
 
 const privateAxios = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: import.meta.env.MODE === "development" ? "http://localhost:3000/api" : "/api",
     withCredentials: true,
 });
 
