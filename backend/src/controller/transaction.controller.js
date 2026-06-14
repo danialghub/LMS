@@ -1,10 +1,10 @@
-import { courseSchema, chapterSchema, lectureSchema } from "../validators/course.validator.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import {
     requestZarinPalService,
     verifyZarinPalService
 } from "../services/transaction.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
+import { Env } from "../config/ENV.config.js";
 
 
 
@@ -39,16 +39,16 @@ export const verifyZarinPal = asyncHandler(
             return res.sendStatus(HTTPSTATUS.BAD_REQUEST)
 
         const { status, refId = null, amount = 0, code = 400, cardNumber = null, courseId = null } = await verifyZarinPalService(Authority, Status)
-      
+
 
         if (status === "OK") {
             return res.redirect(
-                `http://localhost:5173/transaction-result?status=success&ref_id=${refId}&amount=${amount}&card_number=${cardNumber}&cId=${courseId}`
+                `${Env.FRONTEND_ORIGIN}/transaction-result?status=success&ref_id=${refId}&amount=${amount}&card_number=${cardNumber}&cId=${courseId}`
             );
         } else if (status === "already_verified") {
-            return res.redirect('http://localhost:5173/transaction-result?status=already_verified');
+            return res.redirect(`${Env.FRONTEND_ORIGIN}/transaction-result?status=already_verified`);
         } else if (status === "failed") {
-            return res.redirect(`http://localhost:5173/transaction-result?status=failed&code=${code}`);
+            return res.redirect(`${Env.FRONTEND_ORIGIN}/transaction-result?status=failed&code=${code}`);
         }
 
 
