@@ -67,22 +67,20 @@ app.use('/api/comment', commentRoutes)
 
 
 if (Env.NODE_ENV === "production") {
-
-    const clientPath = path.resolve(__dirname, "../../frontend/dist");
-
-
-    if (!fs.existsSync(clientPath)) {
+    const publicDir = path.join(process.cwd(), "public")
+   
+    if (!fs.existsSync(publicDir)) {
         console.error(`Client build not found at ${clientPath}`);
         process.exit(1);
     }
 
-    app.use(express.static(clientPath));
+    app.use(express.static(publicDir));
 
     app.get("*", (req, res, next) => {  // ✅ next اضافه شد
         if (req.path.startsWith("/api")) {
             return next();
         }
-        res.sendFile(path.join(clientPath, "index.html"), (err) => {
+        res.sendFile(path.join(publicDir, "index.html"), (err) => {
             if (err) next(err);
         });
     });
