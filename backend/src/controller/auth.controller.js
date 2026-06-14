@@ -2,6 +2,7 @@ import { loginSchema, registerSchema } from "../validators/auth.validator.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import { loginService, logOutService, refreshTokenService, registerService } from "../services/auth.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
+import { uploadImage } from "../utils/helper.js";
 
 
 export const signup = asyncHandler(
@@ -12,8 +13,11 @@ export const signup = asyncHandler(
         if (req.body?.instructorProfile)
             bodyData["instructorProfile"] = JSON.parse(req.body.instructorProfile)
 
-        if (req.file?.originalname)
-            bodyData["avatar"] = `http://localhost:3000/uploads/${req.file?.originalname}`
+        if (req.file?.originalname) {
+            // bodyData["avatar"] = `http://localhost:3000/uploads/${req.file?.originalname}`
+            const secure_url = await uploadImage(file.path, false)
+            bodyData["avatar"] = secure_url
+        }
 
         const body = registerSchema.safeParse(bodyData);
 
@@ -67,6 +71,6 @@ export const logout = asyncHandler(
         if (!token) res.sendStatus(204)
 
         await logOutService(res, token)
-        
+
         res.status(HTTPSTATUS.OK).json({ message: "با موفقیت خارج شدید" });
     });

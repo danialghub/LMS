@@ -9,7 +9,7 @@ import {
 
 } from "../services/course.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
-import { checkFileType } from '../utils/helper.js'
+import {  uploadFile, uploadImage, uploadVideo } from '../utils/helper.js'
 
 export const getCourses = asyncHandler(
     async (req, res) => {
@@ -26,7 +26,7 @@ export const getCourses = asyncHandler(
 
         if (!courses.length)
             return res.sendStatus(HTTPSTATUS.NOT_FOUND)
-        
+
         res.status(HTTPSTATUS.OK).json({ courses, page, limit, totalCourses, totalPages, hasMore })
     }
 )
@@ -71,20 +71,17 @@ export const patchCourseFields = asyncHandler(
 
 
         if (file && file.mimetype.startsWith('image/')) {
-            body["courseThumbnail"] = `http://localhost:3000/${file.path.replace(/\\/g, '/')}`
-
-
-        }
-        if (file && file.mimetype.startsWith('video/')) {
-            body["lectureUrl"] = `http://localhost:3000/${file.path.replace(/\\/g, '/')}`
+            // body["courseThumbnail"] = `http://localhost:3000/${file.path.replace(/\\/g, '/')}`
+            const secure_url = await uploadImage(file.path, true)
+            body["courseThumbnail"] = secure_url
         }
         if (body?.coursePrice) {
             body["coursePrice"] = Number(body.coursePrice)
         }
         if (body?.courseDiscount) {
             body["courseDiscount"] = Number(body.courseDiscount)
-         
-            
+
+
         }
 
 
@@ -104,10 +101,10 @@ export const patchCourseFields = asyncHandler(
 )
 export const updateCoursePublishStatus = asyncHandler(
     async (req, res) => {
-      
+
 
         const course = req.course
-       
+
 
         const updatedCourse = await updateCoursePublishStatusService(course)
 
@@ -220,16 +217,25 @@ export const patchLectureFields = asyncHandler(
 
 
         if (file && file.mimetype.startsWith('video/')) {
-            body["lectureUrl"] = `http://localhost:3000/${file.path.replace(/\\/g, '/')}`
+            // body["lectureUrl"] = `http://localhost:3000/${file.path.replace(/\\/g, '/')}`
+            const secure_url = await uploadVideo(file.path)
+            body["lectureUrl"] = secure_url
         }
         else if (file) {
             const safeName = Buffer.from(file.originalname, "latin1").toString("utf8");
-            let [type] = checkFileType(file);
+        
+            // body["attachment"] = {
+            //     url: `http://localhost:3000/${file.path.replace(/\\/g, '/')}`,
+            //     name: safeName,
+            //     fileType: type,
+            //     size: Number(file.size)
+            // }
+            const { url, bytes, format } = await uploadFile(file.path)
             body["attachment"] = {
-                url: `http://localhost:3000/${file.path.replace(/\\/g, '/')}`,
+                url,
                 name: safeName,
-                fileType: type,
-                size: Number(file.size)
+                fileType: format,
+                size: Number(bytes)
             }
         }
         if (fields.isLectureFree !== undefined) {

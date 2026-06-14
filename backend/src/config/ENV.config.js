@@ -10,5 +10,8 @@ export const Env = {
     REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN || "7d",
     FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
     MERCHANT_ID: process.env.MERCHANT_ID,
-    IS_SANDBOX: process.env.IS_SANDBOX
+    IS_SANDBOX: process.env.IS_SANDBOX,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
 };
