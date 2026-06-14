@@ -1,7 +1,7 @@
 import { asyncHandler } from "./asyncHandler.middleware.js";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 import jwt from 'jsonwebtoken'
-import User from "../models/User.js";
+import User from "../Models/User.js";
 import { Env } from '../config/ENV.config.js'
 import Course from "../Models/Course.js";
 

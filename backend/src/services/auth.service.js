@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import User from "../models/User.js";
+import User from "../Models/User.js";
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 import { hashPassword, comparePassword } from "../utils/bycrypt.js";
 import {
