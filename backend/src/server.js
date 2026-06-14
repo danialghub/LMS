@@ -68,7 +68,7 @@ app.use('/api/comment', commentRoutes)
 
 if (Env.NODE_ENV === "production") {
     const publicDir = path.join(process.cwd(), "public")
-   
+
     if (!fs.existsSync(publicDir)) {
         console.error(`Client build not found at ${clientPath}`);
         process.exit(1);
@@ -76,7 +76,7 @@ if (Env.NODE_ENV === "production") {
 
     app.use(express.static(publicDir));
 
-    app.get("*", (req, res, next) => {  // ✅ next اضافه شد
+    app.get("/*", (req, res, next) => {  // ✅ next اضافه شد
         if (req.path.startsWith("/api")) {
             return next();
         }
