@@ -38,17 +38,17 @@ export const requestZarinPalService = async (userId, courseId) => {
             let updatedCourse = await Course.findByIdAndUpdate(courseId, {
                 $addToSet: { enrolledStudents: userId },
             }, { timestamps: false, returnDocument: "after" });
-            updatedCourse = await updatedCourse.populate("instructor" , "-password")
+            updatedCourse = await updatedCourse.populate("instructor", "-password")
             return { isEnrolledForFree: true, course: updatedCourse }
         }
     } else {
-
+        const baseUrl = Env.NODE_ENV === "development" ? `http://localhost:${Env.PORT}` : Env.FRONTEND_ORIGIN
         // داده‌های درخواست به زرین‌پال
         const paymentData = {
             merchant_id: Env.MERCHANT_ID,
             amount: amount,
             description: course.courseTitle || `پرداخت دوره با شناسه ${courseId}`,
-            callback_url: `http://localhost:${Env.PORT}/api/transaction/verify`, // بهتر است از متغیر محیطی استفاده کنید
+            callback_url: `${baseUrl}/api/transaction/verify`, 
             currency: "IRT"
         };
 
