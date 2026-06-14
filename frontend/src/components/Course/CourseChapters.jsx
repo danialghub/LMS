@@ -34,20 +34,21 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
     const getLectureIcon = (lecture, isPlaying) => {
         if (course.enrolledStudents.includes(authUser?._id) || lecture.isLectureFree) {
             if (completedLectures?.includes(lecture.lectureId)) {
-                return <CheckCircle2 size={22} className="text-green-400 shrink-0" />
+                return <CheckCircle2 size={20} className="text-green-400 shrink-0" />
             } else if (isPlaying) {
-                return <PlayCircle size={22} className="text-blue-400 shrink-0" />
+                return <PlayCircle size={20} className="text-blue-400 shrink-0" />
             } else {
-                return <Circle size={22} className="text-blue-500 shrink-0" />
+                return <Circle size={20} className="text-blue-500 shrink-0" />
             }
         } else {
-            return <Lock size={22} className='text-gray-500 shrink-0'/>
+            return <Lock size={20} className='text-gray-500 shrink-0' />
         }
     }
+
     return (
-        <div className="px-3 pb-5 overflow-y-auto">
-            <h3 className="text-xl px-3 my-2 font-bold font-Dirooz text-zinc-900 dark:text-white">جلسات</h3>
-            <div className='space-y-4'>
+        <div className="px-2 sm:px-3 pb-5 overflow-y-auto">
+            <h3 className="text-lg sm:text-xl px-2 sm:px-3 my-2 font-bold font-Dirooz text-zinc-900 dark:text-white">جلسات</h3>
+            <div className='space-y-3 sm:space-y-4'>
                 {chapters.map((chapter, chapIdx) => (
                     <div
                         key={chapter.chapterId}
@@ -62,29 +63,29 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                                         : chapter.chapterId
                                 )
                             }
-                            className={`w-full p-5 flex items-center justify-between transition-all hover:bg-zinc-100 dark:hover:bg-[#171f30]
+                            className={`w-full p-3 sm:p-5 flex items-center justify-between transition-all hover:bg-zinc-100 dark:hover:bg-[#171f30]
                                 ${open === chapter.chapterId && "bg-zinc-100 dark:bg-[#171f30]"}
                             `}
                         >
-                            <div className="flex items-center gap-3">
-                                <div className="size-10 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="size-8 sm:size-10 rounded-full bg-blue-600/20 text-blue-500 flex items-center justify-center font-bold text-sm sm:text-base">
                                     {chapIdx + 1}
                                 </div>
 
                                 <div className="text-right">
-                                    <h3 className="font-semibold text-zinc-900 dark:text-white">
+                                    <h3 className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white">
                                         {chapter.chapterTitle}
                                     </h3>
 
-                                    <p className="text-sm mt-1 text-zinc-500 dark:text-gray-400">
+                                    <p className="text-xs sm:text-sm mt-0.5 sm:mt-1 text-zinc-500 dark:text-gray-400">
                                         {chapter.chapterContent.length} درس
                                     </p>
                                 </div>
                             </div>
 
                             <ChevronDown
-                                size={20}
-                                className={`transition text-zinc-700 dark:text-white ${open === chapter.chapterId ? "rotate-180" : ""}`}
+                                size={18}
+                                className={`transition text-zinc-700 dark:text-white shrink-0 ${open === chapter.chapterId ? "rotate-180" : ""}`}
                             />
                         </button>
 
@@ -102,7 +103,7 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                                     {chapter.chapterContent.map((lec, lecIdx) => (
                                         <div
                                             key={lec.lectureId}
-                                            className={`p-4 rounded-sm border flex items-center justify-between transition-all duration-300 h-[75px]
+                                            className={`p-3 sm:p-4 rounded-sm border flex items-center justify-between transition-all duration-300 min-h-[65px] sm:h-[75px]
                                                 ${lectureId == lecIdx
                                                     ? "bg-blue-500/10 border-blue-500"
                                                     : completedLectures?.includes(lec.lectureId)
@@ -112,25 +113,25 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                                         >
                                             <button
                                                 onClick={() => handleGoToLecture(chapIdx, lecIdx)}
-                                                className="flex items-center gap-3 flex-1 min-w-0 text-right"
+                                                className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 text-right"
                                             >
                                                 {getLectureIcon(lec, chapterId == chapIdx && lectureId == lecIdx)}
 
                                                 <div className="min-w-0 flex-1">
                                                     <h4
-                                                        className="text-sm font-medium truncate text-zinc-800 dark:text-white"
+                                                        className="text-xs sm:text-sm font-medium truncate text-zinc-800 dark:text-white"
                                                         title={lec.lectureTitle}
                                                     >
                                                         {lec.lectureTitle}
                                                     </h4>
 
                                                     {chapterId == chapIdx && lectureId == lecIdx ? (
-                                                        <p className="text-xs text-blue-400 mt-1">
+                                                        <p className="text-[10px] sm:text-xs text-blue-400 mt-0.5 sm:mt-1">
                                                             در حال مشاهده
                                                         </p>
                                                     ) : (
                                                         completedLectures?.includes(lec.lectureId) && (
-                                                            <p className="text-xs text-green-400 mt-1">
+                                                            <p className="text-[10px] sm:text-xs text-green-400 mt-0.5 sm:mt-1">
                                                                 تکمیل شده
                                                             </p>
                                                         )
@@ -138,7 +139,7 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                                                 </div>
                                             </button>
 
-                                            <span className="text-xs shrink-0 mr-3 text-zinc-500 dark:text-gray-400">
+                                            <span className="text-[10px] sm:text-xs shrink-0 mr-2 sm:mr-3 text-zinc-500 dark:text-gray-400">
                                                 {formatDuration(lec.lectureDuration)}
                                             </span>
                                         </div>

@@ -60,7 +60,8 @@ const Banner = ({ studentCount = 0, courseCount, instructorCount = 0 }) => {
 const CoursesPage = () => {
     const [sortBy, setSortBy] = useState('newest')
     const [debouncedFilters] = useDebounce(sortBy, 700)
-
+    const [courses, setCourses] = useState([])
+    const [totalCourses, setTotalCourses] = useState(0)
     const {
         data,
         fetchNextPage,
@@ -71,8 +72,6 @@ const CoursesPage = () => {
     } = useGetCourses({ sortBy: debouncedFilters })
 
 
-    const courses = data?.pages?.flatMap(page => page.courses) || []
-    const totalCourses = data?.pages?.[0]?.totalCourses || 0
 
     useEffect(() => {
         if (!error) return
@@ -83,7 +82,13 @@ const CoursesPage = () => {
             "مشکلی رخ داده"
         )
     }, [error])
+    useEffect(() => {
+        if (!data) return
 
+        const flatedCourses = data?.pages?.flatMap(page => page.courses) || []
+        setTotalCourses(data?.pages?.[0]?.totalCourses || 0)
+        setCourses(flatedCourses)
+    }, [data])
 
     return (
         <div className='bg-neutral-100'>

@@ -6,6 +6,7 @@ import { CommentItem, CommentsListSkeleton } from '@/components/index'
 import { useAuthStore } from '@/store/useAuthStore'
 import { usePostCourseCommentMutation } from '@/query/commentQueries'
 import { AnimatePresence } from 'framer-motion';
+
 const CommentList = (
     {
         comments, loading, canModerate, canComment,
@@ -27,9 +28,7 @@ const CommentList = (
         await postComment({ courseId, newComment: { content: replyText, parentId: replyTo } })
         setReplyText('');
         setReplyTo(null);
-
     };
-
 
     const toggleReplies = (commentId) => {
         const newExpanded = new Set(expandedReplies);
@@ -41,21 +40,21 @@ const CommentList = (
         setExpandedReplies(newExpanded);
     };
 
-
-
-
-
     return (
         loading && comments.length === 0 ? (
-            <CommentsListSkeleton count={5} />
+            <CommentsListSkeleton count={3} />
         ) : comments.length === 0 ? (
-            <div className="text-center py-12">
-                <MessageCircle size={48} className="mx-auto text-zinc-400 dark:text-gray-600 mb-3" />
-                <p className="text-zinc-500 dark:text-gray-400">هنوز نظری ثبت نشده است</p>
-                {canComment && <p className="text-sm text-zinc-400 dark:text-gray-500 mt-1">اولین نفری باشید که نظر می‌دهید</p>}
+            <div className="text-center py-8 sm:py-12 px-4">
+                <MessageCircle size={40} className="sm:size-12 mx-auto text-zinc-400 dark:text-gray-600 mb-3" />
+                <p className="text-sm sm:text-base text-zinc-500 dark:text-gray-400">هنوز نظری ثبت نشده است</p>
+                {canComment && (
+                    <p className="text-xs sm:text-sm text-zinc-400 dark:text-gray-500 mt-1">
+                        اولین نفری باشید که نظر می‌دهید
+                    </p>
+                )}
             </div>
         ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
                 <AnimatePresence>
                     {comments.map((comment) => {
                         return (comment.status !== "pending" || canModerate || comment.userId._id === authUser._id) && (
