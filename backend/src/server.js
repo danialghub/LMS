@@ -76,7 +76,7 @@ if (Env.NODE_ENV === "production") {
 
     app.use(express.static(publicDir));
 
-    app.get("/*", (req, res, next) => {  // ✅ next اضافه شد
+    app.get("/*splat", (req, res, next) => {  // ✅ next اضافه شد
         if (req.path.startsWith("/api")) {
             return next();
         }
