@@ -4,7 +4,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import path from 'path';
 import fs from 'fs';
-import dns from 'dns';
+// import dns from 'dns';
 //configs
 import { Env } from "./config/ENV.config.js";
 import { HTTPSTATUS } from './config/http.config.js';
@@ -21,7 +21,7 @@ import studentRoutes from './routes/student.routes.js'
 import commentRoutes from './routes/comment.routes.js'
 
 
-dns.setServers(['8.8.8.8', '1.1.1.1']);
+// dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 const app = express()
 
