@@ -21,8 +21,8 @@ const LoginLayout = ({ children }) => (
 // بخش تصویرسازی (همون استایل ساین آپ)
 const LoginIllustration = ({ role }) => {
     const imageSrc = role === 'instructor'
-        ? '/Auth/login-instructor.png'
-        : '/Auth/login-student.png';
+        ? '/Auth/login-instructor.webp'
+        : '/Auth/login-student.webp';
 
     const titles = {
         student: {
@@ -99,7 +99,7 @@ const LoginPage = ({ role = "student" }) => {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 min-h-[380px]">
                         {/* فیلد ایمیل */}
                         <div>
-                          
+
                             <AuthInput
                                 inputName="email"
                                 register={register}
@@ -111,7 +111,7 @@ const LoginPage = ({ role = "student" }) => {
 
                         {/* فیلد رمز عبور */}
                         <div>
-                          
+
                             <AuthInput
                                 inputName="password"
                                 register={register}
@@ -151,7 +151,7 @@ const LoginPage = ({ role = "student" }) => {
                         </p>
                     </div>
 
-                   
+
                 </div>
             </div>
         </LoginLayout>

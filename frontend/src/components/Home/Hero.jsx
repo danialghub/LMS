@@ -133,7 +133,7 @@ const Hero = () => {
 
                             <Link
                                 to='/courses'
-                                >
+                            >
                                 مشاهده دوره‌ها
 
                             </Link>
@@ -174,7 +174,7 @@ const Hero = () => {
                             <div className="absolute -top-20 -right-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
                             <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000" />
 
-                            <img src="/hero-laptop.png" alt="" />
+                            <img src="/hero-laptop.webp" alt="" />
 
                         </div>
                     </div>

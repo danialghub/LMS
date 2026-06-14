@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
-import { Check, Loader2, UserPlus ,User, Upload, X, Image, FileImage, Trash2, RefreshCw  } from 'lucide-react';
+import { Check, Loader2, UserPlus, User, Upload, X, Image, FileImage, Trash2, RefreshCw } from 'lucide-react';
 import { registerSchema } from '@/validators/authSchema';
 import { useAuthStore } from '@/store/useAuthStore';
 import { AuthInput } from '@/components/index';
@@ -61,8 +61,8 @@ const SignupLayout = ({ children }) => (
 const SignupIllustration = ({ role }) => {
     // برای مدرس از تصویر اختصاصی استفاده می‌کنیم
     const imageSrc = role === 'instructor'
-        ? '/Auth/signup-instructor.png'
-        : '/Auth/signup-student.png';
+        ? '/Auth/signup-instructor.webp'
+        : '/Auth/signup-student.webp';
 
     const titles = {
         student: {
