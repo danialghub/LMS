@@ -230,12 +230,12 @@ export const patchLectureFields = asyncHandler(
             // }
             const { url, bytes } = await uploadFile(file.path)
 
-            console.log(file.name?.split('.').pop());
+            console.log(file.originalname?.split('.').pop());
 
             body["attachment"] = {
                 url,
                 name: safeName,
-                fileType: file.name?.split('.').pop(),
+                fileType: file.originalname?.split('.').pop(),
                 size: Number(bytes)
             }
         }
