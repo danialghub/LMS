@@ -38,8 +38,8 @@ export const deleteComment = asyncHandler(
     async (req, res) => {
 
         const { commentId } = req.params;
-
-        await deleteCommentService(commentId)
+        const user = req.user
+        await deleteCommentService(commentId, user)
 
         res.json({ message: 'نظر با موفقیت حذف شد' });
 

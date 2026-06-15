@@ -68,6 +68,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
         return (price - (price * discount / 100))
     }
 
+
     const formatDuration = (totalMinutes) => {
         const hours = Math.floor(totalMinutes / 60);
         const minutes = Math.round(totalMinutes % 60);
@@ -82,6 +83,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const calcTotalLectures = (chapters) => {
         return chapters.reduce((total, ch) => total + ch.chapterContent.length, 0);
     }
+
     const calTotalCourseDuration = (chapters) => {
         let minutes = chapters.reduce(
             (total, ch) =>
@@ -173,9 +175,11 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const foundFirstLecture = () => {
         const chapterIndex = course.courseContent.findIndex(ch => ch.chapterContent.some(lec => lec.lectureUrl))
         const lectureIndex = course.courseContent[chapterIndex].chapterContent.findIndex(lec => lec.lectureUrl)
+        console.log(chapterIndex, lectureIndex);
 
 
-        if (!chapterIndex && !lectureIndex) {
+
+        if (isNaN(chapterIndex) && isNaN(lectureIndex)) {
             toast.error('جلسه ای برای مشاهده موجود نیست')
             return {}
         }
@@ -438,7 +442,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                         )}
                                                     </button>
                                                 ) : (
-                                                    <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2.5 sm:py-3 px-4 sm:px-6 flex items-center gap-2 font-medium transition-all duration-300 shadow-lg shadow-green-600/20 rounded-lg w-full sm:w-auto justify-center group">
+                                                    <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2.5 sm:py-3 px-4 sm:px-6 flex items-center gap-2 font-medium transition-all duration-300 shadow-lg shadow-green-600/20 rounded-lg  w-auto justify-center group">
                                                         <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                                         <div className="relative z-10 flex items-center gap-2">
                                                             <Check size={18} className="sm:size-5" />
@@ -455,7 +459,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                     مشاهده ادامه دوره
                                                 </button>
                                                 <span
-                                                className="bg-blue-500/20 dark:bg-blue-500/50 rounded-full py-1.5 sm:py-2 px-3 sm:px-4 text-[10px] sm:text-xs text-zinc-800 dark:text-gray-300">
+                                                    className="bg-blue-500/20 dark:bg-blue-500/50 rounded-full py-1.5 sm:py-2 px-3 sm:px-4 text-[10px] sm:text-xs text-zinc-800 dark:text-gray-300">
                                                     آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
                                                 </span>
                                             </div>

@@ -17,7 +17,7 @@ router.get('/:courseId/all', getCourseComments);
 router.use(protectRoute)
 
 router.post('/:courseId/post', postCourseComment);
-router.delete('/:courseId/:commentId/remove', allowInstructor, courseOwner, deleteComment);
+router.delete('/:courseId/:commentId/remove', deleteComment);
 router.put('/:courseId/:commentId/approve', allowInstructor, courseOwner, approveComment);
 // router.post('/:courseId/comments/:commentId/reaction', protect, toggleReaction);
 

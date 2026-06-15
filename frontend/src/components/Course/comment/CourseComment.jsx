@@ -12,7 +12,7 @@ const CourseComments = ({ course }) => {
     const [comments, setComments] = useState([])
     const [sortBy, setSortBy] = useState('newest');
     const [replyTo, setReplyTo] = useState(null);
-
+    const [totalComments, setTotalComments] = useState(0)
     const { authUser } = useAuthStore()
 
     const canComment = authUser && course.enrolledStudents?.includes(authUser._id);
@@ -23,7 +23,7 @@ const CourseComments = ({ course }) => {
     const [debouncedFilters] = useDebounce(sortBy, 300)
 
 
-
+    const validUser = (canComment || canModerate) ? authUser._id : null
 
     const {
         data,
@@ -32,17 +32,19 @@ const CourseComments = ({ course }) => {
         isFetchingNextPage,
         isLoading,
         error
-    } = useGetCourseComments(course._id, { sortBy: debouncedFilters })
+    } = useGetCourseComments(course._id, { sortBy: debouncedFilters }, validUser)
 
     useEffect(() => {
         if (!data) return
         const fltatComments = data?.pages?.flatMap(page => page.comments) || []
-        console.log(fltatComments);
-        
-        const filteredComments = (canComment || canModerate)
-            ? fltatComments
-            : fltatComments.filter(comment => comment.status === "approved")
-        setComments(filteredComments)
+        const totalApprovedComments = data?.pages[0]?.totalApprovedComments ?? 0;
+
+
+        // const filteredComments = (canComment || canModerate)
+        //     ? fltatComments
+        //     : fltatComments.filter(comment => comment.status === "approved")
+        setComments(fltatComments)
+        setTotalComments(totalApprovedComments)
 
     }, [data])
 
@@ -56,7 +58,7 @@ const CourseComments = ({ course }) => {
                 <div className="flex items-center gap-2 sm:gap-3">
                     <MessageCircle size={20} className="sm:size-6 text-blue-500" />
                     <h2 className="text-xl sm:text-2xl font-bold">
-                        نظرات ({comments?.filter(c => c.status === 'approved')?.length})
+                        نظرات {totalComments}
                     </h2>
                 </div>
 

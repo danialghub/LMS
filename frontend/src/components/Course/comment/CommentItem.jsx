@@ -111,7 +111,7 @@ const CommentItem = ({
 
                     {/* منوی عملیات */}
                     {(isAuthor || canModerate) && (
-                        <div className="relative group self-end sm:self-auto">
+                       <div className="relative group self-end sm:self-auto">
                             <div className="absolute left-0 top-full mt-1 bg-white dark:bg-[#0d111c] border border-zinc-200 dark:border-[#1a2233] rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 min-w-[130px] sm:min-w-[150px]">
                                 {canModerate && comment.status === 'pending' && (
                                     <button

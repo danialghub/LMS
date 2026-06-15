@@ -2,7 +2,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { useCommentStore } from '@/store/useCommentStore'
 import toast from 'react-hot-toast'
 
-export const useGetCourseComments = (courseId, debouncedFilters = {}) => {
+export const useGetCourseComments = (courseId, debouncedFilters = {}, userId = null) => {
 
     const { getCourseComments } = useCommentStore()
 
@@ -13,7 +13,8 @@ export const useGetCourseComments = (courseId, debouncedFilters = {}) => {
             getCourseComments(courseId, {
                 page: pageParam,
                 limit: 6,
-                ...debouncedFilters
+                ...debouncedFilters,
+                userId
             }),
 
         initialPageParam: 1,

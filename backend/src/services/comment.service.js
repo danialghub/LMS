@@ -10,6 +10,7 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
     const skip = (page - 1) * limit;
 
 
+
     const sortBy = filterQueries?.sortBy || "newest";
     const filter = {
         courseId,
@@ -18,16 +19,22 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
             { parentId: { $exists: false } }
         ]
     };
+    console.log(filterQueries.userId);
+    
+    if (!filterQueries?.userId) {
+        filter.status = "approved"
+    }
 
     let mainComments = [];
     let totalComments = 0;
+    let totalApprovedComments = 0;
 
     if (sortBy === "newest" || sortBy === "oldest") {
         const sortOption = {
             updatedAt: sortBy === "newest" ? -1 : 1,
         };
 
-        [mainComments, totalComments] = await Promise.all([
+        [mainComments, totalComments, totalApprovedComments] = await Promise.all([
             Comment.find(filter)
                 .populate({
                     path: "userId",
@@ -39,11 +46,12 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
                 .lean(),
 
             Comment.countDocuments(filter),
+            Comment.countDocuments({ ...filter, status: "approved" }),
         ]);
     }
     else if (sortBy === "unApproved") {
         const CourseId = new mongoose.Types.ObjectId(courseId);
-        [mainComments, totalComments] = await Promise.all([
+        [mainComments, totalComments, totalApprovedComments] = await Promise.all([
             Comment.aggregate([
                 { $match: { ...filter, courseId: CourseId } },
                 {
@@ -95,6 +103,7 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
                 },
             ]),
             Comment.countDocuments(filter),
+            Comment.countDocuments({ ...filter, status: "approved" })
         ]);
         console.log(mainComments, totalComments);
 
@@ -117,12 +126,15 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
 
 
     const totalPages = Math.ceil(totalComments / limit);
+    console.log(commentsWithReplies);
+
 
     return {
         comments: commentsWithReplies,
         page,
         limit,
         totalComments,
+        totalApprovedComments,
         totalPages,
         hasMore: page < totalPages,
     };
@@ -165,14 +177,24 @@ export const approveCommentService = async (commentId) => {
     return comment;
 
 }
-export const deleteCommentService = async (commentId) => {
-
-    const comment = await Comment.findById(commentId);
-
-
+export const deleteCommentService = async (commentId, user) => {
+    const comment = await Comment.findOne({ _id: commentId }).lean();
     if (!comment) {
-        throw new NotFoundException('نظر یافت نشد')
+        throw new NotFoundException('نظر یافت نشد');
     }
+
+    const course = await Course.findOne({ _id: comment.courseId }).lean();
+    if (!course) {
+        throw new Error('دوره نامعتبر است');
+    }
+
+    const isValid =
+        user._id.toString() === comment.userId.toString() ||
+        course.instructor.toString() === user._id.toString();
+
+    if (!isValid)
+        throw new UnauthorizedException("شما مجاز به جذف نیستید")
+
 
     await Comment.deleteMany({ parentId: commentId });
     await comment.deleteOne();
