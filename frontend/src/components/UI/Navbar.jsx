@@ -302,23 +302,7 @@ const Navbar = () => {
           <div className="absolute top-0 left-0 right-0 bottom-0 bg-white animate-in slide-in-from-top duration-300 overflow-y-auto">
             <div className="pt-20 px-4 pb-8">
               {/* دکمه دوره‌ها - موبایل بزرگ */}
-              <Link
-                to="/courses"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-between p-5 mb-4 bg-gradient-to-r from-sky-50 to-blue-100 
-                  rounded-2xl hover:shadow-md transition-all duration-200"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-blue-600/60  flex items-center justify-center">
-                    <BookOpen className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-slate-800 text-lg">دوره‌ها</p>
-                    <p className="text-sm text-blue-700">مشاهده همه دوره‌های آموزشی</p>
-                  </div>
-                </div>
-                <ChevronDown className="w-5 h-5 text-blue-600 -rotate-90" />
-              </Link>
+  
 
               {authUser ? (
                 // حالت وارد شده موبایل
@@ -339,7 +323,7 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-1 mb-1">
                     {menuItems.map((item, index) => (
                       <Link
                         key={index}
@@ -378,7 +362,7 @@ const Navbar = () => {
                 <>
                   {/* دکمه ورود دانشجو - بزرگ */}
                   <Link to="/login/student" onClick={() => setIsMobileMenuOpen(false)}>
-                    <button className="w-full flex items-center gap-3 p-5 bg-gradient-to-r from-emerald-50 to-emerald-100 
+                    <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-50 to-emerald-100 
                       rounded-2xl mb-4 hover:shadow-lg transition-all duration-200">
                       <div className="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center">
                         <GraduationCap className="w-6 h-6 text-white" />
@@ -394,17 +378,34 @@ const Navbar = () => {
                   <Link to="/login/instructor" onClick={() => setIsMobileMenuOpen(false)}>
                     <button className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-100 
                       rounded-2xl mb-3 hover:shadow-md transition-all duration-200">
-                      <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
-                        <School className="w-5 h-5 text-white" />
+                      <div className="size-12 rounded-xl bg-blue-600 flex items-center justify-center">
+                        <School className="size-6 text-white" />
                       </div>
                       <div className="text-right flex-1">
-                        <p className="font-bold text-slate-800">ورود به عنوان مدرس</p>
-                        <p className="text-xs text-blue-700">مدیریت و ایجاد دوره</p>
+                        <p className="font-bold text-slate-800 text-lg">ورود به عنوان مدرس</p>
+                        <p className="text-sm text-blue-700">مدیریت و ایجاد دوره</p>
                       </div>
                     </button>
                   </Link>
                 </>
               )}
+                 <Link
+                to="/courses"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="mt-4 flex items-center justify-between p-5 mb-4 bg-gradient-to-r from-sky-50 to-blue-100 
+                  rounded-2xl hover:shadow-md transition-all duration-200"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-blue-600/60  flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-slate-800 text-lg">دوره‌ها</p>
+                    <p className="text-sm text-blue-700">مشاهده همه دوره‌های آموزشی</p>
+                  </div>
+                </div>
+                <ChevronDown className="w-5 h-5 text-blue-600 -rotate-90" />
+              </Link>
             </div>
           </div>
         </div>

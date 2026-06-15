@@ -18,6 +18,7 @@ import {
 import { formatTime } from "@/lib/helper";
 import { useApproveCommentMutation, useDeleteCommentMutation } from '@/query/commentQueries'
 import { motion } from 'framer-motion'
+import { memo } from 'react';
 
 
 const CommentItem = ({
@@ -76,7 +77,7 @@ const CommentItem = ({
                 : 'bg-white border-zinc-200 dark:bg-[#121826] dark:border-[#1b2538]'
                 }`}>
                 {/* هدر کامنت */}
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-0">
+                <div className="flex  items-start justify-between gap-3 sm:gap-0">
                     <div className="flex items-center gap-2 sm:gap-3">
                         {comment.userId?.avatar ? (
                             <img src={comment.userId.avatar} alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl object-cover" />
@@ -89,7 +90,7 @@ const CommentItem = ({
                         <div>
                             <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
                                 <h4 className="font-bold text-sm sm:text-base text-zinc-800 dark:text-white">
-                                    {comment.userId._id === authUser._id
+                                    {comment.userId._id === authUser?._id
                                         ? "شما"
                                         : comment.userId?.name
                                     }
@@ -137,7 +138,7 @@ const CommentItem = ({
                 </div>
 
                 {/* محتوای کامنت */}
-                <p className="mt-3 sm:mt-4 text-sm sm:text-base text-zinc-700 dark:text-gray-300 leading-relaxed sm:leading-relaxed whitespace-pre-wrap break-words">
+                <p className="mt-4 sm:mt-4 text-sm sm:text-base text-zinc-700 dark:text-gray-300  leading-relaxed whitespace-pre-wrap break-words">
                     {comment.content}
                 </p>
 
@@ -193,18 +194,18 @@ const CommentItem = ({
                 {/* فرم پاسخ */}
                 {replyTo === comment._id && (
                     <div className="mt-3 sm:mt-4">
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                        <div className="flex  flex-col sm:flex-row  sm:items-center gap-2 sm:gap-3">
                             <textarea
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
                                 placeholder="پاسخ خود را بنویسید..."
-                                className="flex-1 p-2.5 sm:p-3 rounded-xl border border-zinc-200 dark:border-[#1b2538] bg-white dark:bg-[#0d111c] focus:ring-2 focus:ring-blue-500 transition-all resize-none text-sm sm:text-base"
+                                className="flex-1 p-2.5 sm:p-3 rounded-md border border-zinc-200 dark:border-[#1b2538] bg-white dark:bg-[#0d111c] focus:ring-2 focus:ring-blue-500 transition-all resize-none text-sm sm:text-base"
                                 rows="2"
                             />
                             <button
                                 onClick={handleSubmitReply}
                                 disabled={submitting || !replyText.trim()}
-                                className="px-3 sm:px-4 py-2 sm:py-2.5 bg-blue-500 text-white rounded-lg sm:rounded-md hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center"
+                                className="px-3 sm:px-4 max-sm:w-[50px] py-2 sm:py-2.5 bg-blue-500 text-white  rounded-md hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center"
                             >
                                 <Send size={18} className="sm:size-20" />
                             </button>
@@ -242,4 +243,4 @@ const CommentItem = ({
     );
 };
 
-export default CommentItem
+export default memo(CommentItem)

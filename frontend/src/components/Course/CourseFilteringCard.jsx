@@ -24,17 +24,17 @@ const ToggleButton = () => {
         </button>
     );
 };
-const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy }) => {
+const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy,setSortBy }) => {
     return (
         <motion.div
-            className='fixed top-0 right-0 w-full h-screen bg-black/40 z-10'
+            className='fixed inset-0 w-full h-screen bg-black/40 z-10'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowSortOptions(false)}
         >
             <motion.div
-                className='absolute bottom-0 right-0 bg-white rounded-md w-full py-5'
+                className='fixed bottom-0 right-0 bg-white rounded-md w-full py-5 pb-safe'
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
@@ -68,14 +68,14 @@ const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy }) => {
 const MobileFilters = ({ setShowFilters, authUser }) => {
     return (
         <motion.div
-            className='fixed top-0 right-0 w-full h-screen bg-black/40 z-10'
+            className='fixed inset-0 w-full h-screen bg-black/40 z-10'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowFilters(false)}
         >
             <motion.div
-                className='absolute bottom-0 right-0 bg-white rounded-md w-full py-5'
+                className='fixed bottom-0 right-0 bg-white rounded-md w-full py-5 pb-safe'
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
@@ -204,6 +204,7 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                         sortOptions={sortOptions}
                         setShowSortOptions={setShowSortOptions}
                         sortBy={sortBy}
+                        setSortBy={setSortBy}
                     />
                 )}
             </AnimatePresence>

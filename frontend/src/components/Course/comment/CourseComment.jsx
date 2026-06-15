@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
     MessageCircle,
 } from 'lucide-react';
@@ -15,7 +15,15 @@ const CourseComments = ({ course }) => {
 
     const { authUser } = useAuthStore()
 
+    const canComment = authUser && course.enrolledStudents?.includes(authUser._id);
+    const canModerate = authUser && course.instructor._id === authUser?._id;
+
+
+
     const [debouncedFilters] = useDebounce(sortBy, 300)
+
+
+
 
     const {
         data,
@@ -28,15 +36,18 @@ const CourseComments = ({ course }) => {
 
     useEffect(() => {
         if (!data) return
-        const fltatCourses = data?.pages?.flatMap(page => page.comments) || []
-
-        setComments(fltatCourses)
+        const fltatComments = data?.pages?.flatMap(page => page.comments) || []
+        console.log(fltatComments);
+        
+        const filteredComments = (canComment || canModerate)
+            ? fltatComments
+            : fltatComments.filter(comment => comment.status === "approved")
+        setComments(filteredComments)
 
     }, [data])
 
 
-    const canComment = authUser && course.enrolledStudents?.includes(authUser._id);
-    const canModerate = authUser && course.instructor._id === authUser._id;
+
 
     return (
         <div className="mt-4 sm:mt-8">
@@ -85,9 +96,12 @@ const CourseComments = ({ course }) => {
                 setReplyTo={setReplyTo}
                 replyTo={replyTo}
                 courseId={course?._id}
+                fetchNextPage={fetchNextPage}
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
             />
         </div>
     );
 };
 
-export default CourseComments;
+export default memo(CourseComments);

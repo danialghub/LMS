@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import {
     MessageCircle,
 } from 'lucide-react';
-import { CommentItem, CommentsListSkeleton } from '@/components/index'
+import { CommentItem, CommentsListSkeleton, SubmitLoading } from '@/components/index'
 import { useAuthStore } from '@/store/useAuthStore'
 import { usePostCourseCommentMutation } from '@/query/commentQueries'
 import { AnimatePresence } from 'framer-motion';
@@ -10,7 +10,8 @@ import { AnimatePresence } from 'framer-motion';
 const CommentList = (
     {
         comments, loading, canModerate, canComment,
-        replyTo, setReplyTo, courseId
+        replyTo, setReplyTo, courseId, fetchNextPage,
+        hasNextPage, isFetchingNextPage
     }
 ) => {
 
@@ -57,7 +58,7 @@ const CommentList = (
             <div className="space-y-3 sm:space-y-4">
                 <AnimatePresence>
                     {comments.map((comment) => {
-                        return (comment.status !== "pending" || canModerate || comment.userId._id === authUser._id) && (
+                        return (comment.status !== "pending" || canModerate || comment.userId._id === authUser?._id) && (
                             <CommentItem
                                 key={comment._id}
                                 comment={comment}
@@ -76,9 +77,24 @@ const CommentList = (
                         )
                     })}
                 </AnimatePresence>
+                {hasNextPage && (
+                    <div  className='flex justify-center my-5 '>
+                        <button
+                            disabled={!hasNextPage || isFetchingNextPage}
+                            onClick={fetchNextPage}
+                            className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                        >
+                            {isFetchingNextPage ? (
+                                <SubmitLoading />
+                            ) : (
+                                "نظرات بیشتر"
+                            )}
+                        </button>
+                    </div>
+                )}
             </div>
         )
     )
 }
 
-export default CommentList
+export default memo(CommentList)

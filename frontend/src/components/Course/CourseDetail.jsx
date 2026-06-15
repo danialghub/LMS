@@ -245,7 +245,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                 </div>
                 <button
                     onClick={() => setTheme(isDark ? "light" : "dark")}
-                    className="size-10 ml-40 sm:ml-0 rounded-xl flex items-center justify-center transition-all duration-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#151b2b] dark:hover:bg-[#1d2638]"
+                    className="size-10 ml-52 sm:ml-0 rounded-xl flex items-center justify-center transition-all duration-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#151b2b] dark:hover:bg-[#1d2638]"
                 >
                     {isDark ? <Sun size={18} className="text-yellow-400" /> : <Moon size={18} className="text-zinc-700 dark:text-white" />}
                 </button>
@@ -423,7 +423,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                     <button
                                                         onClick={handleMarkAsComplete}
                                                         disabled={isMarking}
-                                                        className="relative overflow-hidden btn-primary py-2.5 sm:py-3 w-full sm:w-auto px-4 sm:px-6 min-h-[44px] sm:min-h-[50px] flex items-center gap-2 justify-center font-medium transition-all duration-300 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:scale-[1.02] active:scale-95 rounded-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 group"
+                                                        className="relative overflow-hidden btn-primary py-2.5 sm:py-3  w-auto px-4 sm:px-6 min-h-[44px] sm:min-h-[50px] flex items-center gap-2 justify-center font-medium transition-all duration-300 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:scale-[1.02] active:scale-95 rounded-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 group"
                                                     >
                                                         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                                         {isMarking ? (
@@ -450,11 +450,12 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                         )
                                     ) : (
                                         isPreviewPage && (
-                                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 sm:mb-10">
+                                            <div className="flex flex-row items-center justify-between gap-4 mb-6 sm:mb-10">
                                                 <button onClick={goToLectures} className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded-md text-sm sm:text-base">
                                                     مشاهده ادامه دوره
                                                 </button>
-                                                <span className="bg-blue-500/20 dark:bg-blue-500/50 rounded-full py-1.5 sm:py-2 px-3 sm:px-4 text-xs text-zinc-800 dark:text-gray-300">
+                                                <span
+                                                className="bg-blue-500/20 dark:bg-blue-500/50 rounded-full py-1.5 sm:py-2 px-3 sm:px-4 text-[10px] sm:text-xs text-zinc-800 dark:text-gray-300">
                                                     آخرین بروزرسانی دوره : {formatTime(course.updatedAt)}
                                                 </span>
                                             </div>

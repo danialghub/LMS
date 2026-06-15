@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 
 // لوگو به صورت یک کامپوننت SVG ساده (مغز + افزار)
 const BrainLogo = () => (
@@ -58,23 +59,22 @@ const Footer = () => {
                         </h3>
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <a href="#" className="hover:text-amber-400 transition flex items-center gap-2 group">
+                                <Link
+                                    to={"/"}
+                                    className="hover:text-amber-400 transition flex items-center gap-2 group">
                                     <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
                                     صفحه اصلی
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-amber-400 transition flex items-center gap-2 group">
-                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
-                                    محصولات
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="hover:text-amber-400 transition flex items-center gap-2 group">
+                                <Link
+                                    to={"/courses"}
+                                    className="hover:text-amber-400 transition flex items-center gap-2 group">
                                     <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
                                     دوره‌های آموزشی
-                                </a>
+                                </Link>
                             </li>
+
                             <li>
                                 <a href="#" className="hover:text-amber-400 transition flex items-center gap-2 group">
                                     <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
