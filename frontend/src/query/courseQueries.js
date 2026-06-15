@@ -26,12 +26,12 @@ export const useGetCourses = (debouncedFilters = {}) => {
                 : undefined,
     })
 }
-export const useGetStudentCourses = () => {
+export const useGetStudentCourses = (stdId) => {
 
     const { getStudentCourses } = useStudentStore()
 
     return useInfiniteQuery({
-        queryKey: ['studentCourses'],
+        queryKey: ['studentCourses', stdId],
 
         queryFn: ({ pageParam = 1 }) =>
             getStudentCourses({
@@ -45,14 +45,14 @@ export const useGetStudentCourses = () => {
             lastPage.hasMore
                 ? lastPage.page + 1
                 : undefined,
-                
+
     })
 }
-export const useGetInstructorCourses = (page) => {
+export const useGetInstructorCourses = (page, instructorId) => {
     const { getInstrucorCourses } = useInstructorStore()
 
     return useQuery({
-        queryKey: ['instructorCourses', page],
+        queryKey: ['instructorCourses', page, instructorId],
         queryFn: () => getInstrucorCourses({ page, limit: 5 }),
         keepPreviousData: true
     })

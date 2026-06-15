@@ -120,7 +120,7 @@ const routes = () => {
             element: <ProtectedRoute requiredRole="student"><TransactionResult /></ProtectedRoute>,
         },
         {
-            path: "/unathorized",
+            path: "/unauthorized",
             element: <UnAuthorized />,
         },
 

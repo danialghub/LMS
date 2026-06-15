@@ -45,6 +45,11 @@
     @apply break-words;
     scroll-behavior: smooth;
   }
+
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
 }
 
 

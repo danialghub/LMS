@@ -126,20 +126,11 @@ const InstructorCoursesManagementPage = () => {
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
 
-    const { data, isLoading, isError, isFetching } = useGetInstructorCourses(page)
+    const { data, isLoading, isError, isFetching } = useGetInstructorCourses(page, authUser?._id)
 
 
     const courses = data?.courses || []
     const totalPagesInfo = data?.totalPages
-
-    const calcDiscount = (price, discount) => {
-        return (price - (price * discount / 100))
-    }
-    const calcTotalEarning = course => {
-        const totalEarning = course.enrolledStudents.length * (calcDiscount(course.coursePrice, course.courseDiscount))
-
-        return formatPrice(totalEarning)
-    }
 
 
 

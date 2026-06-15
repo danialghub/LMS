@@ -12,7 +12,7 @@ import {
 
 import {
     VideoPlayer, LectureAttachment, CourseChapters,
-    CourseRating, SubmitLoading, CourseComment
+    CourseRating, SubmitLoading, CourseComment,UserAvatar
 } from "@/components/index";
 import { Link, useNavigate, useParams } from "react-router";
 import { useAuthStore } from '@/store/useAuthStore'
@@ -175,9 +175,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const foundFirstLecture = () => {
         const chapterIndex = course.courseContent.findIndex(ch => ch.chapterContent.some(lec => lec.lectureUrl))
         const lectureIndex = course.courseContent[chapterIndex].chapterContent.findIndex(lec => lec.lectureUrl)
-        console.log(chapterIndex, lectureIndex);
-
-
+       
 
         if (isNaN(chapterIndex) && isNaN(lectureIndex)) {
             toast.error('جلسه ای برای مشاهده موجود نیست')
@@ -233,7 +231,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                     {authUser && authUser.role === "student" ? (
                         <>
                             {authUser?.avatar ? (
-                                <img src={authUser.avatar} alt="" className="object-contain size-10 rounded-xl" />
+                                <UserAvatar className="size-12 rounded-xl"/>
                             ) : (
                                 <span className="size-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-2xl">
                                     {authUser.name[0]}

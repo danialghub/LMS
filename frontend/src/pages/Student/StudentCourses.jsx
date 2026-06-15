@@ -3,10 +3,10 @@ import { CourseSkleton, MyCourseCard } from '@/components/index'
 import { useGetStudentCourses } from '@/query/courseQueries'
 import { useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
-
+import { useAuthStore } from '@/store/useAuthStore'
 const StudentCourses = () => {
 
-
+    const { authUser } = useAuthStore()
 
     const {
         data,
@@ -15,7 +15,7 @@ const StudentCourses = () => {
         isFetchingNextPage,
         isLoading: isFetching,
         error
-    } = useGetStudentCourses()
+    } = useGetStudentCourses(authUser?._id)
 
     const courses = data ? data?.pages?.flatMap(page => page.courses) : []
 

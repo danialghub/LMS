@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
-import { Check, Loader2, UserPlus, User, Upload, X, Image, FileImage, Trash2, RefreshCw } from 'lucide-react';
+import { Check, Loader2, UserPlus} from 'lucide-react';
 import { registerSchema } from '@/validators/authSchema';
 import { useAuthStore } from '@/store/useAuthStore';
 import { AuthInput } from '@/components/index';
-import { } from 'lucide-react';
+
 
 // کامپوننت پیشرفت مرحله
 const SignupProgress = ({ currentStep, totalSteps }) => (

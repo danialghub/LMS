@@ -37,6 +37,7 @@ const PasswordField = ({ register, error }) => {
                     {...register('password')}
                     placeholder="••••••••"
                     className={`form-input ${error ? 'error' : ''} pr-6`}
+
                 />
                 <button
                     type="button"
@@ -135,6 +136,7 @@ const NameField = ({ register, error }) => (
             dir="rtl"
             placeholder="مثال: محمد رضایی"
             className={`form-input ${error ? 'error' : ''}`}
+
         />
         {error && (
             <p className="mt-1 text-sm text-red-500 animate-fade-in">{error}</p>

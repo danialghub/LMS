@@ -8,6 +8,7 @@ import { NavLink, Outlet, useNavigate } from "react-router";
 import { Navbar, EditProfileModal, WarningModal } from '@/components/index'
 import { useState } from "react";
 import { useAuthStore } from '@/store/useAuthStore'
+import UserAvatar from "../../components/UI/UserAvatar";
 const courses = Array.from({ length: 8 }, (_, i) => ({
     id: i + 1,
 }));
@@ -64,9 +65,10 @@ export default function MyCourses() {
                             </div>
                             <div className="flex items-center gap-3">
                                 <div>
-                                    <h3 className="font-bold text-sm">Danial</h3>
+                                    <h3 className="font-bold text-sm">{authUser.name}</h3>
                                 </div>
-                                <div className="w-12 h-12 rounded-full bg-gray-200" />
+                                {/* <div className="w-12 h-12 rounded-full bg-gray-200" /> */}
+                                <UserAvatar className="size-12 rounded-full" />
                             </div>
                         </div>
                         <div className="h-px bg-gray-200 my-6" />

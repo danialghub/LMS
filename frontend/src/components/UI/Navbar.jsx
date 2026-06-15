@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Logo, WarningModal } from '@/components/index';
+import { Logo, WarningModal,UserAvatar } from '@/components/index';
 import { Link, useNavigate } from 'react-router';
 import {
   GraduationCap,
@@ -129,15 +129,17 @@ const Navbar = () => {
             {/* دکمه‌های دسکتاپ - سمت راست */}
             <div className='hidden md:flex items-center gap-3'>
               {/* دکمه دوره‌ها - برای هر دو حالت */}
-              <Link to="/courses">
-                <button className="group relative px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 
-                  font-medium transition-all duration-200 hover:bg-slate-100">
-                  <span className="relative z-10">دوره‌ها</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-emerald-400/0 to-emerald-400/0 
-                    group-hover:from-emerald-400/10 group-hover:via-emerald-400/5 group-hover:to-transparent 
-                    rounded-xl transition-all duration-500"></div>
-                </button>
-              </Link>
+            <Link to="/courses">
+                    <button className="group cursor-pointer flex items-center gap-2 bg-white border border-slate-200 
+                      hover:border-blue-200 hover:bg-blue-50/40 transition-all duration-200 
+                      rounded-xl px-5 py-2.5 shadow-sm hover:shadow-md">
+                      <BookOpen className="w-5 h-5 text-blue-600 group-hover:scale-105 transition-transform" />
+                      <div className="text-right">
+                        <span className="block text-xs text-blue-600/80 leading-tight">مشاهده دوره ها</span>
+                        <span className="block font-bold text-slate-700 text-base leading-tight">دوره‌ها</span>
+                      </div>
+                    </button>
+                  </Link>
 
               {authUser ? (
                 // حالت وارد شده - منوی کاربری جمع و جور
@@ -146,17 +148,15 @@ const Navbar = () => {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="group flex items-center gap-2 bg-gradient-to-r from-slate-50 to-white 
                       hover:from-slate-100 hover:to-slate-50 border border-slate-200 rounded-xl 
-                      px-3 py-1.5 transition-all duration-300 hover:shadow-md"
+                      px-3 py-2 transition-all duration-300 hover:shadow-md"
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 
-                      flex items-center justify-center text-white font-bold text-xs shadow-md">
-                      {getUserDisplayName().charAt(0).toUpperCase()}
-                    </div>
+                
+                    <UserAvatar className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md font-bold text-xs" />
                     <div className="text-right">
                       <span className="block text-sm font-semibold text-slate-700 leading-tight">
                         {getUserDisplayName()}
                       </span>
-                      <span className="block text-[10px] text-slate-500 leading-tight">
+                      <span className="block text-xs text-slate-500 leading-tight">
                         {getUserRoleLabel()}
                       </span>
                     </div>
@@ -171,15 +171,12 @@ const Navbar = () => {
                       {/* هدر پروفایل */}
                       <div className="bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm 
-                            flex items-center justify-center text-white font-bold text-lg">
-                            {getUserDisplayName().charAt(0).toUpperCase()}
-                          </div>
+                                     <UserAvatar className="size-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md font-bold text-xl" />
                           <div className="text-right">
                             <p className="text-white font-semibold">{getUserDisplayName()}</p>
                             <p className="text-white/80 text-sm">{getUserRoleLabel()}</p>
                             {authUser.email && (
-                              <p className="text-white/70 text-xs mt-1">{authUser.email}</p>
+                              <p className="text-white/70 text-sm mt-1">{authUser.email}</p>
                             )}
                           </div>
                         </div>
@@ -230,19 +227,8 @@ const Navbar = () => {
               ) : (
                 // حالت وارد نشده - ۳ دکمه با اندازه‌های متفاوت
                 <>
-                  {/* دکمه دوره‌ها - بزرگ */}
-                  <Link to="/courses">
-                    <button className="group cursor-pointer flex items-center gap-2 bg-white border border-slate-200 
-                      hover:border-emerald-200 hover:bg-emerald-50/40 transition-all duration-200 
-                      rounded-xl px-5 py-2.5 shadow-sm hover:shadow-md">
-                      <BookOpen className="w-5 h-5 text-emerald-600 group-hover:scale-105 transition-transform" />
-                      <div className="text-right">
-                        <span className="block text-xs text-emerald-600/80 leading-tight">مشاهده</span>
-                        <span className="block font-bold text-slate-700 text-base leading-tight">دوره‌ها</span>
-                      </div>
-                    </button>
-                  </Link>
-
+                
+    
                   {/* دکمه ورود دانشجو - متوسط */}
                   <Link to="/login/student">
                     <button className="group cursor-pointer flex items-center gap-2 bg-white border border-slate-200 
@@ -250,26 +236,27 @@ const Navbar = () => {
                       rounded-xl px-4 py-2 shadow-sm hover:shadow-md">
                       <GraduationCap className="w-5 h-5 text-emerald-600 group-hover:scale-105 transition-transform" />
                       <div className="text-right">
-                        <span className="block text-[11px] text-emerald-600/80 leading-tight">ورود به عنوان</span>
+                        <span className="block text-xs text-emerald-600/80 leading-tight">ورود به عنوان</span>
                         <span className="block font-bold text-slate-700 text-sm leading-tight">دانشجو</span>
                       </div>
                     </button>
                   </Link>
 
-                  {/* دکمه ورود مدرس - کوچک */}
+                  {/* دکمه ورود مدرس - متوسط */}
                   <Link to="/login/instructor">
                     <button className="group cursor-pointer flex items-center gap-2 bg-white border border-slate-200 
                       hover:border-blue-200 hover:bg-blue-50/40 transition-all duration-200 
-                      rounded-xl px-3 py-1.5 shadow-sm hover:shadow-md">
+                      rounded-xl px-4 py-2 shadow-sm hover:shadow-md">
                       <School className="w-4 h-4 text-blue-600 group-hover:scale-105 transition-transform" />
                       <div className="text-right">
-                        <span className="block text-[10px] text-blue-600/80 leading-tight">ورود به عنوان</span>
-                        <span className="block font-bold text-slate-700 text-xs leading-tight">مدرس</span>
+                        <span className="block text-xs text-blue-600/80 leading-tight">ورود به عنوان</span>
+                        <span className="block font-bold text-slate-700 text-sm leading-tight">مدرس</span>
                       </div>
                     </button>
                   </Link>
                 </>
               )}
+              
             </div>
 
             {/* دکمه منوی موبایل */}
@@ -286,7 +273,9 @@ const Navbar = () => {
               )}
             </button>
           </div>
+          
         </div>
+        
       </nav>
 
       {/* منوی موبایل - خارج از nav برای جلوگیری از همپوشانی */}

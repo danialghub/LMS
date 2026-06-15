@@ -182,7 +182,7 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
             </div>
 
             {/*Mobile دکمه های */}
-            <div className='flex items-center justify-center gap-4 text-[14px] text-black/70  mt-5 font-heading'>
+            <div className='sm:hidden flex  items-center justify-center gap-4 text-[14px] text-black/70  mt-5 font-heading'>
                 <button
                     onClick={() => setShowFilters(true)}
                     className='flex items-center justify-center gap-2 sm:hidden w-[180px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
@@ -220,7 +220,8 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
             </AnimatePresence>
 
             {/* فیلتر دوره‌های رایگان */}
-            <div className='hidden sm:flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+           <div className='space-y-2'>
+             <div className='hidden sm:flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                 <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های رایگان</p>
                 <ToggleButton />
             </div>
@@ -232,6 +233,7 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                     <ToggleButton />
                 </div>
             )}
+           </div>
         </div>
     )
 }
