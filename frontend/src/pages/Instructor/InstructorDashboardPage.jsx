@@ -50,7 +50,7 @@ const InstructorDashboardPage = () => {
           className='hidden sm:flex flex-col justify-between w-[15%] bg-white h-full overflow-y-auto shadow-md transition duration-200'
         >
           {/* منوی اصلی */}
-          <div className='mt-4'>
+          <div className='mt-1'>
             {sideBar.map((item, idx) => (
               <NavLink
                 key={idx}

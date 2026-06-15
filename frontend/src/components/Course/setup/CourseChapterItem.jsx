@@ -5,12 +5,12 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import {
     DndContext,
     closestCenter,
-    PointerSensor,
+    MouseSensor,
+    TouchSensor,
     useSensor,
     useSensors,
-    TouchSensor,
-} from '@dnd-kit/core';
-import { Edit, FolderPlus, GripVertical, Plus, X, Check, ChevronDown, Play, Lock, Unlock, FileText } from "lucide-react";
+} from '@dnd-kit/core'; // تغییر: اضافه کردن MouseSensor و TouchSensor
+import { Edit, FolderPlus, GripVertical, Plus, X, Check, ChevronDown, Play, Unlock, FileText } from "lucide-react";
 import uniqid from 'uniqid';
 import { useCourseStore } from '@/store/useCourseStore';
 import { useForm } from 'react-hook-form';
@@ -59,26 +59,24 @@ const COLORS = {
     }
 };
 
-// Status Badge Component
+// Status Badge Component (بدون تغییر)
 const StatusBadge = ({ status, isFree = false }) => {
-    // تنظیمات مربوط به وضعیت انتشار
     const publishConfig = {
-        [PUBLISH_STATUS.PUBLISHED]: { 
-            text: 'منتشر شده', 
+        [PUBLISH_STATUS.PUBLISHED]: {
+            text: 'منتشر شده',
             className: 'bg-gradient-to-r from-blue-500 to-sky-500',
             icon: <Play className="w-2.5 h-2.5" />
         },
-        [PUBLISH_STATUS.DRAFT]: { 
-            text: 'پیش نویس', 
+        [PUBLISH_STATUS.DRAFT]: {
+            text: 'پیش نویس',
             className: 'bg-gradient-to-r from-gray-400 to-gray-500',
             icon: <FileText className="w-2.5 h-2.5" />
         }
     };
 
-    const { text: publishText, className: publishClassName, icon: publishIcon } = 
+    const { text: publishText, className: publishClassName, icon: publishIcon } =
         publishConfig[status] || publishConfig[PUBLISH_STATUS.DRAFT];
 
-    // اگر رایگان باشد
     if (isFree) {
         return (
             <div className='flex items-center gap-1'>
@@ -94,7 +92,6 @@ const StatusBadge = ({ status, isFree = false }) => {
         );
     }
 
-    // اگر رایگان نباشد
     return (
         <div className={`px-2 sm:px-2.5 py-0.5 rounded-full ${publishClassName} text-white text-[10px] sm:text-[11px] font-medium shadow-sm flex items-center gap-1 whitespace-nowrap`}>
             {publishIcon}
@@ -103,7 +100,7 @@ const StatusBadge = ({ status, isFree = false }) => {
     );
 };
 
-// Lecture Form Component
+// Lecture Form Component (بدون تغییر)
 const LectureForm = ({ onSubmit, onCancel, defaultValue = "" }) => {
     const { register, handleSubmit, formState: { isValid }, reset } = useForm({
         resolver: zodResolver(lectureTitleSchema),
@@ -147,7 +144,7 @@ const LectureForm = ({ onSubmit, onCancel, defaultValue = "" }) => {
     );
 };
 
-// Lecture Item Component
+// Lecture Item Component (بدون تغییر - فقط کلاس‌های درگ بهبود داده شده)
 const LectureItem = ({ id, lecture, lectureIndex, chapter, isDragging, onCreateLecture, isCreateMode, onCancelCreateLecture }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
     const { createLecture } = useCourseStore();
@@ -183,54 +180,58 @@ const LectureItem = ({ id, lecture, lectureIndex, chapter, isDragging, onCreateL
 
     const colors = getLectureColors();
 
-  return (
-    <div 
-        ref={setNodeRef} 
-        style={style} 
-        className={`flex flex-col  items-start  justify-between p-3 sm:p-4 ${colors.bg} border-b ${colors.border} last:border-b-0 gap-2 sm:gap-0 transition-all duration-200 ${isDragging ? 'opacity-50' : 'hover:shadow-sm'}`}
-    >
-        <div className="flex items-center gap-2 sm:gap-3 flex-1 w-full">
-            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-manipulation p-1 hover:bg-gray-100 rounded transition-colors">
-                <GripVertical className={`size-4 ${colors.icon}`} />
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`flex flex-col  items-start  justify-between p-3 sm:p-4 ${colors.bg} border-b ${colors.border} last:border-b-0 gap-2 sm:gap-0 transition-all duration-200 ${isDragging ? 'opacity-50 scale-95' : 'hover:shadow-sm'}`}
+        >
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 w-full">
+               
+                <div
+                    {...attributes}
+                    {...listeners}
+                    className="cursor-grab active:cursor-grabbing touch-manipulation p-2 hover:bg-gray-100 rounded transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center"
+                >
+                    <GripVertical className={`size-4 ${colors.icon}`} />
+                </div>
+
+                {isCreateMode === id ? (
+                    <LectureForm onSubmit={handleSubmit} onCancel={handleCancel} />
+                ) : (
+                    <div className="flex items-center gap-2 flex-1">
+                        <div className={`w-6 h-6 rounded-full ${colors.badge} flex items-center justify-center text-xs font-bold shadow-sm shrink-0`}>
+                            {lectureIndex + 1}
+                        </div>
+                        <p className={`text-xs sm:text-sm break-words flex-1 font-medium ${colors.text}`}>
+                            {lecture.lectureTitle}
+                        </p>
+                    </div>
+                )}
             </div>
 
-            {isCreateMode === id ? (
-                <LectureForm onSubmit={handleSubmit} onCancel={handleCancel} />
-            ) : (
-                <div className="flex items-center gap-2 flex-1">
-                    <div className={`w-6 h-6 rounded-full ${colors.badge} flex items-center justify-center text-xs font-bold shadow-sm`}>
-                        {lectureIndex + 1}
-                    </div>
-                    <p className={`text-xs sm:text-sm break-words flex-1 font-medium ${colors.text}`}>
-                        {lecture.lectureTitle}
-                    </p>
+            {isCreateMode !== id && (
+                <div className='flex items-center justify-end gap-2 self-end mt-1 sm:mt-0'>
+                    <StatusBadge status={lecture.lecturePublishStatus} isFree={lecture.isLectureFree} />
+                    <Link
+                        to={`/instructor/courses/course-setup/${course._id}/chapter/${chapter.chapterId}/lecture-setup/${lecture.lectureId}`}
+                        className={`p-1.5 rounded-lg transition-all duration-200 ${colors.badge} hover:shadow-md`}
+                        title="ویرایش جلسه"
+                    >
+                        <Edit className={`size-3.5 sm:size-4 ${colors.icon}`} />
+                    </Link>
                 </div>
             )}
         </div>
-
-        {isCreateMode !== id && (
-            <div className='flex items-center justify-end gap-2 self-end  mt-1 '>
-              
-                <StatusBadge status={lecture.lecturePublishStatus} isFree={lecture.isLectureFree} />
-                  <Link
-                    to={`/instructor/courses/course-setup/${course._id}/chapter/${chapter.chapterId}/lecture-setup/${lecture.lectureId}`}
-                    className={`p-1.5 rounded-lg transition-all duration-200 ${colors.badge} hover:shadow-md`}
-                    title="ویرایش جلسه"
-                >
-                    <Edit className={`size-3.5 sm:size-4 ${colors.icon}`} />
-                </Link>
-            </div>
-        )}
-    </div>
-);
+    );
 };
 
-// Chapter Header Component
+// Chapter Header Component (بدون تغییر)
 const ChapterHeader = ({ chapter, isOpen, isEditing, editTitle, setEditTitle, onToggle, onSave, onCancel, onAddLecture, onEdit }) => {
     return (
         <div className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-3 sm:p-4 bg-gradient-to-r ${COLORS.chapter.gradient} text-black/80 gap-3 sm:gap-0`}>
             <div className="flex items-center gap-2 sm:gap-3 flex-1">
-                <div className="cursor-grab active:cursor-grabbing touch-manipulation p-1 hover:bg-white/10 rounded transition-colors">
+                <div className="cursor-grab active:cursor-grabbing touch-manipulation p-2 hover:bg-white/10 rounded transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center">
                     <GripVertical className="w-4 h-4 text-black/80" />
                 </div>
 
@@ -263,8 +264,8 @@ const ChapterHeader = ({ chapter, isOpen, isEditing, editTitle, setEditTitle, on
                         </div>
                     </div>
                 ) : (
-                    <button 
-                        onClick={onToggle} 
+                    <button
+                        onClick={onToggle}
                         className="flex items-center gap-2 flex-1 text-right justify-between sm:justify-start group"
                     >
                         <div className="flex items-center gap-2">
@@ -279,16 +280,16 @@ const ChapterHeader = ({ chapter, isOpen, isEditing, editTitle, setEditTitle, on
 
             {!isEditing && (
                 <div className="flex items-center justify-end gap-1">
-                    <button 
-                        onClick={onAddLecture} 
-                        className="p-1.5 rounded-lg hover:bg-black/20 backdrop-blur-sm transition-all duration-200 text-black/90 hover:black-white"
+                    <button
+                        onClick={onAddLecture}
+                        className="p-1.5 rounded-lg hover:bg-black/20 backdrop-blur-sm transition-all duration-200 text-black/90"
                         title="ایجاد جلسه جدید"
                     >
                         <FolderPlus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
-                    <button 
-                        onClick={onEdit} 
-                        className="p-1.5 rounded-lg hover:bg-black/20 backdrop-blur-sm transition-all duration-200 text-black/90 hover:text-black"
+                    <button
+                        onClick={onEdit}
+                        className="p-1.5 rounded-lg hover:bg-black/20 backdrop-blur-sm transition-all duration-200 text-black/90"
                         title="ویرایش عنوان"
                     >
                         <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -299,7 +300,7 @@ const ChapterHeader = ({ chapter, isOpen, isEditing, editTitle, setEditTitle, on
     );
 };
 
-// Chapter Content Component
+// Chapter Content Component - حذف DndContext از اینجا
 const ChapterContent = ({ lectures, chapter, isOpen, activeLectureId, isLectureCreateMode, onCreateLecture, onReorderLectures, onCancelCreateLecture }) => {
     const contentRef = useRef(null);
     const [contentHeight, setContentHeight] = useState(0);
@@ -317,25 +318,6 @@ const ChapterContent = ({ lectures, chapter, isOpen, activeLectureId, isLectureC
             setContentHeight(0);
         }
     }, [isOpen, lectures.length]);
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 10 } }),
-        useSensor(TouchSensor, {
-            activationConstraint: {
-                delay: 200,
-                tolerance: 5,
-            },
-        })
-    );
-
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-        if (active.id !== over?.id) {
-            const oldIndex = lectures.findIndex(l => l.lectureId === active.id);
-            const newIndex = lectures.findIndex(l => l.lectureId === over.id);
-            onReorderLectures(oldIndex, newIndex);
-        }
-    };
 
     const realLectures = lectures.filter(lec => !lec.isTemp);
     const tempLectures = lectures.filter(lec => lec.isTemp);
@@ -360,32 +342,31 @@ const ChapterContent = ({ lectures, chapter, isOpen, activeLectureId, isLectureC
                             <p className="text-sm text-gray-500 mb-3">این فصل جلسه‌ای ندارد</p>
                             <button
                                 onClick={() => onCreateLecture(chapter.chapterId)}
-                                className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-blue-50 to-sky-50 text-white rounded-lg hover:from-blue-100 hover:to-sky-100 transition-all duration-200 shadow-sm hover:shadow-md"
+                                className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-sky-500 text-white rounded-lg hover:from-blue-600 hover:to-sky-600 transition-all duration-200 shadow-sm hover:shadow-md"
                             >
                                 <Plus className="w-4 h-4" />
                                 افزودن جلسه جدید
                             </button>
                         </div>
                     ) : (
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                            <SortableContext items={lectures.map(l => l.lectureId)} strategy={verticalListSortingStrategy}>
-                                <div className="divide-y divide-gray-100">
-                                    {lectures.map((lecture, idx) => (
-                                        <LectureItem
-                                            key={lecture.lectureId}
-                                            id={lecture.lectureId}
-                                            lecture={lecture}
-                                            lectureIndex={realLectures.findIndex(l => l.lectureId === lecture.lectureId)}
-                                            chapter={chapter}
-                                            isDragging={activeLectureId === lecture.lectureId}
-                                            onCreateLecture={onCreateLecture}
-                                            isCreateMode={isLectureCreateMode}
-                                            onCancelCreateLecture={onCancelCreateLecture}
-                                        />
-                                    ))}
-                                </div>
-                            </SortableContext>
-                        </DndContext>
+                        // حذف DndContext از اینجا - فقط SortableContext باقی میمونه
+                        <SortableContext items={lectures.map(l => l.lectureId)} strategy={verticalListSortingStrategy}>
+                            <div className="divide-y divide-gray-100">
+                                {lectures.map((lecture, idx) => (
+                                    <LectureItem
+                                        key={lecture.lectureId}
+                                        id={lecture.lectureId}
+                                        lecture={lecture}
+                                        lectureIndex={realLectures.findIndex(l => l.lectureId === lecture.lectureId)}
+                                        chapter={chapter}
+                                        isDragging={activeLectureId === lecture.lectureId}
+                                        onCreateLecture={onCreateLecture}
+                                        isCreateMode={isLectureCreateMode}
+                                        onCancelCreateLecture={onCancelCreateLecture}
+                                    />
+                                ))}
+                            </div>
+                        </SortableContext>
                     )}
                 </div>
             </div>
@@ -393,7 +374,7 @@ const ChapterContent = ({ lectures, chapter, isOpen, activeLectureId, isLectureC
     );
 };
 
-// Main Chapter Item Component
+// Main Chapter Item Component - اضافه کردن DndContext در اینجا برای هر فصل
 const ChapterItem = ({
     id,
     chapter,
@@ -418,6 +399,19 @@ const ChapterItem = ({
     const isOpen = chapterOpen === id;
     const isEditing = isEditingChapter === chapter.chapterId;
     const style = { transform: CSS.Transform.toString(transform), transition };
+
+    // تنظیم sensors برای درگ جلسات در موبایل
+    const sensors = useSensors(
+        useSensor(MouseSensor, {
+            activationConstraint: { distance: 8 },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 150,
+                tolerance: 8,
+            },
+        })
+    );
 
     useEffect(() => {
         setLectures(chapter.chapterContent);
@@ -444,6 +438,16 @@ const ChapterItem = ({
 
         await patchLectureOrder(courseId, chapter.chapterId, bulkUpdate);
     }, [lectures, patchLectureOrder, courseId, chapter.chapterId]);
+
+    const handleDragEnd = useCallback((event) => {
+        const { active, over } = event;
+        if (active.id !== over?.id) {
+            const oldIndex = lectures.findIndex(l => l.lectureId === active.id);
+            const newIndex = lectures.findIndex(l => l.lectureId === over.id);
+            handleReorderLectures(oldIndex, newIndex);
+        }
+        setActiveLectureId(null);
+    }, [lectures, handleReorderLectures]);
 
     const handleSaveChapterTitle = useCallback(async () => {
         if (editTitle.trim() && editTitle !== chapter.chapterTitle) {
@@ -486,9 +490,9 @@ const ChapterItem = ({
     }, []);
 
     return (
-        <div 
-            ref={setNodeRef} 
-            style={style} 
+        <div
+            ref={setNodeRef}
+            style={style}
             className={`transition-all duration-200 ${isDragging ? 'opacity-50' : ''}`}
         >
             <div className="w-full bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -507,16 +511,24 @@ const ChapterItem = ({
                     />
                 </div>
 
-                <ChapterContent
-                    lectures={lectures}
-                    chapter={chapter}
-                    isOpen={isOpen}
-                    activeLectureId={activeLectureId}
-                    isLectureCreateMode={isLectureCreateMode}
-                    onCreateLecture={handleCreateLecture}
-                    onReorderLectures={handleReorderLectures}
-                    onCancelCreateLecture={handleCancelCreateLecture}
-                />
+                {/* اضافه کردن DndContext در اینجا برای درگ جلسات */}
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragStart={({ active }) => setActiveLectureId(active.id)}
+                    onDragEnd={handleDragEnd}
+                >
+                    <ChapterContent
+                        lectures={lectures}
+                        chapter={chapter}
+                        isOpen={isOpen}
+                        activeLectureId={activeLectureId}
+                        isLectureCreateMode={isLectureCreateMode}
+                        onCreateLecture={handleCreateLecture}
+                        onReorderLectures={handleReorderLectures}
+                        onCancelCreateLecture={handleCancelCreateLecture}
+                    />
+                </DndContext>
             </div>
         </div>
     );

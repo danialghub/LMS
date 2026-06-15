@@ -17,6 +17,8 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
+    MouseSensor,
+    TouchSensor,
 } from '@dnd-kit/core';
 import {
     SortableContext,
@@ -423,7 +425,7 @@ const CourseChapterInput = ({ value, courseId }) => {
     const [editingChapterId, setEditingChapterId] = useState(null);
     const [chapters, setChapters] = useState(value || []);
 
-    const { createChapter, isReordering, patchChapterOrder, patchChapterFields } = useCourseStore();
+    const { createChapter, isReordering, patchChapterOrder } = useCourseStore();
 
     const {
         register,
@@ -436,8 +438,28 @@ const CourseChapterInput = ({ value, courseId }) => {
         mode: "onChange"
     });
 
+    // تشخیص دستگاه موبایل
+    const isTouchDevice = () => {
+        return ('ontouchstart' in window) || 
+               (navigator.maxTouchPoints > 0) || 
+               (navigator.msMaxTouchPoints > 0);
+    };
+
+    // تنظیم حسگرها بر اساس نوع دستگاه
     const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
+        useSensor(MouseSensor, {
+            activationConstraint: {
+                distance: 10, // برای موس
+            },
+        }),
+        ...(isTouchDevice() ? [
+            useSensor(TouchSensor, {
+                activationConstraint: {
+                    delay: 200,
+                    tolerance: 5,
+                },
+            })
+        ] : [])
     );
 
     const moveChapter = useCallback(async (fromIndex, toIndex) => {
@@ -491,36 +513,33 @@ const CourseChapterInput = ({ value, courseId }) => {
         reset();
     }, [createChapter, courseId, chapters.length, reset]);
 
-    const handleCancelAddChapter = useCallback(() => {
-        setIsAddingChapter(false);
-        reset();
-    }, [reset]);
+  
 
     return (
         <div className='bg-slate-100 w-full rounded relative'>
-            <div className='flex items-center justify-between mb-4 px-6 pt-4'>
-                <h3 className='font-bold text-lg'>فصل های دوره</h3>
+            <div className='flex  items-center justify-between mb-4 px-4 sm:px-6 pt-4 gap-3 sm:gap-0'>
+                <h3 className='font-bold text-base sm:text-lg'>فصل های دوره</h3>
                 <button
                     type="button"
                     onClick={() => setIsAddingChapter(prev => !prev)}
-                    className='text-sm inline-flex items-center gap-2 hover:text-blue-600 transition-colors'
+                    className='text-xs sm:text-sm inline-flex items-center gap-2 hover:text-blue-600 transition-colors'
                 >
                     {isAddingChapter ? (
                         <>
                             <span>لغو</span>
-                            <MinusCircle size={18} />
+                            <MinusCircle size={16} />
                         </>
                     ) : (
                         <>
                             <span>افزودن فصل</span>
-                            <PlusCircle size={18} />
+                            <PlusCircle size={16} />
                         </>
                     )}
                 </button>
             </div>
 
             {isAddingChapter ? (
-                <form onSubmit={handleSubmit(onSubmit)} className='px-6 pt-2 pb-4'>
+                <form onSubmit={handleSubmit(onSubmit)} className='px-4 sm:px-6 pt-2 pb-4'>
                     <div className='my-3'>
                         <input
                             disabled={isSubmitting}
@@ -535,7 +554,7 @@ const CourseChapterInput = ({ value, courseId }) => {
                     </div>
                     <button
                         disabled={isSubmitting || !isValid}
-                        className='btn-primary'
+                        className='btn-primary w-full sm:w-auto'
                         type='submit'
                     >
                         ایجاد فصل
@@ -555,7 +574,7 @@ const CourseChapterInput = ({ value, courseId }) => {
                                 items={chapters?.map(f => f.chapterId)}
                                 strategy={verticalListSortingStrategy}
                             >
-                                <div className="space-y-3  sm:max-h-[40vh] overflow-y-auto px-6 pb-4">
+                                <div className="space-y-3  sm:max-h-[40vh] overflow-y-auto px-4 sm:px-6 pb-4">
                                     {chapters?.map((chapter, chapterIndex) => (
                                         <CourseChapterItem
                                             key={chapter.chapterId}
@@ -576,14 +595,14 @@ const CourseChapterInput = ({ value, courseId }) => {
                         </DndContext>
 
                         {isReordering && (
-                            <div className='absolute top-0 left-0 bg-slate-500/20 h-full w-full flex items-center justify-center text-xl'>
-                                <Loader2 className='animate-spin size-8 text-sky-700' />
+                            <div className='absolute top-0 left-0 bg-slate-500/20 h-full w-full flex items-center justify-center text-xl rounded'>
+                                <Loader2 className='animate-spin size-6 sm:size-8 text-sky-700' />
                             </div>
                         )}
                     </div>
 
                     {chapters.length === 0 && (
-                        <div className="text-center py-8 text-gray-400">
+                        <div className="text-center py-8 text-gray-400 text-sm">
                             هنوز فصلی اضافه نشده است
                         </div>
                     )}
