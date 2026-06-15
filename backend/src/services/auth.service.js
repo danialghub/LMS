@@ -96,7 +96,7 @@ export const refreshTokenService = async (res, token) => {
       }
     );
 
-    throw new ForbiddenException();
+    throw new UnauthorizedException();
   }
 
   const newRefreshTokenArray =
@@ -115,11 +115,11 @@ export const refreshTokenService = async (res, token) => {
     user.refreshToken = newRefreshTokenArray;
     await user.save();
 
-    throw new ForbiddenException();
+    throw new UnauthorizedException();
   }
 
   if (decoded.email !== user.email) {
-    throw new ForbiddenException();
+    throw new UnauthorizedException();
   }
 
   const accessToken = generateAccessToken(
