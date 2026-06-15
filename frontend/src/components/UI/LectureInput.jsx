@@ -79,9 +79,9 @@ const LectureVideoInput = ({ courseId, chapterId, lectureId, value }) => {
     const [isEditing, setIsEditing] = useState(false)
     const [displayValue, setDisplayValue] = useState(value || "")
     const [videoUrl, setVideoUrl] = useState(value || "")
-    const [uploadProgress, setUploadProgress] = useState(0)
 
-    const { patchLectureFields } = useCourseStore()
+
+    const { patchLectureFields, progressBar } = useCourseStore()
     const {
         handleSubmit,
         control,
@@ -101,8 +101,10 @@ const LectureVideoInput = ({ courseId, chapterId, lectureId, value }) => {
         } else {
             setDisplayValue('')
         }
-        setUploadProgress(0)
+
     }
+
+
 
     const getVideoDuration = (file) => {
         return new Promise((resolve, reject) => {
@@ -133,13 +135,13 @@ const LectureVideoInput = ({ courseId, chapterId, lectureId, value }) => {
         setDisplayValue(newVideoUrl)
         reset({ lectureUrl: undefined })
         setIsEditing(false)
-        setUploadProgress(0)
+
     }
 
     const changeVideo = () => {
         reset()
         setDisplayValue('')
-        setUploadProgress(0)
+
     }
 
     return (
@@ -206,10 +208,28 @@ const LectureVideoInput = ({ courseId, chapterId, lectureId, value }) => {
                             </div>
                             <button
                                 disabled={isSubmitting || !isValid}
-                                className='btn-primary w-auto px-4 sm:px-6 py-1'
                                 type='submit'
+                                className='relative overflow-hidden btn-primary w-auto px-4 sm:px-6 py-1'
                             >
-                                آپلود ویدئو
+                                {/* لایه پیشرفت (پس‌زمینه متحرک) */}
+                                {isSubmitting && (
+                                    <div
+                                        className='absolute inset-0 bg-blue-500 transition-all duration-300 ease-out'
+                                        style={{ width: `${progressBar}%` }}
+                                    />
+                                )}
+
+                                {/* متن و درصد وسط دکمه */}
+                                <span className='relative z-10 flex items-center gap-2'>
+                                    {isSubmitting ? (
+                                        <>
+                                            <span>{progressBar}%</span>
+                                            <span className='hidden sm:inline'>در حال آپلود...</span>
+                                        </>
+                                    ) : (
+                                        'آپلود ویدئو'
+                                    )}
+                                </span>
                             </button>
                         </form>
                     </div>
@@ -312,9 +332,9 @@ const LectureAccessSettingInput = ({ courseId, chapterId, lectureId, value }) =>
 const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
     const [isEditing, setIsEditing] = useState(false)
     const [displayValue, setDisplayValue] = useState(value || null)
-    const [uploadProgress, setUploadProgress] = useState(0)
 
-    const { patchLectureFields, removeAttachment } = useCourseStore()
+
+    const { patchLectureFields, removeAttachment, progressBar } = useCourseStore()
     const {
         handleSubmit,
         control,
@@ -333,7 +353,7 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
         if (isEditing) {
             setDisplayValue(value)
         }
-        setUploadProgress(0)
+
     }
 
     const onSubmit = async (data) => {
@@ -346,7 +366,7 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
         setDisplayValue(data.attachment)
         reset({ attachment: null })
         setIsEditing(false)
-        setUploadProgress(0)
+
     }
 
     const removeAttachmentHandler = async () => {
@@ -358,7 +378,7 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
             setDisplayValue(null)
         }
         setIsEditing(false)
-        setUploadProgress(0)
+
     }
 
     const formatFileSize = (bytes) => {

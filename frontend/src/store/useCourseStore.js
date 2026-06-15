@@ -11,6 +11,7 @@ export const useCourseStore = create((set, get) => ({
     isCreating: false,
     isFetching: false,
     isReordering: false,
+    progressBar: 0,
 
     getCourses: async (filters = {}) => {
 
@@ -147,13 +148,17 @@ export const useCourseStore = create((set, get) => ({
         try {
             const { data } = await privateRoutes.patch(`/course/${courseId}/chapter/${chapterId}/lecture/${lectureId}`, body,
                 {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        set({ progressBar: percentCompleted });
                     }
                 })
             set({ lecture: data.updatedLecture })
+
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
+        } finally {
+            set({ progressBar: 0 })
         }
     },
     patchLectureOrder: async (courseId, chapterId, body) => {
