@@ -245,7 +245,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                 </div>
                 <button
                     onClick={() => setTheme(isDark ? "light" : "dark")}
-                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#151b2b] dark:hover:bg-[#1d2638]"
+                    className="size-10 ml-40 sm:ml-0 rounded-xl flex items-center justify-center transition-all duration-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#151b2b] dark:hover:bg-[#1d2638]"
                 >
                     {isDark ? <Sun size={18} className="text-yellow-400" /> : <Moon size={18} className="text-zinc-700 dark:text-white" />}
                 </button>

@@ -40,7 +40,7 @@ const LectureSetup = () => {
     const completedFields = requiredFieldes.filter(Boolean).length
 
     return !isFetching ? (
-        <div className='px-10 py-6 transform-gpu'>
+        <div className='px-5 sm:px-10 py-6 transform-gpu'>
             <div className='mt-4'>
                 <Link
                     to={`/instructor/courses/course-setup/${courseId}`}

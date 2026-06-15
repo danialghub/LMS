@@ -1,31 +1,118 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { useAuthStore } from '@/store/useAuthStore';
-import { Grip, Search } from 'lucide-react';
+import { Check, Filter, Grip, Search, SortAsc, SortDesc, XIcon } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
-
+import { AnimatePresence, motion } from 'framer-motion'
 const ToggleButton = () => {
     const [isOn, setIsOn] = useState(false);
     return (
         <button
             onClick={() => setIsOn(!isOn)}
             className={`
-        relative w-11 sm:w-12 h-5 sm:h-6 rounded-full transition-colors duration-300 px-1 cursor-pointer
+        relative  w-12 h-6  rounded-full transition-colors duration-300 px-1 cursor-pointer
         ${isOn ? 'bg-blue-500' : 'bg-gray-300'}
       `}
         >
             <div
                 className={`
-          absolute top-[3px] sm:top-1 w-3.5 sm:w-4 h-3.5 sm:h-4 rounded-full bg-white shadow-md
+          absolute  top-1 w-4 h-4 rounded-full bg-white shadow-md
           transition-transform duration-300 ease-out
-          ${isOn ? '-translate-x-[1.5rem] sm:-translate-x-[1.5rem]' : 'translate-x-0'}
+          ${isOn ? ' -translate-x-[1.5rem]' : 'translate-x-0'}
         `}
             ></div>
         </button>
     );
 };
+const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy }) => {
+    return (
+        <motion.div
+            className='fixed top-0 right-0 w-full h-screen bg-black/40 z-10'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowSortOptions(false)}
+        >
+            <motion.div
+                className='absolute bottom-0 right-0 bg-white rounded-md w-full py-5'
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className='flex items-center justify-between px-6 text-[15px] font-Dirooz font-bold'>
+                    <h4>مرتب سازی بر اساس</h4>
+                    <button
+                        onClick={() => setShowSortOptions(false)}
+                        className='pl-2'>
+                        <XIcon size={16} />
+                    </button>
+                </div>
+                <div className='flex flex-col items-start gap-2 mt-4'>
+                    {sortOptions.map(sortOpt => (
+                        <button
+                            key={sortOpt.value}
+                            className={`px-6 w-full py-3 text-[13px] flex items-center justify-between ${sortBy === sortOpt.value ? "bg-blue-50 text-blue-500" : "text-black/80"}`}
+                            onClick={() => setSortBy(sortOpt.value)}
+                        >
+                            {sortOpt.label}
+                            {sortBy === sortOpt.value && <Check size={17} className='text-blue-500' />}
+                        </button>
+                    ))}
+                </div>
+            </motion.div>
+        </motion.div>
+    )
+}
+const MobileFilters = ({ setShowFilters, authUser }) => {
+    return (
+        <motion.div
+            className='fixed top-0 right-0 w-full h-screen bg-black/40 z-10'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowFilters(false)}
+        >
+            <motion.div
+                className='absolute bottom-0 right-0 bg-white rounded-md w-full py-5'
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className='flex items-center justify-between px-6 text-[15px] font-Dirooz font-bold'>
+                    <h4 className='text-black/70'>فیلتر دوره ها </h4>
+                    <button
+                        onClick={() => setShowFilters(false)}
+                        className='pl-2'>
+                        <XIcon size={16} />
+                    </button>
+                </div>
+                <div className=' mt-6'>
+                    <div className='flex  bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                        <p className=' text-[15px]    text-black/70'>فقط دوره های رایگان</p>
+                        <ToggleButton />
+                    </div>
 
+                    {/* فیلتر دوره‌های من (فقط دانشجو) */}
+                    {authUser && authUser.role === "student" && (
+                        <div className='border-t-1 border-t-black/10 flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                            <p className='text-[15px]   text-black/70'>فقط دوره های من</p>
+                            <ToggleButton />
+                        </div>
+                    )}
+                </div>
+            </motion.div>
+        </motion.div>
+    )
+}
 const CourseFilteringCard = ({ sortBy, setSortBy }) => {
+
+    const [showSortOptions, setShowSortOptions] = useState(false)
+    const [showFilters, setShowFilters] = useState(false)
+
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -45,26 +132,27 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
     return (
         <div className='flex flex-col gap-4 sm:gap-6 md:flex-1 rounded-lg md:sticky md:top-24 max-md:mx-auto max-md:w-full'>
             {/* جستجو */}
-            <div className='relative p-3 sm:p-5 rounded-xl bg-white shadow-md'>
+
+            <div className='relative p-3 sm:p-5 rounded-xl mx-6 sm:mx-0 bg-white shadow-md'>
                 <input
                     type="text"
                     className='w-full text-sm sm:text-base text-black/70 rounded-lg border-none outline-none bg-transparent placeholder:text-black/40 pr-8 sm:pr-0'
                     placeholder='جستجو در بین دوره ها'
                 />
-                <span className='absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 text-black/40'>
+                <span className='absolute left-3 sm:left-5 top-1/2  -translate-y-1/2 text-black/40'>
                     <Search size={18} className="sm:size-5" />
                 </span>
             </div>
 
-            {/* مرتب سازی */}
-            <div className='bg-white shadow p-4 sm:p-6 md:p-8 rounded-lg'>
-                <div className='flex items-center gap-2'>
+            {/*pc مرتب سازی */}
+            <div className='hidden sm:block bg-white shadow py-4 sm:py-6 md:py-8 rounded-lg '>
+                <div className='flex items-center gap-2 pr-3'>
                     <Grip size={18} className="sm:size-5" />
-                    <h5 className='font-Dirooz text-base sm:text-lg'>مرتب سازی</h5>
+                    <h5 className='font-heading text-black/80  text-base sm:text-[21px]'>مرتب سازی</h5>
                 </div>
                 <hr className='my-3 sm:my-4 border-black/10' />
 
-                <div className="flex flex-col items-start gap-3 sm:gap-5">
+                <div className="flex flex-col items-start gap-3 sm:gap-5 px-4 sm:px-6 md:px-8">
                     {sortOptions.map(option => (
                         <label
                             key={option.value}
@@ -93,15 +181,52 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                 </div>
             </div>
 
+            {/*Mobile دکمه های */}
+            <div className='flex items-center justify-center gap-4 text-[14px] text-black/70  mt-5 font-heading'>
+                <button
+                    onClick={() => setShowFilters(true)}
+                    className='flex items-center justify-center gap-2 sm:hidden w-[180px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
+                    <Filter size={15} />
+                    فیلتر
+                </button>
+                <button
+                    onClick={() => setShowSortOptions(true)}
+                    className='flex items-center justify-center gap-2 sm:hidden w-[180px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
+                    <SortDesc size={18} />
+                    مرتب سازی
+                </button>
+            </div>
+
+            {/*Mobile مرتب سازی */}
+            <AnimatePresence>
+                {showSortOptions && (
+                    <MobileSortOptions
+                        sortOptions={sortOptions}
+                        setShowSortOptions={setShowSortOptions}
+                        sortBy={sortBy}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/*Mobile فیلتر ها */}
+            <AnimatePresence>
+                {showFilters && (
+                    <MobileFilters
+                        setShowFilters={setShowFilters}
+                        authUser={authUser}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* فیلتر دوره‌های رایگان */}
-            <div className='bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg flex items-center justify-between'>
+            <div className='hidden sm:flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                 <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های رایگان</p>
                 <ToggleButton />
             </div>
 
             {/* فیلتر دوره‌های من (فقط دانشجو) */}
             {authUser && authUser.role === "student" && (
-                <div className='bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg flex items-center justify-between'>
+                <div className='hidden sm:flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                     <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های من</p>
                     <ToggleButton />
                 </div>

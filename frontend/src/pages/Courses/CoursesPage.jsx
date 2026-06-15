@@ -109,7 +109,7 @@ const CoursesPage = () => {
                             ? <div > <PageLoader /></div>
                             : courses?.length > 0
                                 ? (
-                                    <div className='grid grid-cols-1 px-10  md:px-0 md:grid-cols-2 xl:grid-cols-3  gap-6 md:flex-3 ' >
+                                    <div className='grid grid-cols-1 px-7  md:px-0 md:grid-cols-2 xl:grid-cols-3  gap-6 md:flex-3 ' >
                                         <AnimatePresence>
                                             {courses.map(course => (
                                                 <CourseCard key={course._id} course={course} />

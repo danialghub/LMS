@@ -126,7 +126,7 @@ const CourseDescriptionInput = ({ courseId, value }) => {
                     ?
                     <div className='   px-6 '>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='my-3 max-h-[20vh] overflow-y-auto'>
+                            <div className='my-3 sm:max-h-[20vh] overflow-y-auto'>
 
                                 <RichTextEditor
                                     name="courseDescription"
@@ -140,7 +140,7 @@ const CourseDescriptionInput = ({ courseId, value }) => {
                                 className='btn-primary ' type='submit'>ذخیره</button>
                         </form >
                     </div>
-                    : <div className=' max-h-[15vh] overflow-y-auto'>
+                    : <div className=' sm:max-h-[15vh] overflow-y-auto'>
                         <h4
                             className='break-words whitespace-normal text-black/60 text-sm mt-3 p-2 px-4'
                             dangerouslySetInnerHTML={{ __html: displayValue }}
@@ -555,7 +555,7 @@ const CourseChapterInput = ({ value, courseId }) => {
                                 items={chapters?.map(f => f.chapterId)}
                                 strategy={verticalListSortingStrategy}
                             >
-                                <div className="space-y-3 max-h-[40vh] overflow-y-auto px-6 pb-4">
+                                <div className="space-y-3  sm:max-h-[40vh] overflow-y-auto px-6 pb-4">
                                     {chapters?.map((chapter, chapterIndex) => (
                                         <CourseChapterItem
                                             key={chapter.chapterId}

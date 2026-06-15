@@ -57,7 +57,7 @@ const CourseSetup = () => {
 
 
     return !isFetching ? (
-        <div className='px-10 py-6 transform-gpu overflow-x-hidden'>
+        <div className='px-5 sm:px-10 py-6 transform-gpu overflow-x-hidden'>
 
             <div className='flex justify-between  items-center '>
                 <div>

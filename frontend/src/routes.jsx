@@ -20,7 +20,7 @@ import InstructorCoursesPage from '@/pages/Instructor/InstructorCoursesPage'
 import InstructorDashboardPage from '@/pages/Instructor/InstructorDashboardPage'
 import InstructorAnalytics from '@/pages/Instructor/InstructorAnalytics'
 import InstructorCoursesManagementPage from '@/pages/Instructor/InstructorCoursesManagementPage'
-import InstructorHomePage from '@/pages/Instructor/InstructorHomePage'
+
 
 import StudentDashboardPage from '@/pages/Student/StudentDashboardPage'
 import StudentCourses from '@/pages/Student/StudentCourses'
@@ -80,12 +80,6 @@ const routes = () => {
             path: "/instructor/",
             element: <ProtectedRoute requiredRole="instructor"><InstructorDashboardPage /></ProtectedRoute>,
             children: [
-
-                {
-                    path: "dashboard",
-                    element: <InstructorHomePage />,
-
-                },
                 {
                     path: "analytics",
                     element: <InstructorAnalytics />

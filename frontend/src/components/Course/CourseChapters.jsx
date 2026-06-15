@@ -98,8 +98,9 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                                 }
                             `}
                         >
-                            <div className="overflow-hidden">
+                            <div className="overflow-hidden relative">
                                 <div className="px-0 py-0 space-y-2">
+                                    <div className="absolute right-[-1rem] sm:right-[-1.5rem] top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/50 to-transparent" />
                                     {chapter.chapterContent.map((lec, lecIdx) => (
                                         <div
                                             key={lec.lectureId}

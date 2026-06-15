@@ -141,7 +141,7 @@ const InstructorCoursesManagementPage = () => {
         return formatPrice(totalEarning)
     }
 
-   
+
 
     useEffect(() => {
         if (!totalPagesInfo) return
@@ -149,17 +149,18 @@ const InstructorCoursesManagementPage = () => {
     }, [totalPagesInfo])
 
     return (
-        <div className="container max-w-7xl p-6 bg-gray-50 " dir="rtl">
-            {/* هدر و دکمه ایجاد دوره جدید */}
+        <div className="container max-w-7xl p-4 md:p-6 bg-gray-50" dir="rtl">
             <NewCourseModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
             />
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">مدیریت دوره‌ها</h1>
+
+            {/* هدر و دکمه ایجاد دوره جدید - ریسپانسیو */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h1 className="text-xl md:text-2xl font-bold text-gray-800">مدیریت دوره‌ها</h1>
                 <button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md"
+                    className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 md:px-4 rounded-lg transition duration-200 shadow-md w-full sm:w-auto"
                 >
                     <Plus size={20} />
                     <span>دوره جدید</span>
@@ -168,142 +169,212 @@ const InstructorCoursesManagementPage = () => {
 
             {/* جدول دوره‌ها */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[70vh] relative">
-                {isError
-                    ? <div>خطا در دریافت دوره‌ها</div>
-                    : isLoading
-                        ? <div className='flex items-center justify-center h-[60vh]'>
-                            <Loader className='animate-spin size-10 text-blue-500' />
-                        </div>
-                        : (
-                            <div className="overflow-x-auto pb-14">
-                                <table className="w-full">
-                                    <thead className="bg-gray-100 border-b-2 border-gray-200">
-                                        <tr>
-                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">دوره</th>
-                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                                <div className="flex items-center gap-1">
-                                                    <DollarSign size={16} />
-                                                    <span>درآمد دوره</span>
+                {isError ? (
+                    <div className="p-4 text-center text-red-600">خطا در دریافت دوره‌ها</div>
+                ) : isLoading ? (
+                    <div className='flex items-center justify-center h-[60vh]'>
+                        <Loader className='animate-spin size-8 md:size-10 text-blue-500' />
+                    </div>
+                ) : (
+                    <>
+                        {/* نسخه دسکتاپ: جدول معمولی */}
+                        <div className="hidden md:block overflow-x-auto pb-14">
+                            <table className="w-full min-w-[768px]">
+                                <thead className="bg-gray-100 border-b-2 border-gray-200">
+                                    <tr>
+                                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">دوره</th>
+                                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">
+                                            <div className="flex items-center gap-1">
+                                                <DollarSign size={16} />
+                                                <span>درآمد دوره</span>
+                                            </div>
+                                        </th>
+                                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">
+                                            <div className="flex items-center gap-1">
+                                                <Users size={16} />
+                                                <span>تعداد دانشجو</span>
+                                            </div>
+                                        </th>
+                                        <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">
+                                            <div className="flex items-center justify-center gap-1">
+                                                <CheckSquare size={16} />
+                                                <span>وضعیت انتشار</span>
+                                            </div>
+                                        </th>
+                                        <th className="px-4 py-3 text-center text-sm font-semibold text-gray-600">عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {courses.map((course, index) => (
+                                        <tr
+                                            key={course._id || index}
+                                            className={`border-b border-gray-200 hover:bg-gray-50 transition duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                                                }`}
+                                        >
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-12 h-10 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
+                                                        {course.courseThumbnail ? (
+                                                            <img
+                                                                src={course.courseThumbnail}
+                                                                alt={course.courseTitle}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                                                بدون عکس
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <span className="font-medium text-gray-800 line-clamp-2">{course.courseTitle}</span>
                                                 </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-right text-sm font-semibold text-gray-600">
-                                                <div className="flex items-center gap-1">
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center gap-1 text-green-600 font-semibold">
+                                                    {course?.enrolledStudents?.length
+                                                        ? <span>{formatPrice(course.sales)}</span>
+                                                        : <span className="text-gray-400">———</span>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center gap-1 text-blue-600">
                                                     <Users size={16} />
-                                                    <span>تعداد دانشجو</span>
+                                                    <span className="font-semibold">
+                                                        {course?.enrolledStudents?.length ? (
+                                                            <>
+                                                                <span>{course?.enrolledStudents?.length.toLocaleString('fa-IR')}</span>
+                                                                <span className="text-gray-500 text-sm"> نفر</span>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-gray-400">———</span>
+                                                        )}
+                                                    </span>
                                                 </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">
-                                                <div className="flex items-center justify-center gap-1">
-                                                    <CheckSquare size={16} />
-                                                    <span>وضعیت انتشار</span>
-                                                </div>
-                                            </th>
-                                            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-600">عملیات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {courses.map((course, index) => (
-                                            <tr
-                                                key={index}
-                                                className={`border-b border-gray-200 hover:bg-gray-50 transition duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                                                    }`}
-                                            >
-                                                {/* ستون دوره (عکس + عنوان کنار هم) */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        {/* عکس دوره */}
-                                                        <div className="w-14 h-10 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
-                                                            {course.courseThumbnail ? (
-                                                                <img
-                                                                    src={course.courseThumbnail}
-                                                                    alt={course.courseTitle}
-                                                                    className="w-full h-full object-center"
-                                                                />
-                                                            ) : (
-                                                                <div className="w-full h-full  flex items-center justify-center text-gray-400 text-xs">
-                                                                    بدون عکس
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        {/* عنوان دوره */}
-                                                        <span className="font-medium text-gray-800">{course.courseTitle}</span>
-                                                    </div>
-                                                </td>
-
-                                                {/* درآمد دوره */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-1 text-green-600 font-semibold">
-
-                                                        {course?.enrolledStudents.length
-                                                            ? <span>{formatPrice(course.sales)}</span>
-                                                            : <span>________</span>
-                                                        }
-                                                    </div>
-                                                </td>
-
-                                                {/* تعداد دانشجو */}
-                                                <td className="px-6 py-4 ">
-                                                    <div className="flex items-center gap-1 text-blue-600 ">
-                                                        <Users size={16} />
-                                                        <span className="font-semibold">{
-                                                            course?.enrolledStudents?.length
-                                                                ? <>
-                                                                    <span>{course?.enrolledStudents?.length.toLocaleString('fa-IR')}</span>
-                                                                    <span className="text-gray-500 text-sm"> نفر</span>
-                                                                </>
-                                                                : <span>________</span>
-
-                                                        }
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center justify-center">
+                                                    <button className="flex items-center gap-2 group">
+                                                        {course.isCoursePublished ? (
+                                                            <CheckSquare size={20} className="text-green-600 group-hover:text-green-700 transition" />
+                                                        ) : (
+                                                            <Square size={20} className="text-gray-400 group-hover:text-gray-500 transition" />
+                                                        )}
+                                                        <span className={`text-sm hidden sm:inline ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'
+                                                            }`}>
+                                                            {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
                                                         </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3">
+                                                <div className="flex items-center justify-center">
+                                                    <Link
+                                                        to={`/instructor/courses/course-setup/${course._id}`}
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-150 group"
+                                                        title="ویرایش دوره"
+                                                    >
+                                                        <Edit size={18} className="group-hover:scale-110 transition" />
+                                                    </Link>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
 
+                        {/* نسخه موبایل و تبلت: کارت‌های عمودی */}
+                        <div className="block md:hidden pb-14">
+                            <div className="space-y-3 p-3">
+                                {courses.map((course, index) => (
+                                    <div
+                                        key={course._id || index}
+                                        className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+                                    >
+                                        {/* ردیف اول: تصویر و عنوان */}
+                                        <div className="flex items-start gap-3 mb-3">
+                                            <div className="w-16 h-14 rounded-md bg-gray-100 overflow-hidden flex-shrink-0">
+                                                {course.courseThumbnail ? (
+                                                    <img
+                                                        src={course.courseThumbnail}
+                                                        alt={course.courseTitle}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                                        بدون عکس
                                                     </div>
-                                                </td>
+                                                )}
+                                            </div>
+                                            <div className="flex-1">
+                                                <h3 className="font-semibold text-gray-800 line-clamp-2 text-sm sm:text-base">
+                                                    {course.courseTitle}
+                                                </h3>
+                                            </div>
+                                        </div>
 
-                                                {/* وضعیت انتشار (Checkbox) */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center justify-center">
-                                                        <button
-                                                            className="flex items-center gap-2 group"
-                                                        >
-                                                            {course.isCoursePublished ? (
-                                                                <CheckSquare size={22} className="text-green-600 group-hover:text-green-700 transition" />
-                                                            ) : (
-                                                                <Square size={22} className="text-gray-400 group-hover:text-gray-500 transition" />
-                                                            )}
-                                                            <span className={`text-sm ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'}`}>
-                                                                {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                        {/* ردیف دوم: آمار */}
+                                        <div className="grid grid-cols-2 gap-3 mb-3 pt-2 border-t border-gray-100">
+                                            <div className="flex items-center gap-2 text-green-600">
+                                                <DollarSign size={16} />
+                                                <div>
+                                                    <span className="text-xs text-gray-500 block">درآمد</span>
+                                                    <span className="font-semibold text-sm">
+                                                        {course?.enrolledStudents?.length
+                                                            ? formatPrice(course.sales)
+                                                            : '———'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-blue-600">
+                                                <Users size={16} />
+                                                <div>
+                                                    <span className="text-xs text-gray-500 block">تعداد دانشجو</span>
+                                                    <span className="font-semibold text-sm">
+                                                        {course?.enrolledStudents?.length ? (
+                                                            <>{course?.enrolledStudents?.length.toLocaleString('fa-IR')} نفر</>
+                                                        ) : (
+                                                            '———'
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                                {/* دکمه ویرایش */}
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center justify-center">
-                                                        <Link
-                                                            to={`/instructor/courses/course-setup/${course._id}`}
-                                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-150 group"
-                                                            title="ویرایش دوره"
-                                                        >
-                                                            <Edit size={18} className="group-hover:scale-110 transition" />
-                                                        </Link>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
+                                        {/* ردیف سوم: وضعیت و عملیات */}
+                                        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                                            <button className="flex items-center gap-2 group">
+                                                {course.isCoursePublished ? (
+                                                    <CheckSquare size={18} className="text-green-600" />
+                                                ) : (
+                                                    <Square size={18} className="text-gray-400" />
+                                                )}
+                                                <span className={`text-xs ${course.isCoursePublished ? 'text-green-600' : 'text-gray-500'
+                                                    }`}>
+                                                    {course.isCoursePublished ? 'منتشر شده' : 'پیش‌نویس'}
+                                                </span>
+                                            </button>
+                                            <Link
+                                                to={`/instructor/courses/course-setup/${course._id}`}
+                                                className="flex items-center gap-1 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                            >
+                                                <Edit size={16} />
+                                                <span className="text-sm">ویرایش</span>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        )
-
-                }
+                        </div>
+                    </>
+                )}
 
                 {/* وضعیت خالی بودن جدول */}
                 {!isFetching && courses.length === 0 && (
                     <div className='h-[70vh] flex items-center justify-center'>
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 text-2xl font-heading">هیچ دوره‌ای یافت نشد</p>
+                        <div className="text-center py-12 px-4">
+                            <p className="text-gray-500 text-xl md:text-2xl font-heading">هیچ دوره‌ای یافت نشد</p>
                             <button
                                 onClick={() => setIsCreateModalOpen(true)}
                                 className="mt-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
@@ -315,16 +386,13 @@ const InstructorCoursesManagementPage = () => {
                     </div>
                 )}
 
-
                 <Pagination
                     currentPage={page}
                     totalPages={totalPages}
                     onPageChange={(newPage) => {
-                        setPage(newPage)
+                        setPage(newPage);
                     }}
-
                 />
-
             </div>
         </div>
     );

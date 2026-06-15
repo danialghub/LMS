@@ -38,15 +38,15 @@ const StudentCourses = () => {
 
 
             {/* CONTENT */}
-            <div className="bg-white min-h-[100vh]  rounded-xl  p-8 ">
-                <h1 className="text-3xl  text-black/80 font-heading mb-6 text-right">
+            <div className="bg-white min-h-[100vh]  rounded-xl  py-8 px-4 sm:px-8 ">
+                <h1 className="text-2xl sm:text-3xl  text-black/80 font-heading mb-6 text-right">
                     دوره های من
                 </h1>
 
 
                 {isFetching
                     ? (
-                        <div className="grid grid-cols-4 gap-5">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
                             {[1, 2, 3, 4, 5, 6, 7, 8].map((_, idx) => (
                                 <CourseSkleton key={idx} />
                             ))}
@@ -54,7 +54,7 @@ const StudentCourses = () => {
                     ) : courses.length > 0
                         ? (
                             <div className='flex flex-col items-center justify-center gap-8'>
-                                <div className="grid grid-cols-4 gap-5">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
                                     <AnimatePresence>
                                         {courses.map(course => (
                                             <MyCourseCard key={course._id} course={course} />
