@@ -15,7 +15,7 @@ export const signup = asyncHandler(
 
         if (req.file?.originalname) {
             // bodyData["avatar"] = `http://localhost:3000/uploads/${req.file?.originalname}`
-            const secure_url = await uploadImage(file.path, false)
+            const secure_url = await uploadImage(req.file.path, false)
             bodyData["avatar"] = secure_url
         }
 
