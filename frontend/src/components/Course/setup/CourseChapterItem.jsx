@@ -28,7 +28,7 @@ const PUBLISH_STATUS = {
 // Improved Blue Color System
 const COLORS = {
     chapter: {
-        gradient: 'from-blue-50 to-blue-100',
+        gradient: 'from-blue-50 to-sky-50',
         bg: 'bg-gradient-to-r from-blue-50 to-indigo-50',
         border: 'border-blue-200',
         text: 'text-blue-700',
@@ -53,41 +53,52 @@ const COLORS = {
             bg: 'bg-gradient-to-r from-cyan-50 to-blue-50',
             border: 'border-cyan-100',
             text: 'text-cyan-800',
-            badge: 'bg-cyan-100 text-cyan-700',
-            icon: 'text-cyan-500'
+            badge: 'bg-white/10 text-black',
+            icon: 'text-cyan-700'
         }
     }
 };
 
 // Status Badge Component
 const StatusBadge = ({ status, isFree = false }) => {
-    if (isFree) {
-        return (
-            <div className='px-2 sm:px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-[10px] sm:text-[11px] font-medium shadow-sm whitespace-nowrap flex items-center gap-1'>
-                <Unlock className="w-2.5 h-2.5" />
-                <span>رایگان</span>
-            </div>
-        );
-    }
-
-    const config = {
+    // تنظیمات مربوط به وضعیت انتشار
+    const publishConfig = {
         [PUBLISH_STATUS.PUBLISHED]: { 
             text: 'منتشر شده', 
-            className: 'bg-gradient-to-r from-blue-500 to-sky-500 text-white shadow-sm',
+            className: 'bg-gradient-to-r from-blue-500 to-sky-500',
             icon: <Play className="w-2.5 h-2.5" />
         },
         [PUBLISH_STATUS.DRAFT]: { 
             text: 'پیش نویس', 
-            className: 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-sm',
+            className: 'bg-gradient-to-r from-gray-400 to-gray-500',
             icon: <FileText className="w-2.5 h-2.5" />
         }
     };
 
-    const { text, className, icon } = config[status] || config[PUBLISH_STATUS.DRAFT];
+    const { text: publishText, className: publishClassName, icon: publishIcon } = 
+        publishConfig[status] || publishConfig[PUBLISH_STATUS.DRAFT];
+
+    // اگر رایگان باشد
+    if (isFree) {
+        return (
+            <div className='flex items-center gap-1'>
+                <div className={`px-2 sm:px-2.5 py-0.5 rounded-full ${publishClassName} text-white text-[10px] sm:text-[11px] font-medium shadow-sm flex items-center gap-1`}>
+                    {publishIcon}
+                    <span>{publishText}</span>
+                </div>
+                <div className='px-2 sm:px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-[10px] sm:text-[11px] font-medium shadow-sm flex items-center gap-1'>
+                    <Unlock className="w-2.5 h-2.5" />
+                    <span>رایگان</span>
+                </div>
+            </div>
+        );
+    }
+
+    // اگر رایگان نباشد
     return (
-        <div className={`px-2 sm:px-2.5 py-0.5 rounded-full ${className} text-[10px] sm:text-[11px] font-medium flex items-center gap-1 whitespace-nowrap`}>
-            {icon}
-            <span>{text}</span>
+        <div className={`px-2 sm:px-2.5 py-0.5 rounded-full ${publishClassName} text-white text-[10px] sm:text-[11px] font-medium shadow-sm flex items-center gap-1 whitespace-nowrap`}>
+            {publishIcon}
+            <span>{publishText}</span>
         </div>
     );
 };
@@ -172,45 +183,46 @@ const LectureItem = ({ id, lecture, lectureIndex, chapter, isDragging, onCreateL
 
     const colors = getLectureColors();
 
-    return (
-        <div 
-            ref={setNodeRef} 
-            style={style} 
-            className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 ${colors.bg} border-b ${colors.border} last:border-b-0 gap-2 sm:gap-0 transition-all duration-200 ${isDragging ? 'opacity-50' : 'hover:shadow-sm'}`}
-        >
-            <div className="flex items-center gap-2 sm:gap-3 flex-1 w-full">
-                <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-manipulation p-1 hover:bg-gray-100 rounded transition-colors">
-                    <GripVertical className={`size-4 ${colors.icon}`} />
-                </div>
-
-                {isCreateMode === id ? (
-                    <LectureForm onSubmit={handleSubmit} onCancel={handleCancel} />
-                ) : (
-                    <div className="flex items-center gap-2 flex-1">
-                        <div className={`w-6 h-6 rounded-full ${colors.badge} flex items-center justify-center text-xs font-bold shadow-sm`}>
-                            {lectureIndex + 1}
-                        </div>
-                        <p className={`text-xs sm:text-sm break-words flex-1 font-medium ${colors.text}`}>
-                            {lecture.lectureTitle}
-                        </p>
-                    </div>
-                )}
+  return (
+    <div 
+        ref={setNodeRef} 
+        style={style} 
+        className={`flex flex-col  items-start  justify-between p-3 sm:p-4 ${colors.bg} border-b ${colors.border} last:border-b-0 gap-2 sm:gap-0 transition-all duration-200 ${isDragging ? 'opacity-50' : 'hover:shadow-sm'}`}
+    >
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 w-full">
+            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-manipulation p-1 hover:bg-gray-100 rounded transition-colors">
+                <GripVertical className={`size-4 ${colors.icon}`} />
             </div>
 
-            {isCreateMode !== id && (
-                <div className='flex items-center gap-2 self-end sm:self-center mt-1 sm:mt-0'>
-                    <StatusBadge status={lecture.lecturePublishStatus} isFree={lecture.isLectureFree} />
-                    <Link
-                        to={`/instructor/courses/course-setup/${course._id}/chapter/${chapter.chapterId}/lecture-setup/${lecture.lectureId}`}
-                        className={`p-1.5 rounded-lg transition-all duration-200 ${colors.badge} hover:shadow-md`}
-                        title="ویرایش جلسه"
-                    >
-                        <Edit className={`size-3.5 sm:size-4 ${colors.icon}`} />
-                    </Link>
+            {isCreateMode === id ? (
+                <LectureForm onSubmit={handleSubmit} onCancel={handleCancel} />
+            ) : (
+                <div className="flex items-center gap-2 flex-1">
+                    <div className={`w-6 h-6 rounded-full ${colors.badge} flex items-center justify-center text-xs font-bold shadow-sm`}>
+                        {lectureIndex + 1}
+                    </div>
+                    <p className={`text-xs sm:text-sm break-words flex-1 font-medium ${colors.text}`}>
+                        {lecture.lectureTitle}
+                    </p>
                 </div>
             )}
         </div>
-    );
+
+        {isCreateMode !== id && (
+            <div className='flex items-center justify-end gap-2 self-end  mt-1 '>
+              
+                <StatusBadge status={lecture.lecturePublishStatus} isFree={lecture.isLectureFree} />
+                  <Link
+                    to={`/instructor/courses/course-setup/${course._id}/chapter/${chapter.chapterId}/lecture-setup/${lecture.lectureId}`}
+                    className={`p-1.5 rounded-lg transition-all duration-200 ${colors.badge} hover:shadow-md`}
+                    title="ویرایش جلسه"
+                >
+                    <Edit className={`size-3.5 sm:size-4 ${colors.icon}`} />
+                </Link>
+            </div>
+        )}
+    </div>
+);
 };
 
 // Chapter Header Component

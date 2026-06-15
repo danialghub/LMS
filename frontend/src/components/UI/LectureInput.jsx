@@ -12,6 +12,7 @@ import { VideoPlayer } from '@/components/index'
 const LectureTitleInput = ({ courseId, chapterId, lectureId, value }) => {
     const [isEditing, setIsEditing] = useState(false)
     const { patchLectureFields } = useCourseStore()
+    const [displayValue, setDisplayValue] = useState(value || "")
     const {
         register,
         handleSubmit,
@@ -20,7 +21,7 @@ const LectureTitleInput = ({ courseId, chapterId, lectureId, value }) => {
     } = useForm(
         {
             resolver: zodResolver(lectureTitleSchema),
-            values: { lectureTitle: value || "" },
+            values: { lectureTitle: displayValue },
             mode: "onChange"
         }
     )
@@ -29,14 +30,19 @@ const LectureTitleInput = ({ courseId, chapterId, lectureId, value }) => {
         await patchLectureFields(courseId, chapterId, lectureId, data)
         setIsEditing(false)
     }
-
+    const toggleEdit = () => {
+        if (isEditing) {
+            setDisplayValue(value)
+        }
+        setIsEditing(prev => !prev)
+    }
     return (
         <div className='w-full py-3 sm:py-4 px-4 sm:px-6 bg-slate-100 rounded-md'>
             <div className='flex items-center justify-between gap-2'>
                 <h3 className='font-bold text-base sm:text-lg'>عنوان جلسه</h3>
                 <button
                     className='hover:bg-blue-100 rounded-full hover:text-blue-800 p-1.5 sm:p-2 duration-150 cursor-pointer shrink-0'
-                    onClick={() => setIsEditing(prev => !prev)}>
+                    onClick={toggleEdit}>
                     {isEditing ? <XIcon size={18} /> : <Edit size={18} />}
                 </button>
             </div>
@@ -47,20 +53,22 @@ const LectureTitleInput = ({ courseId, chapterId, lectureId, value }) => {
                         <div className='my-3'>
                             <input
                                 disabled={isSubmitting}
-                                type='text' 
-                                className='form-input text-sm rounded p-2 w-full' 
-                                {...register('lectureTitle')} 
+                                type='text'
+                                className='form-input text-sm rounded p-2 w-full'
+                                {...register('lectureTitle', {
+                                    onChange: (e) => setDisplayValue(e.target.value)
+                                })}
                             />
                             <p className='text-[12px] text-red-500 pt-1'>{errors.lectureTitle?.message}</p>
                         </div>
                         <button
-                            disabled={isSubmitting || !isValid}
-                            className='btn-primary w-full sm:w-auto' 
+                            disabled={isSubmitting || !isValid || value === displayValue}
+                            className='btn-primary w-auto'
                             type='submit'>
                             ذخیره
                         </button>
                     </form>
-                    : <h4 className='text-black/70 text-sm mt-3 p-2 break-words'>{watch('lectureTitle')}</h4>
+                    : <h4 className='text-black/70 text-sm mt-3 p-2 break-words'>{displayValue}</h4>
                 }
             </div>
         </div>
@@ -198,7 +206,7 @@ const LectureVideoInput = ({ courseId, chapterId, lectureId, value }) => {
                             </div>
                             <button
                                 disabled={isSubmitting || !isValid}
-                                className='btn-primary w-full sm:w-auto px-4 sm:px-6 py-1'
+                                className='btn-primary w-auto px-4 sm:px-6 py-1'
                                 type='submit'
                             >
                                 آپلود ویدئو
@@ -268,7 +276,7 @@ const LectureAccessSettingInput = ({ courseId, chapterId, lectureId, value }) =>
                                 <input
                                     disabled={isSubmitting}
                                     type='checkbox'
-                                    className='text-sm size-4 sm:size-5 accent-blue-500 mt-1 sm:mt-0 shrink-0' 
+                                    className='text-sm size-4 sm:size-5 accent-blue-500 mt-1 sm:mt-0 shrink-0'
                                     {...register('isLectureFree')}
                                 />
                                 <p className='text-xs sm:text-sm text-black/70 leading-relaxed'>
@@ -279,17 +287,16 @@ const LectureAccessSettingInput = ({ courseId, chapterId, lectureId, value }) =>
                         </div>
                         <button
                             disabled={isSubmitting || !isValid || displayValue === watch('isLectureFree')}
-                            className='btn-primary w-full sm:w-auto' 
+                            className='btn-primary w-auto'
                             type='submit'>
                             ذخیره
                         </button>
                     </form>
                     : <div className='mt-3 p-2'>
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs sm:text-sm ${
-                            watch('isLectureFree') 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs sm:text-sm ${watch('isLectureFree')
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                            }`}>
                             {watch('isLectureFree')
                                 ? "✓ جلسه رایگان"
                                 : "🔒 جلسه نیاز به خرید دارد"
@@ -379,7 +386,7 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='my-3 relative'>
                                 {displayValue?.name ? (
-                                    <div dir='ltr' className='flex flex-col sm:flex-row items-start sm:items-center gap-2 rounded-md bg-blue-100 text-blue-800 p-3'>
+                                    <div dir='ltr' className='flex flex-row items-center gap-2 rounded-md bg-blue-100 text-blue-800 p-3'>
                                         <div className='flex items-center gap-2 flex-1 w-full'>
                                             <File size={20} className='shrink-0' />
                                             <div className='flex-1 min-w-0'>
@@ -429,9 +436,9 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
                             </div>
                             <button
                                 disabled={isSubmitting || !isValid}
-                                className='btn-primary w-full sm:w-auto px-4 sm:px-6 py-1' 
+                                className='btn-primary w-auto px-4 sm:px-6 py-1'
                                 type='submit'>
-                                آپلود پیوست
+                                آپلود
                             </button>
                         </form>
                     </div>

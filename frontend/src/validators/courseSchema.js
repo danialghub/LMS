@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const lectureTitleSchema = z.object({
-    lectureTitle: z.string().min(1, "عنوان فصل نمیتواند خالی باشد")
+    lectureTitle: z.string().min(1, "عنوان جلسه نمیتواند خالی باشد")
 })
 
 export const lectureDurationSchema = z.string()
