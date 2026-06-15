@@ -5,10 +5,29 @@ import { useGetCourses } from '@/query/courseQueries'
 import toast from 'react-hot-toast'
 import { useDebounce } from 'use-debounce'
 import { AnimatePresence } from 'framer-motion'
+import { useCourseStore } from '@/store/useCourseStore'
 
 
-const Banner = ({ studentCount = 0, courseCount, instructorCount = 0 }) => {
+const Banner = () => {
+    const [coursesCount, setCourseCount] = useState(0)
+    const [studentsCount, setStudentsCount] = useState(0)
+    const [instructorsCount, setInstructorsCount] = useState(0)
+    const { getCourseBannerInfo } = useCourseStore()
+    useEffect(() => {
+        const getInfo = async () => {
+            const data = await getCourseBannerInfo();
+            return data;
+        };
 
+        const fetchData = async () => {
+            const data = await getInfo();
+            setCourseCount(data.courses || 0);
+            setInstructorsCount(data.instructors || 0);
+            setStudentsCount(data.students || 0);
+        };
+
+        fetchData();
+    }, []);
     return (
         <div className='relative '>
             <div className='relative z-10 p-4 md:p-12  flex flex-col justify-center items-center gap-10 md:gap-16 bg-zinc-800 text-sm text-white rounded-lg'>
@@ -19,7 +38,7 @@ const Banner = ({ studentCount = 0, courseCount, instructorCount = 0 }) => {
                             <User className='max-md:size-5' />
                         </span>
                         <div className='flex flex-col justify-center gap-1 md:gap-3'>
-                            <span>{studentCount}+</span>
+                            <span>{studentsCount}+</span>
                             <span className='text-white/70'> دانشجو</span>
                         </div>
 
@@ -30,7 +49,7 @@ const Banner = ({ studentCount = 0, courseCount, instructorCount = 0 }) => {
                             <BookA className='max-md:size-5' />
                         </span>
                         <div className='flex flex-col justify-center gap-1 md:gap-3'>
-                            <span>{courseCount}+</span>
+                            <span>{coursesCount}+</span>
                             <span className='text-white/70'> دوره ها</span>
                         </div>
 
@@ -41,7 +60,7 @@ const Banner = ({ studentCount = 0, courseCount, instructorCount = 0 }) => {
                             <GraduationCap className='max-md:size-5' />
                         </span>
                         <div className='flex flex-col justify-center gap-1 md:gap-3'>
-                            <span>{instructorCount}+</span>
+                            <span>{instructorsCount}+</span>
                             <span className='text-white/70'> مدرس ها</span>
                         </div>
 

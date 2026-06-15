@@ -5,7 +5,7 @@ import {
     createChapterService, patchChapterService,
     getLectureByIdService, createLectureService, patchLectureService, removeAttachmentFileService,
     updateLecturePublishStatusService, reOrderLecturesService,
-    reOrderChaptersService
+    reOrderChaptersService, getCourseBannerInfoService
 
 } from "../services/course.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
@@ -34,6 +34,14 @@ export const getCourseById = asyncHandler(
             return res.sendStatus(HTTPSTATUS.NOT_FOUND)
         }
         res.status(HTTPSTATUS.OK).json(course)
+    }
+)
+export const getCourseBannerInfo = asyncHandler(
+    async (req, res) => {
+
+        const data = await getCourseBannerInfoService()
+
+        res.status(HTTPSTATUS.OK).json(data)
     }
 )
 

@@ -40,6 +40,16 @@ export const useCourseStore = create((set, get) => ({
             set({ isFetching: false })
         }
     },
+    getCourseBannerInfo: async () => {
+        try {
+            const { data } = await publicAxios.get('/course/course-banner')
+            console.log(data);
+
+            return data
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+        }
+    },
     createCourse: async (title) => {
 
         try {

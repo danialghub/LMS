@@ -1,5 +1,6 @@
 import Course from "../Models/Course.js"
 import CourseProgress from "../Models/CourseProgress.js";
+import User from "../Models/User.js";
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 
 //course
@@ -122,7 +123,7 @@ export const getCourseService = async (filterQueries = {}) => {
             Course.countDocuments(query),
         ]);
     }
-    
+
 
 
     const totalPages = Math.ceil(totalCourses / limit);
@@ -205,6 +206,19 @@ export const getCourseByIdService = async (userId, courseId) => {
     return course;
 }
 
+export const getCourseBannerInfoService = async () => {
+    const [courses, students, instructors] = await Promise.all([
+        Course.countDocuments(),
+        User.countDocuments({ role: "student" }),
+        User.countDocuments({ role: "instructor" })
+    ]);
+
+    return {
+        courses: courses || 0,
+        students: students || 0,
+        instructors: instructors || 0
+    };
+}
 export const createCourseService = async (body) => {
 
     const course = await Course.create(body)
