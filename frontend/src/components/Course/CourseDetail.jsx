@@ -12,7 +12,7 @@ import {
 
 import {
     VideoPlayer, LectureAttachment, CourseChapters,
-    CourseRating, SubmitLoading, CourseComment,UserAvatar
+    CourseRating, SubmitLoading, CourseComment, UserAvatar
 } from "@/components/index";
 import { Link, useNavigate, useParams } from "react-router";
 import { useAuthStore } from '@/store/useAuthStore'
@@ -175,7 +175,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
     const foundFirstLecture = () => {
         const chapterIndex = course.courseContent.findIndex(ch => ch.chapterContent.some(lec => lec.lectureUrl))
         const lectureIndex = course.courseContent[chapterIndex].chapterContent.findIndex(lec => lec.lectureUrl)
-       
+
 
         if (isNaN(chapterIndex) && isNaN(lectureIndex)) {
             toast.error('جلسه ای برای مشاهده موجود نیست')
@@ -231,7 +231,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                     {authUser && authUser.role === "student" ? (
                         <>
                             {authUser?.avatar ? (
-                                <UserAvatar className="size-12 rounded-xl"/>
+                                <UserAvatar className="size-12 rounded-xl" />
                             ) : (
                                 <span className="size-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-2xl">
                                     {authUser.name[0]}
@@ -247,7 +247,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                 </div>
                 <button
                     onClick={() => setTheme(isDark ? "light" : "dark")}
-                    className="size-10 ml-52 sm:ml-0 rounded-xl flex items-center justify-center transition-all duration-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#151b2b] dark:hover:bg-[#1d2638]"
+                    className="size-10 ml-44 sm:ml-0 rounded-xl flex items-center justify-center transition-all duration-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-[#151b2b] dark:hover:bg-[#1d2638]"
                 >
                     {isDark ? <Sun size={18} className="text-yellow-400" /> : <Moon size={18} className="text-zinc-700 dark:text-white" />}
                 </button>
