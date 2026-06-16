@@ -4,11 +4,10 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { Check, Filter, Grip, Search, SortAsc, SortDesc, XIcon } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion'
-const ToggleButton = () => {
-    const [isOn, setIsOn] = useState(false);
+const ToggleButton = ({ isOn }) => {
     return (
         <button
-            onClick={() => setIsOn(!isOn)}
+
             className={`
         relative  w-12 h-6  rounded-full transition-colors duration-300 px-1 cursor-pointer
         ${isOn ? 'bg-blue-500' : 'bg-gray-300'}
@@ -24,7 +23,7 @@ const ToggleButton = () => {
         </button>
     );
 };
-const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy,setSortBy }) => {
+const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy, setSortBy }) => {
     return (
         <motion.div
             className='fixed inset-0 w-full h-screen bg-black/40 z-10'
@@ -65,7 +64,7 @@ const MobileSortOptions = ({ sortOptions, setShowSortOptions, sortBy,setSortBy }
         </motion.div>
     )
 }
-const MobileFilters = ({ setShowFilters, authUser }) => {
+const MobileFilters = ({ setShowFilters, authUser, filters, setFilters }) => {
     return (
         <motion.div
             className='fixed inset-0 w-full h-screen bg-black/40 z-10'
@@ -91,24 +90,32 @@ const MobileFilters = ({ setShowFilters, authUser }) => {
                     </button>
                 </div>
                 <div className=' mt-6'>
-                    <div className='flex  bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                    <button
+                        onClick={() => setFilters(prev => ({ ...prev, isFreeCourses: !prev.isFreeCourses }))}
+                        className='flex  bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                         <p className=' text-[15px]    text-black/70'>فقط دوره های رایگان</p>
-                        <ToggleButton />
-                    </div>
+                        <ToggleButton
+                            isOn={filters.isFreeCourses}
+                        />
+                    </button>
 
                     {/* فیلتر دوره‌های من (فقط دانشجو) */}
                     {authUser && authUser.role === "student" && (
-                        <div className='border-t-1 border-t-black/10 flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                        <button
+                            onClick={() => setFilters(prev => ({ ...prev, myCourses: prev.myCourses ? "" : authUser._id }))}
+                            className='border-t-1 border-t-black/10 flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                             <p className='text-[15px]   text-black/70'>فقط دوره های من</p>
-                            <ToggleButton />
-                        </div>
+                            <ToggleButton
+                                isOn={filters.myCourses === authUser._id}
+                            />
+                        </button>
                     )}
                 </div>
             </motion.div>
         </motion.div>
     )
 }
-const CourseFilteringCard = ({ sortBy, setSortBy }) => {
+const CourseFilteringCard = ({ filters, setFilters, setSearchByTitle }) => {
 
     const [showSortOptions, setShowSortOptions] = useState(false)
     const [showFilters, setShowFilters] = useState(false)
@@ -136,6 +143,7 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
             <div className='relative p-3 sm:p-5 rounded-xl mx-6 sm:mx-0 bg-white shadow-md'>
                 <input
                     type="text"
+                    onChange={e => setSearchByTitle(e.target.value)}
                     className='w-full text-sm sm:text-base text-black/70 rounded-lg border-none outline-none bg-transparent placeholder:text-black/40 pr-8 sm:pr-0'
                     placeholder='جستجو در بین دوره ها'
                 />
@@ -164,13 +172,13 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                                     type="radio"
                                     name="sort"
                                     value={option.value}
-                                    checked={sortBy === option.value}
-                                    onChange={(e) => setSortBy(e.target.value)}
+                                    checked={filters.sortBy === option.value}
+                                    onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
                                     className="sr-only peer"
                                 />
                                 <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-gray-300 peer-checked:border-blue-500 peer-checked:bg-blue-500 transition-all"></div>
                                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white transition-all ${sortBy === option.value ? 'scale-100' : 'scale-0'}`}></div>
+                                    <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white transition-all ${filters.sortBy === option.value ? 'scale-100' : 'scale-0'}`}></div>
                                 </div>
                             </div>
                             <span className="text-xs sm:text-sm md:text-base text-gray-700 group-hover:text-blue-600 transition-colors">
@@ -203,8 +211,8 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                     <MobileSortOptions
                         sortOptions={sortOptions}
                         setShowSortOptions={setShowSortOptions}
-                        sortBy={sortBy}
-                        setSortBy={setSortBy}
+                        sortBy={filters.sortBy}
+                        setSortBy={(val) => setFilters(prev => ({ ...prev, sortBy: val }))}
                     />
                 )}
             </AnimatePresence>
@@ -215,25 +223,35 @@ const CourseFilteringCard = ({ sortBy, setSortBy }) => {
                     <MobileFilters
                         setShowFilters={setShowFilters}
                         authUser={authUser}
+                        filters={filters}
+                        setFilters={setFilters}
                     />
                 )}
             </AnimatePresence>
 
             {/* فیلتر دوره‌های رایگان */}
-           <div className='space-y-2'>
-             <div className='hidden sm:flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
-                <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های رایگان</p>
-                <ToggleButton />
-            </div>
+            <div className='space-y-2'>
+                <button
+                    onClick={() => setFilters(prev => ({ ...prev, isFreeCourses: !prev.isFreeCourses }))}
+                    className='hidden sm:flex w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                    <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های رایگان</p>
+                    <ToggleButton
+                        isOn={filters.isFreeCourses}
+                    />
+                </button>
 
-            {/* فیلتر دوره‌های من (فقط دانشجو) */}
-            {authUser && authUser.role === "student" && (
-                <div className='hidden sm:flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
-                    <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های من</p>
-                    <ToggleButton />
-                </div>
-            )}
-           </div>
+                {/* فیلتر دوره‌های من (فقط دانشجو) */}
+                {authUser && authUser.role === "student" && (
+                    <button
+                        onClick={() => setFilters(prev => ({ ...prev, myCourses: prev.myCourses ? "" : authUser._id }))}
+                        className='hidden  sm:flex w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                        <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های من</p>
+                        <ToggleButton
+                            isOn={filters.myCourses === authUser._id}
+                        />
+                    </button>
+                )}
+            </div>
         </div>
     )
 }

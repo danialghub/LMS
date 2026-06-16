@@ -13,13 +13,44 @@ export const getCourseService = async (filterQueries = {}) => {
         isCoursePublished: true,
     };
 
+    // فیلتر بر اساس عنوان دوره
+    if (filterQueries.title && filterQueries.title.trim()) {
+        query.courseTitle = { $regex: filterQueries.title, $options: "i" };
+    }
+
+    // فیلتر بر اساس تمام دوره های رایگان
+    if (filterQueries.isFreeCourses === "true") {
+        query.$or = [
+
+            { coursePrice: 0 },
+
+            {
+                coursePrice: { $gt: 0 },
+                courseDiscount: 100
+            },
+
+            {
+                $and: [
+                    { coursePrice: { $exists: false } },
+                    { courseDiscount: { $exists: false } }
+                ]
+            }
+        ];
+    }
+
+    // فیلتر بر اساس دوره های دانشجو
+    if (filterQueries.myCourses) {
+        query.enrolledStudents = filterQueries.myCourses;
+    }
+
+
     const sortBy = filterQueries?.sortBy || "newest";
 
 
     let courses = [];
     let totalCourses = 0;
 
-    // Sort های ساده
+    // مرتب سازی ها
     if (sortBy === "newest" || sortBy === "oldest") {
         const sortOption = {
             updatedAt: sortBy === "newest" ? -1 : 1,

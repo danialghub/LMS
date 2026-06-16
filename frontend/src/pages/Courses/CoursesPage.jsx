@@ -77,8 +77,15 @@ const Banner = () => {
 }
 
 const CoursesPage = () => {
-    const [sortBy, setSortBy] = useState('newest')
-    const [debouncedFilters] = useDebounce(sortBy, 700)
+    // const [sortBy, setSortBy] = useState('newest')
+    const [filters, setFilters] = useState({
+        sortBy: "newest",
+        isFreeCourses: false,
+        myCourses: "",
+        title: ""
+    })
+    const [searchByTitle, setSearchByTitle] = useState("")
+    const [debouncedFilters] = useDebounce(filters, 700)
     const [courses, setCourses] = useState([])
     const [totalCourses, setTotalCourses] = useState(0)
     const {
@@ -88,7 +95,7 @@ const CoursesPage = () => {
         isFetchingNextPage,
         isLoading: isFetching,
         error
-    } = useGetCourses({ sortBy: debouncedFilters })
+    } = useGetCourses(debouncedFilters)
 
 
 
@@ -109,6 +116,13 @@ const CoursesPage = () => {
         setCourses(flatedCourses)
     }, [data])
 
+    useEffect(() => {
+        const trimmed = searchByTitle.trim();
+        if (trimmed.length >= 3 || trimmed.length === 0) {
+            setFilters(prev => ({ ...prev, title: trimmed }));
+        }
+    }, [searchByTitle]);
+
     return (
         <div className='bg-neutral-100'>
             <Navbar />
@@ -119,8 +133,11 @@ const CoursesPage = () => {
                 <div className='flex flex-col md:flex-row items-start  gap-8 relative'>
 
                     <CourseFilteringCard
-                        sortBy={sortBy}
-                        setSortBy={setSortBy}
+                        filters={filters}
+                        setFilters={setFilters}
+                        setSearchByTitle={setSearchByTitle}
+                        searchByTitle={searchByTitle}
+
                     />
 
                     <div className='md:flex-3 flex flex-col items-center gap-6'>
