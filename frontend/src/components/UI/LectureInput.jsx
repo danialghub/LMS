@@ -456,9 +456,28 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
                             </div>
                             <button
                                 disabled={isSubmitting || !isValid}
-                                className='btn-primary w-auto px-4 sm:px-6 py-1'
-                                type='submit'>
-                                آپلود
+                                type='submit'
+                                className='relative overflow-hidden btn-primary w-auto px-4 sm:px-6 py-1'
+                            >
+                        
+                                {isSubmitting && (
+                                    <div
+                                        className='absolute inset-0 bg-blue-500 transition-all duration-300 ease-out'
+                                        style={{ width: `${progressBar}%` }}
+                                    />
+                                )}
+
+                                {/* متن و درصد وسط دکمه */}
+                                <span className='relative z-10 flex items-center gap-2'>
+                                    {isSubmitting ? (
+                                        <>
+                                            <span>{progressBar}%</span>
+                                            <span className='hidden sm:inline'>در حال آپلود...</span>
+                                        </>
+                                    ) : (
+                                        'آپلود فایل'
+                                    )}
+                                </span>
                             </button>
                         </form>
                     </div>
