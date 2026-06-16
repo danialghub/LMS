@@ -40,4 +40,4 @@ export { default as CommentInput } from './Course/comment/CommentInput'
 
 //Instructor
 //Student
-export { default as EditProfileModal } from './Students/EditProfileModal'
+export { default as EditProfileModal } from './EditProfileModal'

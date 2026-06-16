@@ -45,6 +45,7 @@ export default function MyCourses() {
                     isOpen={showProfileModal}
                     onClose={() => setShowProfileModal(false)}
                     userData={authUser}
+                    role="student"
                 />
 
                 {/* SIDEBAR - Desktop: Sticky, Mobile: Hidden */}

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import User from "../Models/User.js";
-import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
+import { BadRequestException, NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 import { hashPassword, comparePassword } from "../utils/bycrypt.js";
 import {
   generateAccessToken, generateRefreshToken, clearCoockie, setCookie
@@ -156,4 +156,50 @@ export const logOutService = async (res, token) => {
   user.refreshToken = user.refreshToken.filter(rt => rt !== token)
   await user.save()
   clearCoockie(res)
+}
+
+export const changePasswordService = async (user, newPassword, oldPassword) => {
+
+  // بررسی رمز عبور قدیمی
+  const isPasswordValid = await comparePassword(oldPassword, user.password);
+  if (!isPasswordValid) {
+    throw new BadRequestException('رمز عبور قدیمی اشتباه است')
+  }
+
+  // هش کردن رمز عبور جدید
+  const hashedPassword = await hashPassword(newPassword);
+
+  // بروزرسانی رمز عبور
+  user.password = hashedPassword;
+  await user.save();
+}
+export const updateProfileService = async (userId, updateData) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    updateData,
+    { returnDocument: "after", runValidators: true }
+  ).select('-password -refreshToken');
+
+  if (!updatedUser) {
+    throw new NotFoundException('کاربر یافت نشد')
+  }
+
+  
+
+  return updatedUser
+}
+export const updateInstructorProfileService = async (userId, instructorData) => {
+
+  const updateFields = {};
+  Object.keys(instructorData).forEach(key => {
+    updateFields[`instructorProfile.${key}`] = instructorData[key];
+  });
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: updateFields },
+    { returnDocument: "after", runValidators: true }
+  ).select('-password -refreshToken');
+
+  return updatedUser
 }

@@ -150,6 +150,7 @@ const InstructorDashboardPage = () => {
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
         userData={authUser}
+        role="instructor"
       />
     </div>
   )

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useAuthStore } from "@/store/useAuthStore";
 
 // اسکیما برای تب حساب کاربری
 const profileSchema = z.object({
@@ -19,11 +20,19 @@ const passwordSchema = z.object({
     path: ["confirmPassword"],
 });
 
-const EditProfileModal = ({ isOpen, onClose, userData }) => {
-    const [activeTab, setActiveTab] = useState("account"); // account یا password
+// اسکیما برای تب مشخصات مدرس (فقط instructor)
+const instructorSchema = z.object({
+    major: z.string().min(2, "رشته تحصیلی حداقل ۲ کاراکتر باشد"),
+    bio: z.string().min(10, "بیوگرافی حداقل ۱۰ کاراکتر باشد"),
+});
+
+const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
+    const [activeTab, setActiveTab] = useState("account"); // account, password, instructor
     const [avatarPreview, setAvatarPreview] = useState(userData?.avatar || null);
     const [avatarFile, setAvatarFile] = useState(null);
     const fileInputRef = useRef(null);
+
+    const { changePassword, changeUserProfile, changeInstructorSpecifications } = useAuthStore()
 
     // فرم حساب کاربری
     const {
@@ -34,7 +43,7 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
     } = useForm({
         resolver: zodResolver(profileSchema),
         defaultValues: {
-            name: userData?.name || "danial2090",
+            name: userData?.name || "دانیال",
         },
     });
 
@@ -50,6 +59,20 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
             oldPassword: "",
             newPassword: "",
             confirmPassword: "",
+        },
+    });
+
+    // فرم مشخصات مدرس (فقط برای instructor)
+    const {
+        register: registerInstructor,
+        handleSubmit: handleInstructorSubmit,
+        formState: { errors: instructorErrors, isSubmitting: isInstructorSubmitting },
+        setValue: setInstructorValue,
+    } = useForm({
+        resolver: zodResolver(instructorSchema),
+        defaultValues: {
+            major: userData?.instructorProfile?.major || "",
+            bio: userData?.instructorProfile?.bio || "",
         },
     });
 
@@ -69,25 +92,37 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
     const onProfileSubmit = async (data) => {
         const formData = new FormData();
         formData.append("name", data.name);
-        if (avatarFile) formData.append("avatar", avatarFile);
+        if (avatarFile) formData.append("image", avatarFile);
 
-        console.log("حساب کاربری ذخیره شد:", Object.fromEntries(formData));
-        // درخواست به API
-        setTimeout(() => {
-            onClose();
-        }, 1000);
+        await changeUserProfile(formData)
+
+        onClose();
+
     };
 
     const onPasswordSubmit = async (data) => {
-        console.log("رمز عبور تغییر کرد:", {
-            oldPassword: data.oldPassword,
-            newPassword: data.newPassword,
-        });
-        // درخواست به API برای تغییر رمز
-        setTimeout(() => {
-            resetPasswordForm();
-            onClose();
-        }, 1000);
+
+        await changePassword(
+            {
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
+                confirmPassword: data.confirmPassword
+            })
+
+        resetPasswordForm();
+        onClose();
+
+    };
+
+    const onInstructorSubmit = async (data) => {
+
+        await changeInstructorSpecifications({
+            major: data.major,
+            bio: data.bio
+        })
+
+        onClose();
+
     };
 
     if (!isOpen) return null;
@@ -100,7 +135,7 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
                 onClick={onClose}
             />
 
-            {/* مودال اصلی - اندازه دقیق مثل تصویر */}
+            {/* مودال اصلی */}
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div
                     className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300"
@@ -109,7 +144,9 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
                 >
                     {/* هدر مودال */}
                     <div className="flex justify-between items-center p-5 border-b border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-800">ویرایش حساب کاربری</h2>
+                        <h2 className="text-xl font-bold text-gray-800">
+                            {role === "instructor" ? "ویرایش حساب مدرس" : "ویرایش حساب کاربری"}
+                        </h2>
                         <button
                             onClick={onClose}
                             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -120,7 +157,7 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
                         </button>
                     </div>
 
-                    {/* تب‌ها */}
+                    {/* تب‌ها - نمایش شرطی بر اساس role */}
                     <div className="flex border-b border-gray-200">
                         <button
                             onClick={() => setActiveTab("account")}
@@ -146,6 +183,21 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
                                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
                             )}
                         </button>
+                        {/* تب سوم - فقط برای instructor */}
+                        {role === "instructor" && (
+                            <button
+                                onClick={() => setActiveTab("instructor")}
+                                className={`flex-1 py-3 text-center font-medium transition-all relative ${activeTab === "instructor"
+                                    ? "text-blue-600"
+                                    : "text-gray-500 hover:text-gray-700"
+                                    }`}
+                            >
+                                مشخصات مدرس
+                                {activeTab === "instructor" && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+                                )}
+                            </button>
+                        )}
                     </div>
 
                     {/* محتوای تب‌ها */}
@@ -214,7 +266,7 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
                                     </label>
                                     <input
                                         type="email"
-                                        value={userData.email}
+                                        value={userData?.email}
                                         readOnly
                                         className="w-full px-3 py-2 border rounded-lg text-sm bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
                                     />
@@ -233,7 +285,7 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
 
                         {/* تب رمز عبور */}
                         {activeTab === "password" && (
-                            <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-4">
+                            <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-4" dir="ltr">
                                 {/* رمز عبور قدیمی */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -292,6 +344,54 @@ const EditProfileModal = ({ isOpen, onClose, userData }) => {
                                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-all disabled:opacity-50 text-sm font-medium"
                                 >
                                     {isPasswordSubmitting ? "در حال تغییر..." : "تغییر رمز عبور"}
+                                </button>
+                            </form>
+                        )}
+
+                        {/* تب مشخصات مدرس - فقط برای instructor */}
+                        {role === "instructor" && activeTab === "instructor" && (
+                            <form onSubmit={handleInstructorSubmit(onInstructorSubmit)} className="space-y-4">
+                                {/* رشته تحصیلی */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        رشته تحصیلی
+                                    </label>
+                                    <input
+                                        type="text"
+                                        {...registerInstructor("major")}
+                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm ${instructorErrors.major ? "border-red-500" : "border-gray-300"
+                                            }`}
+                                        placeholder="رشته تحصیلی خود را وارد کنید"
+                                    />
+                                    {instructorErrors.major && (
+                                        <p className="text-red-500 text-xs mt-1">{instructorErrors.major.message}</p>
+                                    )}
+                                </div>
+
+                                {/* بیوگرافی */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        بیوگرافی
+                                    </label>
+                                    <textarea
+                                        {...registerInstructor("bio")}
+                                        rows="3"
+                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm ${instructorErrors.bio ? "border-red-500" : "border-gray-300"
+                                            }`}
+                                        placeholder="توضیحات درباره خود را وارد کنید..."
+                                    />
+                                    {instructorErrors.bio && (
+                                        <p className="text-red-500 text-xs mt-1">{instructorErrors.bio.message}</p>
+                                    )}
+                                </div>
+
+                                {/* دکمه ذخیره مشخصات مدرس */}
+                                <button
+                                    type="submit"
+                                    disabled={isInstructorSubmitting}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-all disabled:opacity-50 text-sm font-medium"
+                                >
+                                    {isInstructorSubmitting ? "در حال ذخیره..." : "ذخیره مشخصات مدرس"}
                                 </button>
                             </form>
                         )}

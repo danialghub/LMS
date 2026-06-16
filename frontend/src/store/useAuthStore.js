@@ -64,14 +64,44 @@ export const useAuthStore = create((set, get) => ({
         set({ isCheckingAuth: true })
         try {
             const { data } = await privateRoutes.get('/auth/check')
-           
+
         } catch (error) {
             console.error(error.response?.data?.message || "Something went wrong");
-            
+
         } finally {
             set({ isCheckingAuth: false })
         }
-    }
+    },
+    changePassword: async (body) => {
+        try {
+            const { data } =await privateRoutes.patch('/auth/change-password', body)
+            toast.success("رمزعبور با موفقیت تغییر یافت")
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+        }
+    },
+    changeUserProfile: async (body) => {
+        try {
+            const { data } =await privateRoutes.patch('/auth/change-profile', body)
+            console.log(data);
+            
+            set( { authUser: data.updatedUser } )
+            toast.success("اطلاعات با موفقیت تغییر پیدا کرد")
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+        }
+    },
+    changeInstructorSpecifications: async (body) => {
+        try {
+            const { data } =await privateRoutes.patch('/auth/change-instructor-specifications', body)
+            set(({ authUser }) => (
+                { authUser: { ...authUser, instructorProfile: data.instructorProfile } }
+            ))
+            toast.success("مشخصات  با موفقیت تغییر پیدا کرد")
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+        }
+    },
 
 }))
 

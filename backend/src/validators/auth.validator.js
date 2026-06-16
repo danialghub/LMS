@@ -6,11 +6,11 @@ export const emailSchema = z
   .email("آدرس ایمیل نامعتبر است")
   .min(1);
 
-export const passwordSchema = z.string().trim().min(1);
+export const passwordSchema = z.string().trim().min(8);
 
 const UserRoleEnumSchema = z.enum(['student', 'instructor']).transform(val => val.trim());
 
-const instructorProfileSchema = z.object({
+export const instructorProfileSchema = z.object({
   major: z.string().optional(),
   bio: z.string().optional(),
 }).optional();
