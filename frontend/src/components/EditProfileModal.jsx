@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuthStore } from "@/store/useAuthStore";
 
-// اسکیما برای تب حساب کاربری
+
 const profileSchema = z.object({
     name: z.string().min(3, "نام کامل حداقل ۳ کاراکتر باشد"),
     avatar: z.any().optional(),
 });
 
-// اسکیما برای تب رمز عبور
+
 const passwordSchema = z.object({
     oldPassword: z.string().min(6, "رمز عبور قدیمی حداقل ۶ کاراکتر"),
     newPassword: z.string().min(6, "رمز عبور جدید حداقل ۶ کاراکتر"),
@@ -20,7 +20,7 @@ const passwordSchema = z.object({
     path: ["confirmPassword"],
 });
 
-// اسکیما برای تب مشخصات مدرس (فقط instructor)
+
 const instructorSchema = z.object({
     major: z.string().min(2, "رشته تحصیلی حداقل ۲ کاراکتر باشد"),
     bio: z.string().min(10, "بیوگرافی حداقل ۱۰ کاراکتر باشد"),
@@ -34,7 +34,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
 
     const { changePassword, changeUserProfile, changeInstructorSpecifications } = useAuthStore()
 
-    // فرم حساب کاربری
+
     const {
         register: registerProfile,
         handleSubmit: handleProfileSubmit,
@@ -47,7 +47,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
         },
     });
 
-    // فرم رمز عبور
+
     const {
         register: registerPassword,
         handleSubmit: handlePasswordSubmit,
@@ -62,7 +62,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
         },
     });
 
-    // فرم مشخصات مدرس (فقط برای instructor)
+
     const {
         register: registerInstructor,
         handleSubmit: handleInstructorSubmit,
