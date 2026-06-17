@@ -253,7 +253,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="text"
                                         {...registerProfile("name")}
-                                        className={`w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm ${profileErrors.name ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm ${profileErrors.name ? "border-red-500" : "border-gray-300"
                                             }`}
                                     />
                                     {profileErrors.name && (
@@ -270,7 +270,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                         type="email"
                                         value={userData?.email}
                                         readOnly
-                                        className="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg text-xs sm:text-sm bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
+                                        className="w-full px-2.5 sm:px-3 py-2.5 border rounded-lg text-xs sm:text-sm bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
                                     />
                                 </div>
 
@@ -295,7 +295,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="password"
                                         {...registerPassword("oldPassword")}
-                                        className={`w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.oldPassword ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.oldPassword ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رمز عبور فعلی را وارد کنید"
                                     />
@@ -311,7 +311,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="password"
                                         {...registerPassword("newPassword")}
-                                        className={`w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.newPassword ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.newPassword ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رمز عبور جدید را وارد کنید"
                                     />
@@ -327,7 +327,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="password"
                                         {...registerPassword("confirmPassword")}
-                                        className={`w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.confirmPassword ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.confirmPassword ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رمز عبور جدید را دوباره وارد کنید"
                                     />
@@ -356,7 +356,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="text"
                                         {...registerInstructor("major")}
-                                        className={`w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.major ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.major ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رشته تحصیلی خود را وارد کنید"
                                     />
@@ -372,7 +372,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <textarea
                                         {...registerInstructor("bio")}
                                         rows="3"
-                                        className={`w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.bio ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.bio ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="توضیحات درباره خود را وارد کنید..."
                                     />
