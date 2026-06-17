@@ -16,7 +16,7 @@ const UserAvatar = ({ className }) => {
 
             : <span
                 
-                className={`size-10 rounded-full bg-indigo-500 text-white text-2xl flex items-center justify-center ${className}`}>{authUser.name[0]}</span>
+                className={`size-10 rounded-full bg-indigo-500 text-white text-2xl flex items-center justify-center ${className}`}>{authUser?.name[0]}</span>
 
     )
 }

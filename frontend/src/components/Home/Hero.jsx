@@ -141,33 +141,10 @@ const Hero = () => {
                             <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" />
 
                         </button>
-                        {/* آمار */}
-                        <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
-                            <div>
-                                <div className="flex items-center justify-center lg:justify-start gap-2">
-                                    <GraduationCap className="w-6 h-6 text-indigo-400" />
-                                    <span className="text-2xl font-bold text-white">۵۰۰+</span>
-                                </div>
-                                <p className="text-sm text-gray-400 mt-1">دوره تخصصی</p>
-                            </div>
-                            <div>
-                                <div className="flex items-center justify-center lg:justify-start gap-2">
-                                    <Users className="w-6 h-6 text-indigo-400" />
-                                    <span className="text-2xl font-bold text-white">۵۰٬۰۰۰+</span>
-                                </div>
-                                <p className="text-sm text-gray-400 mt-1">دانشجو فعال</p>
-                            </div>
-                            <div>
-                                <div className="flex items-center justify-center lg:justify-start gap-2">
-                                    <BarChart3 className="w-6 h-6 text-indigo-400" />
-                                    <span className="text-2xl font-bold text-white">۹۸٪</span>
-                                </div>
-                                <p className="text-sm text-gray-400 mt-1">رضایت مندی</p>
-                            </div>
-                        </div>
+                       
                     </div>
 
-                    {/* سمت چپ - تصویر/انیمیشن */}
+                   
                     <div className="relative hidden lg:block">
                         <div className="relative">
                             {/* دایره‌های دکوراتیو */}

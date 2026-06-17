@@ -9,9 +9,9 @@ import { AuthInput } from '@/components/index';
 
 // چیدمان اصلی صفحه (همون layout ساین آپ)
 const LoginLayout = ({ children }) => (
-    <div dir='ltr' className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div dir='ltr' className="min-h-screen  bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-8">
-            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl min-h-[94vh]  overflow-hidden">
+            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl sm:min-h-[94vh]  overflow-hidden max-sm:mt-30">
                 {children}
             </div>
         </div>
@@ -55,6 +55,7 @@ const LoginPage = ({ role = "student" }) => {
     const { login, isLoading } = useAuthStore();
     const navigate = useNavigate();
 
+    const isInstructor = role === "instructor";
     const {
         register,
         handleSubmit,
@@ -72,18 +73,22 @@ const LoginPage = ({ role = "student" }) => {
 
         const result = await login(formData);
         if (result?.success) {
-            navigate(`/${role}/my-courses`);
+            if (isInstructor) {
+                navigate(`/instructor/courses`);
+            } else {
+                navigate(`/student/my-courses`);
+            }
+
         }
     };
 
-    const isInstructor = role === "instructor";
 
     return (
         <LoginLayout>
-            <div className="flex h-full">
+            <div className="flex h-full ">
                 <LoginIllustration role={role} />
 
-                <div className="flex-5 p-6 md:p-8 col-span-2">
+                <div className="flex-5 p-6 md:p-8 col-span-2 ">
                     {/* هدر */}
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg mb-4">
@@ -96,7 +101,7 @@ const LoginPage = ({ role = "student" }) => {
                     </div>
 
                     {/* فرم */}
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 min-h-[380px]">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-x-3 sm:space-y-7 sm:min-h-[380px]">
                         {/* فیلد ایمیل */}
                         <div>
 
@@ -124,7 +129,7 @@ const LoginPage = ({ role = "student" }) => {
                         {/* دکمه ورود */}
                         <button
                             type='submit'
-                            className="w-full px-4 py-3 mt-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
+                            className="w-full px-4 py-3 mt-4 sm:mt-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200"
                             disabled={isSubmitting || !isValid}
                         >
                             {isSubmitting ? (
@@ -139,7 +144,7 @@ const LoginPage = ({ role = "student" }) => {
                     </form>
 
                     {/* لینک ثبت نام */}
-                    <div className="mt-8 text-center pt-6 border-t border-gray-100">
+                    <div className=" sm:mt-8 text-center pt-6 border-t border-gray-100">
                         <p className="text-sm text-gray-500">
                             حساب کاربری ندارید؟{' '}
                             <Link

@@ -119,7 +119,7 @@ const CommentItem = ({
                                         onClick={() => handleApproveComment(comment._id)}
                                         className="w-full px-3 sm:px-4 py-1.5 sm:py-2 text-right text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20 dark:disabled:text-green-600/60 flex items-center gap-2 cursor-pointer text-sm sm:text-base"
                                     >
-                                        <CheckCircle size={12} className="sm:size-14" /> تایید
+                                        <CheckCircle size={12} className="size-6" /> تایید
                                     </button>
                                 )}
                                 <button
@@ -127,7 +127,7 @@ const CommentItem = ({
                                     disabled={isDeletting}
                                     className="w-full px-3 sm:px-4 py-1.5 sm:py-2 text-right text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center gap-2 cursor-pointer dark:disabled:text-red-600/60 text-sm sm:text-base"
                                 >
-                                    <Trash size={12} className="sm:size-14" /> حذف
+                                    <Trash size={12} className="sm:size-6" /> حذف
                                 </button>
                             </div>
                             <button className="p-1.5 sm:p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-[#1b2538] transition-all">

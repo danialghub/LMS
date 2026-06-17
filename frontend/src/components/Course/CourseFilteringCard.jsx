@@ -92,7 +92,7 @@ const MobileFilters = ({ setShowFilters, authUser, filters, setFilters }) => {
                 <div className=' mt-6'>
                     <button
                         onClick={() => setFilters(prev => ({ ...prev, isFreeCourses: !prev.isFreeCourses }))}
-                        className='flex  bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                        className='flex  w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                         <p className=' text-[15px]    text-black/70'>فقط دوره های رایگان</p>
                         <ToggleButton
                             isOn={filters.isFreeCourses}
@@ -103,7 +103,7 @@ const MobileFilters = ({ setShowFilters, authUser, filters, setFilters }) => {
                     {authUser && authUser.role === "student" && (
                         <button
                             onClick={() => setFilters(prev => ({ ...prev, myCourses: prev.myCourses ? "" : authUser._id }))}
-                            className='border-t-1 border-t-black/10 flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                            className='border-t-1 w-full border-t-black/10 flex bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                             <p className='text-[15px]   text-black/70'>فقط دوره های من</p>
                             <ToggleButton
                                 isOn={filters.myCourses === authUser._id}

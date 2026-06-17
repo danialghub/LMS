@@ -53,7 +53,7 @@ export const useGetInstructorCourses = (page, instructorId) => {
 
     return useQuery({
         queryKey: ['instructorCourses', page, instructorId],
-        queryFn: () => getInstrucorCourses({ page, limit: 5 }),
+        queryFn: () => getInstrucorCourses({ page, limit: 6 }),
         keepPreviousData: true
     })
 }

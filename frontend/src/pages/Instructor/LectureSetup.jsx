@@ -122,6 +122,7 @@ const LectureSetup = () => {
                             courseId={courseId}
                             chapterId={chapterId}
                             lectureId={lectureId}
+                            
                         />
 
                     </div>

@@ -24,9 +24,9 @@ const LessonPage = () => {
   }, [courseId, authUser])
 
   useEffect(() => {
-    // اگر هنوز وضعیت احراز هویت مشخص نشده، هیچ کاری نکن
+
     if (authUser === undefined) {
-      return; // یا میتونید یک loading state برگردونید
+      return;
     }
 
    

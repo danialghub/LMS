@@ -459,7 +459,7 @@ const LectureAttachmentInput = ({ courseId, chapterId, lectureId, value }) => {
                                 type='submit'
                                 className='relative overflow-hidden btn-primary w-auto px-4 sm:px-6 py-1'
                             >
-                        
+
                                 {isSubmitting && (
                                     <div
                                         className='absolute inset-0 bg-blue-500 transition-all duration-300 ease-out'

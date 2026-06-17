@@ -8,6 +8,7 @@ import { PageLoader } from '@/components/index';
 const InstructorAnalytics = () => {
   const { getCourseAnalytics, courseAnalytics, isFetching } = useInstructorStore();
   const [windowWidth, setWindowWidth] = useState(1200);
+  const [studentsCount, setStudentsCount] = useState(0)
 
   useEffect(() => {
     getCourseAnalytics();
@@ -16,6 +17,11 @@ const InstructorAnalytics = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (!courseAnalytics?.studentsCount) return
+    setStudentsCount(courseAnalytics.studentsCount)
+  }, [courseAnalytics])
 
   const isMobile = windowWidth < 640;
   const isTablet = windowWidth >= 640 && windowWidth < 1024;
@@ -27,14 +33,14 @@ const InstructorAnalytics = () => {
   const categoryGap = isMobile ? 40 : isTablet ? 25 : 100;
 
 
-  const chartWidth = courseAnalytics?.length
-    ? courseAnalytics.length * (barSize * 2 + categoryGap) + (isMobile ? 80 : 120)
+  const chartWidth = courseAnalytics?.analytics?.length
+    ? courseAnalytics.analytics.length * (barSize * 2 + categoryGap) + (isMobile ? 80 : 120)
     : 500;
 
   return (
     <div className="bg-white rounded-xl max-w-7xl  md:mt-8 mx-3 md:mx-4 shadow-lg p-4 md:p-6" dir="rtl">
       {/* total analytics */}
-      {courseAnalytics?.length > 0 && (
+      {courseAnalytics?.analytics?.length > 0 && (
         <div className="flex items-center justify-center gap-4  mb-5 pt-6 border-t border-gray-200">
           <div className="w-[300px] flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
             <div className="p-2 bg-blue-100 rounded-lg">
@@ -44,7 +50,7 @@ const InstructorAnalytics = () => {
               <p className="text-gray-500 text-sm">کل درآمد</p>
               <p className="text-sm sm:text-xl font-bold text-gray-800 font-Dirooz-FD">
 
-                {formatPrice(courseAnalytics.reduce((sum, c) => sum + (c.sales || 0), 0))} <span className='font-ghalam text-blue-500'>تومان</span>
+                {formatPrice(courseAnalytics.analytics.reduce((sum, c) => sum + (c.sales || 0), 0))} <span className='font-ghalam text-blue-500'>تومان</span>
               </p>
             </div>
           </div>
@@ -56,7 +62,7 @@ const InstructorAnalytics = () => {
             <div>
               <p className="text-gray-500 text-sm">مجموع دانشجویان</p>
               <p className="text-sm sm:text-xl font-bold text-gray-800 font-Dirooz-FD">
-                30
+                {studentsCount}
               </p>
             </div>
           </div>
@@ -98,7 +104,7 @@ const InstructorAnalytics = () => {
 
       {isFetching ? (
         <PageLoader />
-      ) : !courseAnalytics?.length ? (
+      ) : !courseAnalytics?.analytics?.length ? (
         <div className="flex flex-col items-center justify-center py-16">
           <TrendingUp size={48} className="text-gray-300 mb-4" />
           <p className="text-gray-500">هیچ داده‌ای برای نمایش وجود ندارد</p>
@@ -114,7 +120,7 @@ const InstructorAnalytics = () => {
 
               width={chartWidth}
               height={isMobile ? 400 : isTablet ? 440 : 480}
-              data={courseAnalytics}
+              data={courseAnalytics.analytics}
               margin={{
                 top: 20,
                 right: isMobile ? 30 : 40,

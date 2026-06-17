@@ -23,6 +23,8 @@ export const getInstructorCourseService = async (instructorId, page = 1, limit =
         .limit(limit)
         .lean();
 
+
+
     const finalInstructorCourses = await Promise.all(instructorCourses.map(async (course) => {
 
         const transactions = await Transaction.find({ courseId: course._id, status: "successful" }) || [];
@@ -43,6 +45,7 @@ export const getInstructorCourseService = async (instructorId, page = 1, limit =
         currentPage: page,
         hasMore: page < totalPages,
         totalCourses,
+
     };
 }
 
@@ -73,6 +76,11 @@ export const getInstructorCourseByIdService = async (courseId) => {
 export const getAnalyticsService = async (instructorId) => {
     const courses = await Course.find({ instructor: instructorId })
 
+    const studentsCount = new Set(
+        courses.flatMap(course =>
+            (course.enrolledStudents || []).map(student => student.toString())
+        )
+    ).size;
 
     if (!courses.length)
         throw new NotFoundException("هیچ دوره ای یافت نشد")
@@ -96,5 +104,5 @@ export const getAnalyticsService = async (instructorId) => {
         throw new NotFoundException("مشکلی رخ داد")
     }
 
-    return analytics
+    return { analytics, studentsCount }
 }

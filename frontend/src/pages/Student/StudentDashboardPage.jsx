@@ -66,7 +66,7 @@ export default function MyCourses() {
                             </div>
                             <div className="flex items-center gap-3">
                                 <div>
-                                    <h3 className="font-bold text-sm">{authUser.name}</h3>
+                                    <h3 className="font-bold text-sm">{authUser?.name}</h3>
                                 </div>
                                 {/* <div className="w-12 h-12 rounded-full bg-gray-200" /> */}
                                 <UserAvatar className="size-12 rounded-full" />

@@ -70,6 +70,12 @@ const CourseDetail = ({ isPreviewPage, course }) => {
 
 
     const formatDuration = (totalMinutes) => {
+        // اگر کمتر از ۱ دقیقه بود
+        if (totalMinutes < 1) {
+            const seconds = Math.round(totalMinutes * 60);
+            return `${seconds} ثانیه`;
+        }
+
         const hours = Math.floor(totalMinutes / 60);
         const minutes = Math.round(totalMinutes % 60);
 
@@ -78,7 +84,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
             : minutes === 0
                 ? `${hours} ساعت`
                 : `${hours} ساعت و ${minutes} دقیقه`;
-    }
+    };
 
     const calcTotalLectures = (chapters) => {
         return chapters.reduce((total, ch) => total + ch.chapterContent.length, 0);
@@ -394,20 +400,24 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                 </span>
                                                 <span className="text-xs sm:text-base font-medium text-gray-500 dark:text-gray-400">تومان</span>
                                             </div>
-                                            <div className="flex items-center gap-1 sm:gap-2">
-                                                <div className="flex flex-col items-center">
-                                                    <span className="font-bold text-blue-500 text-sm sm:text-base">{course.courseDiscount}%</span>
-                                                    <svg className="size-5 sm:size-8 mb-4 text-gray-300 dark:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                    </svg>
+                                            {course.courseDiscount > 0 && (
+                                                <div className="flex items-center gap-1 sm:gap-2">
+                                                    <div className="flex flex-col items-center">
+                                                        <span className="font-bold text-blue-500 text-sm sm:text-base">{course.courseDiscount}%</span>
+                                                        <svg className="size-5 sm:size-8 mb-4 text-gray-300 dark:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                        </svg>
+                                                    </div>
+                                                    <div className="flex items-baseline gap-1">
+                                                        <span className="text-lg sm:text-2xl font-bold text-gray-400 line-through decoration-2 decoration-red-500/50 dark:text-gray-500">
+                                                            {formatPrice(course.coursePrice)}
+                                                        </span>
+                                                        <span className="text-xs sm:text-sm text-gray-400 dark:text-gray-600">تومان</span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-baseline gap-1">
-                                                    <span className="text-lg sm:text-2xl font-bold text-gray-400 line-through decoration-2 decoration-red-500/50 dark:text-gray-500">
-                                                        {formatPrice(course.coursePrice)}
-                                                    </span>
-                                                    <span className="text-xs sm:text-sm text-gray-400 dark:text-gray-600">تومان</span>
-                                                </div>
-                                            </div>
+                                            )
+
+                                            }
                                         </div>
                                     )}
                                 </div>
@@ -539,15 +549,19 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                     </div>
                                                 </div>
                                                 <div className="mt-0 sm:mt-5">
-                                                    <Link to={`/instructor/${course.instructor.name}/courses`} className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 bg-blue-500 hover:bg-blue-600 text-white shadow-sm hover:shadow-md active:scale-95 inline-block">
-                                                        مشاهده همه دوره‌های مدرس
-                                                    </Link>
+                                                    <h4 
+
+                                                     className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 inline-block">
+                                                       مدرس دوره
+                                                    </h4>
                                                 </div>
                                             </div>
 
+                                           {course.instructor.instructorProfile.bio && (
                                             <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t text-xs sm:text-sm leading-6 sm:leading-8 line-clamp-3 sm:line-clamp-2 border-zinc-200 text-zinc-600 dark:border-[#1b2538] dark:text-gray-400">
                                                 {course.instructor.instructorProfile.bio}
                                             </div>
+                                           )}
                                         </div>
 
                                         {/* STATS */}

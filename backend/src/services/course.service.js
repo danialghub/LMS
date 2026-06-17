@@ -239,7 +239,7 @@ export const getCourseByIdService = async (userId, courseId) => {
 
 export const getCourseBannerInfoService = async () => {
     const [courses, students, instructors] = await Promise.all([
-        Course.countDocuments(),
+        Course.countDocuments({ isCoursePublished: true }),
         User.countDocuments({ role: "student" }),
         User.countDocuments({ role: "instructor" })
     ]);

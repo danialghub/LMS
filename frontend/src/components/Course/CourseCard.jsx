@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 const CourseCard = ({ course }) => {
 
     const { authUser } = useAuthStore()
-    
+
     const calcDiscount = (price, discount) => {
         console.log(price, discount);
         const res = price - (price * discount / 100)
@@ -22,7 +22,7 @@ const CourseCard = ({ course }) => {
         const sum = courseRatings.reduce((total, arg) => total + arg.rating, 0)
         return Math.floor(sum / courseRatings.length)
     }
-    
+
     // محاسبه قیمت نهایی
     const finalPrice = calcDiscount(course.coursePrice, course.courseDiscount)
     const isFree = finalPrice === 0
@@ -49,17 +49,17 @@ const CourseCard = ({ course }) => {
                 </div>
             </Link>
 
-            {/* محتوای اصلی - با flex-grow برای پر کردن فضای خالی */}
+
             <div className='px-3 sm:px-4 pt-2 pb-4 sm:pb-5 flex flex-col flex-grow'>
 
-                {/* بخش بالایی که باید چسبیده به بالا باشه */}
+
                 <div className="flex-shrink-0">
                     <h2 className='text-sm sm:text-[18px] text-black/80 truncate font-heading [word-spacing:-1px]'>
                         {course.courseTitle}
                     </h2>
                 </div>
 
-                {/* بخش توضیحات - با h- ثابت یا min-height */}
+
                 <div className="flex-shrink-0 mt-2">
                     <p
                         className='line-clamp-2 sm:line-clamp-3 leading-5 text-[11px] sm:text-[12px] text-black/50'
@@ -122,9 +122,12 @@ const CourseCard = ({ course }) => {
                                     // حالت غیر رایگان - نمایش قیمت و تخفیف
                                     <div className='flex items-center gap-2 sm:gap-4'>
                                         <div className='flex flex-col items-end gap-0.5 sm:gap-1 font-Dirooz-FD'>
-                                            <del className='text-[10px] sm:text-[15px] text-black/40'>
-                                                {formatNumber(course.coursePrice)}
-                                            </del>
+                                            {course?.courseDiscount > 0 && (
+                                                <del className='text-[10px] sm:text-[15px] text-black/40'>
+                                                    {formatNumber(course.coursePrice)}
+                                                </del>
+                                            )
+                                            }
                                             <div className='text-xs sm:text-[16px] flex items-center gap-1 text-blue-500'>
                                                 <span className='font-bold'>
                                                     {formatPrice(finalPrice)}
@@ -133,12 +136,16 @@ const CourseCard = ({ course }) => {
                                             </div>
                                         </div>
 
-                                        <div className='flex flex-col items-center gap-0.5 sm:gap-1'>
-                                            <span className='font-Dirooz-FD text-[10px] sm:text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
-                                                {course.courseDiscount}%
-                                            </span>
-                                            <span className='text-[10px] sm:text-sm text-blue-500 font-vazir'>تخفیف</span>
-                                        </div>
+                                        {course.courseDiscount > 0 && (
+                                            <div className='flex flex-col items-center gap-0.5 sm:gap-1'>
+                                                <span className='font-Dirooz-FD text-[10px] sm:text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
+                                                    {course.courseDiscount}%
+                                                </span>
+                                                <span className='text-[10px] sm:text-sm text-blue-500 font-vazir'>تخفیف</span>
+                                            </div>
+                                        )
+
+                                        }
                                     </div>
                                 )}
                             </div>

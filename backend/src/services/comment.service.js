@@ -19,8 +19,8 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
             { parentId: { $exists: false } }
         ]
     };
-    console.log(filterQueries.userId);
-    
+
+
     if (!filterQueries?.userId) {
         filter.status = "approved"
     }
@@ -178,7 +178,7 @@ export const approveCommentService = async (commentId) => {
 
 }
 export const deleteCommentService = async (commentId, user) => {
-    const comment = await Comment.findOne({ _id: commentId }).lean();
+    const comment = await Comment.findOne({ _id: commentId });
     if (!comment) {
         throw new NotFoundException('نظر یافت نشد');
     }
