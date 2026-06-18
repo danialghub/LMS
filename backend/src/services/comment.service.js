@@ -25,7 +25,7 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
     } else {
         const user = await User.findOne({ _id: filterQueries.userId })
 
-        if (user && user.role === "instructor") {
+        if (user && user.role === "student") {
 
             filter.$and = [
                 {
