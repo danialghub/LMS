@@ -1,5 +1,6 @@
 import Course from "../Models/Course.js"
 import Comment from "../Models/Comment.js"
+import User from "../Models/User.js"
 import { NotFoundException, UnauthorizedException } from "../utils/app.error.js";
 import mongoose from "mongoose";
 
@@ -20,35 +21,39 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
 
     if (!filterQueries?.userId) {
         filter.status = "approved";
+
     } else {
+        const user = await User.findOne({ _id: filterQueries.userId })
 
-        filter.$and = [
-            {
-                $or: [
-                    { parentId: null },
-                    { parentId: { $exists: false } }
-                ]
-            },
-            {
-                $or: [
-                    { status: "approved" },
-                    {
-                        $and: [
-                            { status: "pending" },
-                            { userId: filterQueries.userId }
-                        ]
-                    }
-                ]
-            },
-            {
-                courseId
-            }
-        ];
+        if (user && user.role === "instructor") {
 
-    
-        delete filter.$or;
-        delete filter.courseId;
-        delete filter.parentId;
+            filter.$and = [
+                {
+                    $or: [
+                        { parentId: null },
+                        { parentId: { $exists: false } }
+                    ]
+                },
+                {
+                    $or: [
+                        { status: "approved" },
+                        {
+                            $and: [
+                                { status: "pending" },
+                                { userId: filterQueries.userId }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    courseId
+                }
+            ];
+
+            delete filter.$or;
+            delete filter.courseId;
+            delete filter.parentId;
+        }
     }
 
     let mainComments = [];
