@@ -105,18 +105,18 @@ const Hero = () => {
 
             {/* محتوای اصلی */}
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="grid mobile-tall:grid-cols-2 lg:grid-cols-2 gap-12 items-center">
 
                     {/* سمت راست - متن‌ها */}
                     <div className="text-center lg:text-right">
                         {/* نشان ویژه */}
                         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-indigo-500/30">
                             <Sparkles className="w-5 h-5 text-indigo-400" />
-                            <span className="text-indigo-300 text-sm font-medium">پلتفرم پیشرو آموزش آنلاین ایران</span>
+                            <span className="text-indigo-300 text-sm mobile-tall:text-xs font-medium">پلتفرم پیشرو آموزش آنلاین ایران</span>
                         </div>
 
                         {/* تیتر اصلی */}
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                        <h1 className="mobile-tall:text-3xl text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                             <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
                                 آینده یادگیری
                             </span>
@@ -125,7 +125,7 @@ const Hero = () => {
                         </h1>
 
                         {/* توضیحات */}
-                        <p className="text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl lg:mx-0 mx-auto">
+                        <p className="mobile-tall:text-sm text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl lg:mx-0 mx-auto">
                             به بزرگ‌ترین پلتفرم آموزش آنلاین ایران بپیوندید. با  دوره های تخصصی،
                             یادگیری عملی و مدرسان مجرب، مهارت‌های خود را به سطح بعدی برسانید.
                         </p>
@@ -145,11 +145,11 @@ const Hero = () => {
                     </div>
 
                    
-                    <div className="relative hidden lg:block">
+                    <div className="relative hidden mobile-tall:block lg:block">
                         <div className="relative">
                             {/* دایره‌های دکوراتیو */}
                             <div className="absolute -top-20 -right-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" />
-                            <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000" />
+                            <div className="absolute -bottom-20 -left-20 size-72  bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000" />
 
                             <img src="/hero-laptop.webp" alt="" />
 

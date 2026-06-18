@@ -54,7 +54,7 @@ const CourseCard = ({ course }) => {
 
 
                 <div className="flex-shrink-0">
-                    <h2 className='text-sm sm:text-[18px] text-black/80 truncate font-heading [word-spacing:-1px]'>
+                    <h2 className='mobile-short:text-sm mobile-tall:text-[15px] lg:text-[18px] text-black/80 truncate font-heading [word-spacing:-1px]'>
                         {course.courseTitle}
                     </h2>
                 </div>
@@ -62,7 +62,7 @@ const CourseCard = ({ course }) => {
 
                 <div className="flex-shrink-0 mt-2">
                     <p
-                        className='line-clamp-2 sm:line-clamp-3 leading-5 text-[11px] sm:text-[12px] text-black/50'
+                        className='line-clamp-2 lg:line-clamp-3 leading-5 text-[11px] lg:text-[12px] text-black/50'
                         dangerouslySetInnerHTML={{ __html: course.courseDescription }}
                     />
                 </div>
@@ -74,11 +74,11 @@ const CourseCard = ({ course }) => {
                 <div className="flex-shrink-0">
                     <div className='flex items-center justify-between mt-4 sm:mt-6 md:mt-8'>
                         <div className='flex items-center gap-1.5 sm:gap-2'>
-                            <img src={course.instructor.avatar || "/pro-avatar.webp"} className='w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover' alt="" />
-                            <span className='text-[11px] sm:text-[13px] text-black/70 truncate'>{course.instructor.name}</span>
+                            <img src={course.instructor.avatar || "/pro-avatar.webp"} className='w-6 h-6 lg:w-8 lg:h-8 rounded-full object-cover' alt="" />
+                            <span className='mobile-short:text-[11px] mobile-tall:text-xs  text-[13px] text-black/70 truncate'>{course.instructor.name}</span>
                         </div>
 
-                        <div className='flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm'>
+                        <div className='flex items-center gap-1.5 lg:gap-2 text-xs lg:text-sm'>
                             <span className='font-Dirooz-FD text-black/70'>{calcTotalCourseRTating(course.courseRatings)}</span>
                             <Star
                                 size={16}
@@ -115,20 +115,20 @@ const CourseCard = ({ course }) => {
 
                                 {isFree ? (
                                     // حالت رایگان - فقط نمایش متن رایگان
-                                    <div className='text-lg sm:text-[20px] font-heading text-blue-500'>
+                                    <div className='text-[16px] lg:text-[20px] font-heading text-blue-500'>
                                         رایگان
                                     </div>
                                 ) : (
                                     // حالت غیر رایگان - نمایش قیمت و تخفیف
-                                    <div className='flex items-center gap-2 sm:gap-4'>
+                                    <div className='flex items-center mobile-short:gap-2 mobile-tall:gap-3 gap-4'>
                                         <div className='flex flex-col items-end gap-0.5 sm:gap-1 font-Dirooz-FD'>
                                             {course?.courseDiscount > 0 && (
-                                                <del className='text-[10px] sm:text-[15px] text-black/40'>
+                                                <del className='mobile-short:text-[10px] mobile-tall:text-[11px] text-[15px] text-black/40'>
                                                     {formatNumber(course.coursePrice)}
                                                 </del>
                                             )
                                             }
-                                            <div className='text-xs sm:text-[16px] flex items-center gap-1 text-blue-500'>
+                                            <div className='mobile-short:text-xs mobile-tall:text-xs text-[16px] flex items-center gap-1 text-blue-500'>
                                                 <span className='font-bold'>
                                                     {formatPrice(finalPrice)}
                                                 </span>
@@ -138,10 +138,10 @@ const CourseCard = ({ course }) => {
 
                                         {course.courseDiscount > 0 && (
                                             <div className='flex flex-col items-center gap-0.5 sm:gap-1'>
-                                                <span className='font-Dirooz-FD text-[10px] sm:text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
+                                                <span className='font-Dirooz-FD mobile-short:text-[10px] mobile-tall:text-[10px] text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
                                                     {course.courseDiscount}%
                                                 </span>
-                                                <span className='text-[10px] sm:text-sm text-blue-500 font-vazir'>تخفیف</span>
+                                                <span className='mobile-short:text-[10px] mobile-tall:text-[11px]  text-sm text-blue-500 font-vazir'>تخفیف</span>
                                             </div>
                                         )
 

@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { Plus, Edit, Users, DollarSign, CheckSquare, Square, Loader, X } from 'lucide-react';
-import { useCourseStore } from '@/store/useCourseStore'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Link } from 'react-router'
 import { useEffect } from 'react';
 import { SubmitLoading, Pagination } from '@/components/index'
-import { useInstructorStore } from '@/store/useInstructorStore';
 import { usePostCourseMutation, useGetInstructorCourses } from '@/query/courseQueries';
 
 

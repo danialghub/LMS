@@ -141,7 +141,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                 onClick={onClose} // <-- این رو اضافه کن
             >
                 <div
-                    className="bg-white rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md max-h-[85vh] overflow-y-auto transform transition-all duration-300"
+                    className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mobile-tall:max-w-3xl sm:max-w-md max-h-[85vh] overflow-y-auto transform transition-all duration-300"
                     onClick={(e) => e.stopPropagation()} // <-- جلوگیری از بسته شدن وقتی داخل مودال کلیک میشه
                     dir="rtl"
                 >
@@ -206,11 +206,11 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                     <div className="p-3 sm:p-5">
                         {/* تب حساب کاربری */}
                         {activeTab === "account" && (
-                            <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-3 sm:space-y-4">
+                            <form onSubmit={handleProfileSubmit(onProfileSubmit)} className="space-y-3 sm:space-y-4 mobile-tall:flex items-center justify-around">
                                 {/* آواتار */}
                                 <div className="flex flex-col items-center justify-center pb-2">
                                     <div className="relative group">
-                                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-md">
+                                        <div className="size-20 mobile-tall:size-16 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden shadow-md">
                                             {avatarPreview ? (
                                                 <img
                                                     src={avatarPreview}
@@ -245,7 +245,8 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     </div>
                                 </div>
 
-                                {/* نام کامل */}
+                  
+                                  {/* نام کامل */}
                                 <div>
                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                         نام کامل
@@ -273,12 +274,13 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                         className="w-full px-2.5 sm:px-3 py-2.5 border rounded-lg text-xs sm:text-sm bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
                                     />
                                 </div>
+                     
 
                                 {/* دکمه ذخیره */}
                                 <button
                                     type="submit"
                                     disabled={isProfileSubmitting}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-2.5 rounded-lg transition-all disabled:opacity-50 text-xs sm:text-sm font-medium"
+                                    className="w-full mobile-tall:w-auto mobile-tall:px-3  bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-2.5 rounded-lg transition-all disabled:opacity-50 text-xs sm:text-sm font-medium"
                                 >
                                     {isProfileSubmitting ? "در حال ذخیره..." : "ذخیره تغییرات"}
                                 </button>
@@ -287,7 +289,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
 
                         {/* تب رمز عبور */}
                         {activeTab === "password" && (
-                            <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-3 sm:space-y-4" dir="ltr">
+                            <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="space-y-3 sm:space-y-4 mobile-tall:flex flex-row-reverse items-center justify-around " dir="ltr">
                                 <div>
                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                         رمز عبور قدیمی
@@ -295,7 +297,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="password"
                                         {...registerPassword("oldPassword")}
-                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.oldPassword ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 mobile-short:py-3 py-2.5 border rounded-lg focus:ring-2 mobile-tall:placeholder:text-xs focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.oldPassword ? "border-red-500" : "border-gray-300 "
                                             }`}
                                         placeholder="رمز عبور فعلی را وارد کنید"
                                     />
@@ -311,7 +313,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     <input
                                         type="password"
                                         {...registerPassword("newPassword")}
-                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.newPassword ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 mobile-short:py-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm mobile-tall:placeholder:text-xs ${passwordErrors.newPassword ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رمز عبور جدید را وارد کنید"
                                     />
@@ -321,13 +323,13 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-xs  sm:text-sm font-medium text-gray-700 mb-1">
                                         تکرار رمز عبور جدید
                                     </label>
                                     <input
                                         type="password"
                                         {...registerPassword("confirmPassword")}
-                                        className={`w-full px-2.5 sm:px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${passwordErrors.confirmPassword ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-2.5 sm:px-3 mobile-short:py-3 py-2.5 border rounded-lg focus:ring-2 mobile-tall:placeholder:text-xs focus:ring-blue-500 text-xs sm:text-sm  ${passwordErrors.confirmPassword ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رمز عبور جدید را دوباره وارد کنید"
                                     />
@@ -339,7 +341,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                 <button
                                     type="submit"
                                     disabled={isPasswordSubmitting}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-2.5 rounded-lg transition-all disabled:opacity-50 text-xs sm:text-sm font-medium"
+                                    className="w-full mobile-tall:w-auto mobile-tall:px-3 bg-blue-600 hover:bg-blue-700 text-white py-2 mobile-short:py-2.5 sm:py-2.5 rounded-lg transition-all disabled:opacity-50 text-xs mobile-tall:text-xs sm:text-sm font-medium"
                                 >
                                     {isPasswordSubmitting ? "در حال تغییر..." : "تغییر رمز عبور"}
                                 </button>
@@ -348,15 +350,15 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
 
                         {/* تب مشخصات مدرس */}
                         {role === "instructor" && activeTab === "instructor" && (
-                            <form onSubmit={handleInstructorSubmit(onInstructorSubmit)} className="space-y-3 sm:space-y-4">
-                                <div>
+                            <form onSubmit={handleInstructorSubmit(onInstructorSubmit)} className="space-y-3 sm:space-y-4 mobile-tall:flex items-center justify-around gap-3">
+                                <div className="flex-1">
                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                         رشته تحصیلی
                                     </label>
                                     <input
                                         type="text"
                                         {...registerInstructor("major")}
-                                        className={`w-full px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.major ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.major ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="رشته تحصیلی خود را وارد کنید"
                                     />
@@ -365,14 +367,14 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                     )}
                                 </div>
 
-                                <div>
+                                <div className="flex-1">
                                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                                         بیوگرافی
                                     </label>
                                     <textarea
                                         {...registerInstructor("bio")}
                                         rows="3"
-                                        className={`w-full px-3 py-2 sm:py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.bio ? "border-red-500" : "border-gray-300"
+                                        className={`w-full px-3 py-2.5 border rounded-lg focus:ring-2 resize-none focus:ring-blue-500 text-xs sm:text-sm ${instructorErrors.bio ? "border-red-500" : "border-gray-300"
                                             }`}
                                         placeholder="توضیحات درباره خود را وارد کنید..."
                                     />
@@ -384,7 +386,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, role }) => {
                                 <button
                                     type="submit"
                                     disabled={isInstructorSubmitting}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-2.5 rounded-lg transition-all disabled:opacity-50 text-xs sm:text-sm font-medium"
+                                    className="w-full mobile-tall:w-auto mobile-tall:px-3 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg transition-all disabled:opacity-50 text-xs sm:text-sm font-medium"
                                 >
                                     {isInstructorSubmitting ? "در حال ذخیره..." : "ذخیره مشخصات مدرس"}
                                 </button>

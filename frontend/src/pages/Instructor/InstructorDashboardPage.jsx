@@ -47,7 +47,7 @@ const InstructorDashboardPage = () => {
         {/* سایدبار - دسکتاپ */}
         <div
           id='sidebar'
-          className='hidden sm:flex flex-col justify-between w-[15%] bg-white h-full overflow-y-auto shadow-md transition duration-200'
+          className='hidden mobile-tall:hidden sm:flex flex-col justify-between w-[15%] bg-white h-full overflow-y-auto shadow-md transition duration-200'
         >
           {/* منوی اصلی */}
           <div className='mt-1'>
@@ -86,13 +86,13 @@ const InstructorDashboardPage = () => {
         </div>
 
         {/* محتوای اصلی */}
-        <div className='flex-1 overflow-y-auto pb-20 sm:pb-0'>
+        <div className='flex-1 overflow-y-auto pb-20 lg:pb-0'>
           <Outlet />
         </div>
       </div>
 
       {/* منوی پایین موبایل */}
-      <div className='sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg z-50'>
+      <div className='sm:hidden mobile-tall:block fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg z-50'>
         <div className='flex justify-around items-center px-2 py-2'>
           {sideBar.map((item, idx) => (
             <NavLink

@@ -75,6 +75,8 @@ export const getStudentTransactionService = async (stdId, page = 1, limit = 6) =
     const totalTransactions = await Transaction.countDocuments({
         userId: stdId
     });
+    const toatalFailedTransaction = await Transaction.countDocuments({userId:stdId, status: "failed" })
+    const toatalSuccessfulransaction = await Transaction.countDocuments({userId:stdId, status: "successful" })
 
     const transactions = await Transaction.find({ userId: stdId })
         .skip(skip)
@@ -89,6 +91,8 @@ export const getStudentTransactionService = async (stdId, page = 1, limit = 6) =
         totalPages,
         currentPage: page,
         totalTransactions,
+        toatalFailedTransaction,
+        toatalSuccessfulransaction,
         hasMore: page < totalPages,
     };
 }
@@ -108,7 +112,7 @@ export const rateToCourseService = async (courseId, userId, rating) => {
     }
 
     const updatedCourse = await Course.findByIdAndUpdate(courseId, {
-        $addToSet : { courseRatings: { rating, userId } },
+        $addToSet: { courseRatings: { rating, userId } },
     }, { timestamps: false, returnDocument: "after" });
 
     return updatedCourse.courseRatings;

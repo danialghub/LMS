@@ -42,7 +42,7 @@ const LatestCourses = () => {
             <span className="text-indigo-300 text-sm font-medium">آخرین دوره‌های آموزشی</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-3xl  lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
               جدیدترین دوره‌ها
             </span>
@@ -58,7 +58,7 @@ const LatestCourses = () => {
           ? <PageLoader />
           : recentlyCourses.length
 
-            ? (<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-12 gap-y-4">
+            ? (<div className="grid grid-cols-2 mobile-tall:grid-cols-4 mobile-tall:gap-3 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-12 gap-y-4">
               {recentlyCourses.map((course, index) => (
                 <CourseCard key={course._id} course={course} />
               ))}

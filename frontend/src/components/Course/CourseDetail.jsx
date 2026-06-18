@@ -355,7 +355,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                     <VideoPlayer video={{ src: course.lecture.lectureUrl, thumbnail: course.courseThumbnail }} className="rounded-none max-w-6xl max-h-[85vh] " />
                                 </div>
                             ) : (
-                                <img src={course.courseThumbnail} className="aspect-video w-full max-w-4xl max-h-[85vh] mx-auto pb-4 rounded-3xl px-3 sm:px-0" />
+                                <img src={course.courseThumbnail} className="aspect-video w-full max-w-4xl mobile-tall:max-w-2xl mobile-tall:max-h-auto max-h-[85vh] mx-auto pb-4 rounded-3xl px-3 sm:px-0" />
                             )}
                         </div>
 

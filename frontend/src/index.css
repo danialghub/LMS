@@ -28,15 +28,25 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@custom-variant mobile-short (@media (max-width: 450px) and (max-height: 925px));
+@custom-variant mobile-tall (@media (max-width: 925px) and (max-height: 450px));
+
+
+
 @theme {
   --blue-deep: "#0a2b4e";
   --blue-glow: "#1e90ff";
 
-  --font-ghalam: "Ghalam", "sans-serif";
-  --font-Dirooz: "Dirooz", "sans-serif";
-  --font-Dirooz-FD: "Dirooz-FD", "sans-serif";
-  --font-vazir: "Vazirmatn", "sans-serif";
-  --font-heading: "Lalezar", "sans-serif";
+  --font-ghalam: "Ghalam",
+  "sans-serif";
+  --font-Dirooz: "Dirooz",
+  "sans-serif";
+  --font-Dirooz-FD: "Dirooz-FD",
+  "sans-serif";
+  --font-vazir: "Vazirmatn",
+  "sans-serif";
+  --font-heading: "Lalezar",
+  "sans-serif";
 }
 
 @layer base {
@@ -63,120 +73,120 @@
   }
 
 
-.form-input.error {
-  @apply border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-100;
-}
-
-.btn-primary {
-  @apply px-3 py-2 bg-blue-500 text-white rounded cursor-pointer disabled:bg-gray-600 disabled:cursor-not-allowed;
-}
-
-.rich-text {
-  @apply text-[15px] break-words;
-
-  span {
-    @apply leading-[30px] px-2;
+  .form-input.error {
+    @apply border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-100;
   }
 
-  a {
-    @apply !text-blue-500 underline
+  .btn-primary {
+    @apply px-3 py-2 bg-blue-500 text-white rounded cursor-pointer disabled:bg-gray-600 disabled:cursor-not-allowed;
   }
 
-  h1 {
-    @apply text-[36px] font-extrabold my-4 dark:text-white;
+  .rich-text {
+    @apply text-[15px] break-words;
+
+    span {
+      @apply leading-[30px] px-2;
+    }
+
+    a {
+      @apply !text-blue-500 underline
+    }
+
+    h1 {
+      @apply text-[36px] font-extrabold my-4 dark:text-white;
+    }
+
+    h2 {
+      @apply text-[22px] font-bold my-4 dark:text-gray-100;
+    }
+
+    h3 {
+      @apply text-[18px] font-semibold my-4 dark:text-gray-100;
+    }
+
+    h4 {
+      @apply text-[16px] font-medium my-4 dark:text-gray-100;
+    }
+
+    h5 {
+      @apply text-[14px] font-normal my-4 dark:text-gray-100;
+    }
+
+    h6 {
+      @apply text-[12px] font-normal my-4 dark:text-gray-300;
+    }
+
+    strong {
+      @apply font-bold;
+    }
+
+    ol {
+      @apply ml-[30px] list-decimal;
+    }
+
+    ul {
+      @apply ml-[30px] list-disc;
+    }
+
+    li {
+      @apply mb-0;
+    }
   }
 
-  h2 {
-    @apply text-[22px] font-bold my-4 dark:text-gray-100;
+
+  .ql-editor {
+    direction: auto !important;
+    text-align: auto !important;
   }
 
-  h3 {
-    @apply text-[18px] font-semibold my-4 dark:text-gray-100;
+
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1s infinite ease-in-out both;
   }
 
-  h4 {
-    @apply text-[16px] font-medium my-4 dark:text-gray-100;
+  .dot:nth-child(1) {
+    animation-delay: -0.50s;
   }
 
-  h5 {
-    @apply text-[14px] font-normal my-4 dark:text-gray-100;
+  .dot:nth-child(2) {
+    animation-delay: -0.25s;
   }
 
-  h6 {
-    @apply text-[12px] font-normal my-4 dark:text-gray-300;
+  #nprogress {
+    pointer-events: none;
   }
 
-  strong {
-    @apply font-bold;
+  #nprogress .bar {
+    background: linear-gradient(90deg, #447def, #0b70f5, #1048b9);
+    height: 6px !important;
+    /* ← اینجا ضخامت رو تنظیم کن */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
   }
 
-  ol {
-    @apply ml-[30px] list-decimal;
+  #nprogress .peg {
+    display: block;
+    position: absolute;
+    right: 0px;
+    width: 100px;
+    height: 100%;
+    box-shadow: 0 0 12px #ef4444, 0 0 8px #f59e0b;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px);
   }
 
-  ul {
-    @apply ml-[30px] list-disc;
+  #nprogress .spinner {
+    display: none !important;
   }
-
-  li {
-    @apply mb-0;
-  }
-}
-
-
-.ql-editor {
-  direction: auto !important;
-  text-align: auto !important;
-}
-
-
-
-.dot {
-  width: 8px;
-  height: 8px;
-  background-color: white;
-  border-radius: 50%;
-  display: inline-block;
-  animation: bounce 1s infinite ease-in-out both;
-}
-
-.dot:nth-child(1) {
-  animation-delay: -0.50s;
-}
-
-.dot:nth-child(2) {
-  animation-delay: -0.25s;
-}
-
-#nprogress {
-  pointer-events: none;
-}
-
-#nprogress .bar {
-  background: linear-gradient(90deg, #447def, #0b70f5, #1048b9);
-  height: 6px !important;
-  /* ← اینجا ضخامت رو تنظیم کن */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9999;
-}
-
-#nprogress .peg {
-  display: block;
-  position: absolute;
-  right: 0px;
-  width: 100px;
-  height: 100%;
-  box-shadow: 0 0 12px #ef4444, 0 0 8px #f59e0b;
-  opacity: 1;
-  transform: rotate(3deg) translate(0px, -4px);
-}
-
-#nprogress .spinner {
-  display: none !important;
-}
 
 
 }

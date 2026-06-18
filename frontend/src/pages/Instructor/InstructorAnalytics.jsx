@@ -7,7 +7,7 @@ import { PageLoader } from '@/components/index';
 
 const InstructorAnalytics = () => {
   const { getCourseAnalytics, courseAnalytics, isFetching } = useInstructorStore();
-  const [windowWidth, setWindowWidth] = useState(1200);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth || 1200);
   const [studentsCount, setStudentsCount] = useState(0)
 
   useEffect(() => {
@@ -27,10 +27,10 @@ const InstructorAnalytics = () => {
   const isTablet = windowWidth >= 640 && windowWidth < 1024;
 
 
-  const barSize = isMobile ? 40 : isTablet ? 55 : 65;
+  const barSize = isMobile ? 30 : isTablet ? 50 : 50;
 
 
-  const categoryGap = isMobile ? 40 : isTablet ? 25 : 100;
+  const categoryGap = isMobile ? 40 : isTablet ? 100 : 100;
 
 
   const chartWidth = courseAnalytics?.analytics?.length
@@ -41,7 +41,7 @@ const InstructorAnalytics = () => {
     <div className="bg-white rounded-xl max-w-7xl  md:mt-8 mx-3 md:mx-4 shadow-lg p-4 md:p-6" dir="rtl">
       {/* total analytics */}
       {courseAnalytics?.analytics?.length > 0 && (
-        <div className="flex items-center justify-center gap-4  mb-5 pt-6 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4  mb-5 pt-6 border-t border-gray-200">
           <div className="w-[300px] flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
             <div className="p-2 bg-blue-100 rounded-lg">
               <DollarSign className="text-blue-600" size={20} />
@@ -70,17 +70,6 @@ const InstructorAnalytics = () => {
 
         </div>
       )}
-
-
-
-
-
-
-
-
-
-
-
 
 
 

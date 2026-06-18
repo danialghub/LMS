@@ -16,7 +16,7 @@ import TransactionResult from '@/pages/TransactionResult'
 import CourseSetup from '@/pages/Instructor/CourseSetup'
 import LectureSetup from '@/pages/Instructor/LectureSetup'
 
-import InstructorCoursesPage from '@/pages/Instructor/InstructorCoursesPage'
+
 import InstructorDashboardPage from '@/pages/Instructor/InstructorDashboardPage'
 import InstructorAnalytics from '@/pages/Instructor/InstructorAnalytics'
 import InstructorCoursesManagementPage from '@/pages/Instructor/InstructorCoursesManagementPage'
@@ -63,10 +63,7 @@ const routes = () => {
             path: "/courses",
             element: <CoursesPage />
         },
-        {
-            path: "/courses/:instructorName",
-            element: <InstructorCoursesPage />
-        },
+      
         {
             path: "/course/:courseId",
             element: <CoursePage />

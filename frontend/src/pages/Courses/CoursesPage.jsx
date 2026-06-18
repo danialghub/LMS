@@ -126,11 +126,11 @@ const CoursesPage = () => {
     return (
         <div className='bg-neutral-100'>
             <Navbar />
-            <div className='px-6 md:px-32  py-52 pt-4'>
+            <div className='px-6 md:px-20 lg:px-32  py-52 pt-4'>
                 <div className='my-12 relative'>
                     <Banner courseCount={totalCourses} />
                 </div>
-                <div className='flex flex-col md:flex-row items-start  gap-8 relative'>
+                <div className='flex flex-col lg:flex-row items-start  gap-8 relative'>
 
                     <CourseFilteringCard
                         filters={filters}
@@ -140,12 +140,12 @@ const CoursesPage = () => {
 
                     />
 
-                    <div className='md:flex-3 flex flex-col items-center gap-6'>
+                    <div className='lg:flex-3 flex flex-col items-center gap-6'>
                         {isFetching && courses.length === 0
                             ? <div > <PageLoader /></div>
                             : courses?.length > 0
                                 ? (
-                                    <div className='grid grid-cols-1 px-7  md:px-0 md:grid-cols-2 xl:grid-cols-3  gap-6 md:flex-3 ' >
+                                    <div className='grid grid-cols-1 px-7  md:px-0 md:grid-cols-3 xl:grid-cols-3  gap-6 md:flex-3 ' >
                                         <AnimatePresence>
                                             {courses.map(course => (
                                                 <CourseCard key={course._id} course={course} />

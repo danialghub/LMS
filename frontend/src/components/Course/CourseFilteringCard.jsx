@@ -137,10 +137,11 @@ const CourseFilteringCard = ({ filters, setFilters, setSearchByTitle }) => {
     }
 
     return (
-        <div className='flex flex-col gap-4 sm:gap-6 md:flex-1 rounded-lg md:sticky md:top-24 max-md:mx-auto max-md:w-full'>
+        <div className='flex flex-col gap-4 sm:gap-6 lg:flex-1 rounded-lg lg:sticky lg:top-24 max-lg:mx-auto max-lg:w-full'>
             {/* جستجو */}
 
-            <div className='relative p-3 sm:p-5 rounded-xl mx-6 sm:mx-0 bg-white shadow-md'>
+          <div className='max-lg:w-full mobile-tall:flex max-lg:justify-center'>
+              <div className='relative p-3 sm:p-5 w-full sm:w-2/3 lg:w-full rounded-xl mx-6 sm:mx-0 bg-white shadow-md'>
                 <input
                     type="text"
                     onChange={e => setSearchByTitle(e.target.value)}
@@ -151,9 +152,10 @@ const CourseFilteringCard = ({ filters, setFilters, setSearchByTitle }) => {
                     <Search size={18} className="sm:size-5" />
                 </span>
             </div>
+          </div>
 
             {/*pc مرتب سازی */}
-            <div className='hidden sm:block bg-white shadow py-4 sm:py-6 md:py-8 rounded-lg '>
+            <div className='hidden lg:block bg-white shadow py-4 sm:py-6 md:py-8 rounded-lg '>
                 <div className='flex items-center gap-2 pr-3'>
                     <Grip size={18} className="sm:size-5" />
                     <h5 className='font-heading text-black/80  text-base sm:text-[21px]'>مرتب سازی</h5>
@@ -190,16 +192,16 @@ const CourseFilteringCard = ({ filters, setFilters, setSearchByTitle }) => {
             </div>
 
             {/*Mobile دکمه های */}
-            <div className='sm:hidden flex  items-center justify-center gap-4 text-[14px] text-black/70  mt-5 font-heading'>
+            <div className='lg:hidden flex  items-center justify-center gap-4 text-[14px] md:text-lg text-black/70  mt-5 font-heading'>
                 <button
                     onClick={() => setShowFilters(true)}
-                    className='flex items-center justify-center gap-2 sm:hidden w-[180px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
+                    className='flex items-center justify-center gap-2  w-[180px] md:w-[250px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
                     <Filter size={15} />
                     فیلتر
                 </button>
                 <button
                     onClick={() => setShowSortOptions(true)}
-                    className='flex items-center justify-center gap-2 sm:hidden w-[180px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
+                    className='flex items-center justify-center gap-2  w-[180px] md:w-[250px] py-2.5 rounded-md border-1 border-black/5 shadow active:scale-105 transition duration-300'>
                     <SortDesc size={18} />
                     مرتب سازی
                 </button>
@@ -230,10 +232,10 @@ const CourseFilteringCard = ({ filters, setFilters, setSearchByTitle }) => {
             </AnimatePresence>
 
             {/* فیلتر دوره‌های رایگان */}
-            <div className='space-y-2'>
+            <div className='space-y-2 hidden lg:block'>
                 <button
                     onClick={() => setFilters(prev => ({ ...prev, isFreeCourses: !prev.isFreeCourses }))}
-                    className='hidden sm:flex w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                    className=' flex w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                     <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های رایگان</p>
                     <ToggleButton
                         isOn={filters.isFreeCourses}
@@ -244,7 +246,7 @@ const CourseFilteringCard = ({ filters, setFilters, setSearchByTitle }) => {
                 {authUser && authUser.role === "student" && (
                     <button
                         onClick={() => setFilters(prev => ({ ...prev, myCourses: prev.myCourses ? "" : authUser._id }))}
-                        className='hidden  sm:flex w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
+                        className='flex w-full bg-white shadow p-4 sm:p-6 md:p-8 py-3 sm:py-5 md:py-6 rounded-lg  items-center justify-between'>
                         <p className='text-sm sm:text-base md:text-[17px] font-Dirooz text-gray-700'>فقط دوره های من</p>
                         <ToggleButton
                             isOn={filters.myCourses === authUser._id}
