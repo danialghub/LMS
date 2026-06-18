@@ -1,7 +1,7 @@
 // controllers/commentController.js
 import Comment from '../Models/Comment.js';
 import Course from '../Models/Course.js';
-import { approveCommentService, deleteCommentService, getCourseCommentsService, postCourseCommentService } from '../services/comment.service.js';
+import { approveCommentService, deleteCommentService, disLikeCommentService, getCourseCommentsService, likeCommentService, postCourseCommentService } from '../services/comment.service.js';
 import { asyncHandler } from '../middlewares/asyncHandler.middleware.js'
 import { HTTPSTATUS } from '../config/http.config.js';
 
@@ -117,3 +117,24 @@ export const approveComment = asyncHandler(
 
     }
 );
+
+export const likeComment = asyncHandler(
+    async (req, res) => {
+        const userId = req.user._id
+        const { commentId } = req.params
+
+        await likeCommentService(commentId, userId)
+
+        res.sendStatus(HTTPSTATUS.OK)
+    }
+)
+export const disLikeComment = asyncHandler(
+    async (req, res) => {
+        const userId = req.user._id
+        const { commentId } = req.params
+
+        await disLikeCommentService(commentId, userId)
+
+        res.sendStatus(HTTPSTATUS.OK)
+    }
+)

@@ -44,7 +44,25 @@ export const useCommentStore = create((set, get) => ({
             console.error(error.response?.data?.message || "Something went wrong");
             throw error;
         }
-    }
+    },
+    likeComment: async (courseId, commentId) => {
+        try {
+            const { data } = await privateRoutes.patch(`/comment/${courseId}/${commentId}/like`)
+            return data
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+            throw error;
+        }
+    },
+    disLikeComment: async (courseId, commentId) => {
+        try {
+            const { data } = await privateRoutes.patch(`/comment/${courseId}/${commentId}/dislike`)
+            return data
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong");
+            throw error;
+        }
+    },
 
 }))
 

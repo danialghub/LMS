@@ -95,3 +95,47 @@ export const useDeleteCommentMutation = () => {
         }
     })
 }
+export const useLikeCommentMutation = () => {
+    const queryClient = useQueryClient()
+
+    const { likeComment } = useCommentStore()
+
+    return useMutation({
+        mutationFn: ({ courseId, commentId }) => {
+            return likeComment(courseId, commentId)
+        },
+
+        onSuccess: (data, variables) => {
+
+            queryClient.invalidateQueries({
+                queryKey: ['courseComments', variables.courseId]
+            })
+        },
+
+        onError: (error) => {
+            toast.error('خطا در ثبت نظر: ' + error.message)
+        }
+    })
+}
+export const useDisLikeCommentMutation = () => {
+    const queryClient = useQueryClient()
+
+    const { disLikeComment } = useCommentStore()
+
+    return useMutation({
+        mutationFn: ({ courseId, commentId }) => {
+            return disLikeComment(courseId, commentId)
+        },
+
+        onSuccess: (data, variables) => {
+
+            queryClient.invalidateQueries({
+                queryKey: ['courseComments', variables.courseId]
+            })
+        },
+
+        onError: (error) => {
+            toast.error('خطا در ثبت نظر: ' + error.message)
+        }
+    })
+}

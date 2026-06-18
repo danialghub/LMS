@@ -16,7 +16,10 @@ import {
     Trash
 } from 'lucide-react';
 import { formatTime } from "@/lib/helper";
-import { useApproveCommentMutation, useDeleteCommentMutation } from '@/query/commentQueries'
+import {
+    useApproveCommentMutation, useDeleteCommentMutation,
+    useDisLikeCommentMutation, useLikeCommentMutation
+} from '@/query/commentQueries'
 import { motion } from 'framer-motion'
 import { memo } from 'react';
 
@@ -36,6 +39,8 @@ const CommentItem = ({
 
     const { mutateAsync: approveComment, isPending: isApproving } = useApproveCommentMutation()
     const { mutateAsync: deleteComment, isPending: isDeletting } = useDeleteCommentMutation()
+    const { mutateAsync: likeComment, isPending: isLiking } = useLikeCommentMutation()
+    const { mutateAsync: disLikeComment, isPending: isDisLiking } = useDisLikeCommentMutation()
 
 
     const handleDeleteComment = async (commentId) => {
@@ -56,8 +61,12 @@ const CommentItem = ({
     };
 
     const handleReaction = async (commentId, type) => {
-        // این تابع باید از props یا context دریافت شود
-        console.log('Reaction:', commentId, type);
+        if (type === "like") {
+
+            await likeComment({ courseId, commentId })
+        } else {
+            await disLikeComment({ courseId, commentId })
+        }
     };
 
     return (
@@ -111,7 +120,7 @@ const CommentItem = ({
 
                     {/* منوی عملیات */}
                     {(isAuthor || canModerate) && (
-                       <div className="relative group self-end sm:self-auto">
+                        <div className="relative group self-end sm:self-auto">
                             <div className="absolute left-0 top-full mt-1 bg-white dark:bg-[#0d111c] border border-zinc-200 dark:border-[#1a2233] rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 min-w-[130px] sm:min-w-[150px]">
                                 {canModerate && comment.status === 'pending' && (
                                     <button
@@ -144,28 +153,39 @@ const CommentItem = ({
 
                 {/* اکشن‌های کامنت */}
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-zinc-100 dark:border-[#1b2538]">
-                    {canComment && (
+                    {comment.status !== "pending" && (canComment || canModerate) && (
                         <>
                             <button
+                                disabled={isLiking}
                                 onClick={() => handleReaction(comment._id, 'like')}
-                                className={`flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm transition-all ${userReaction?.type === 'like'
+                                className={`flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm transition-all ${comment?.likes?.includes(authUser?._id)
                                     ? 'text-blue-500'
                                     : 'text-zinc-500 hover:text-blue-500 dark:text-gray-400'
                                     }`}
                             >
-                                <ThumbsUp size={14} className="sm:size-4" />
-                                <span>{comment.likes?.length || 0}</span>
+
+                                <ThumbsUp
+                                    size={14}
+                                    className="sm:size-4"
+
+                                />
+                                <span>{comment?.likes?.length || 0}</span>
                             </button>
 
                             <button
+                                disabled={isDisLiking}
                                 onClick={() => handleReaction(comment._id, 'dislike')}
-                                className={`flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm transition-all ${userReaction?.type === 'dislike'
+                                className={`flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm transition-all ${comment?.dislikes?.includes(authUser?._id)
                                     ? 'text-red-500'
                                     : 'text-zinc-500 hover:text-red-500 dark:text-gray-400'
                                     }`}
                             >
-                                <ThumbsDown size={14} className="sm:size-4" />
-                                <span>{comment.dislikes?.length || 0}</span>
+                                <ThumbsDown
+                                    size={14}
+                                    className="sm:size-4"
+
+                                />
+                                <span>{comment?.dislikes?.length || 0}</span>
                             </button>
                         </>
                     )}
@@ -207,7 +227,7 @@ const CommentItem = ({
                                 disabled={submitting || !replyText.trim()}
                                 className="px-3 sm:px-4 max-sm:w-[50px] py-2 sm:py-2.5 bg-blue-500 text-white  rounded-md hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center"
                             >
-                                <Send size={18}  />
+                                <Send size={18} />
                             </button>
                         </div>
                     </div>

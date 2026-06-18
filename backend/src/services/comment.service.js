@@ -62,7 +62,7 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
 
     if (sortBy === "newest" || sortBy === "oldest") {
         const sortOption = {
-            updatedAt: sortBy === "newest" ? -1 : 1,
+            createdAt: sortBy === "newest" ? -1 : 1,
         };
 
         [mainComments, totalComments, totalApprovedComments] = await Promise.all([
@@ -224,3 +224,36 @@ export const deleteCommentService = async (commentId, user) => {
 
 
 };
+
+export const likeCommentService = async (commentId, userId) => {
+    const comment = await Comment.findOne({ _id: commentId })
+
+    if (!comment)
+        throw new NotFoundException("کامنت نامعتبر است")
+
+    comment.dislikes = comment.dislikes.filter(userDisliked => userDisliked.toString() !== userId.toString())
+
+    if (comment.likes.includes(userId.toString())) {
+        comment.likes = comment.likes.filter(userLiked => userLiked.toString() !== userId.toString())
+    } else {
+        comment.likes.push(userId)
+    }
+
+    await comment.save()
+}
+export const disLikeCommentService = async (commentId, userId) => {
+    const comment = await Comment.findOne({ _id: commentId })
+
+    if (!comment)
+        throw new NotFoundException("کامنت نامعتبر است")
+
+    comment.likes = comment.likes.filter(userLiked => userLiked.toString() !== userId.toString())
+
+    if (comment.dislikes.includes(userId.toString())) {
+        comment.dislikes = comment.dislikes.filter(userDisliked => userDisliked.toString() !== userId.toString())
+    } else {
+        comment.dislikes.push(userId)
+    }
+
+    await comment.save()
+}
