@@ -207,7 +207,7 @@ const CommentItem = ({
                                 disabled={submitting || !replyText.trim()}
                                 className="px-3 sm:px-4 max-sm:w-[50px] py-2 sm:py-2.5 bg-blue-500 text-white  rounded-md hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center"
                             >
-                                <Send size={18} className="sm:size-20" />
+                                <Send size={18}  />
                             </button>
                         </div>
                     </div>
