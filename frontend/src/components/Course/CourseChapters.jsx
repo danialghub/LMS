@@ -33,13 +33,14 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
 
     const getLectureIcon = (lecture, isPlaying) => {
         if (course.enrolledStudents.includes(authUser?._id) || lecture.isLectureFree) {
-            if (completedLectures?.includes(lecture.lectureId)) {
-                return <CheckCircle2 size={20} className="text-green-400 shrink-0" />
-            } else if (isPlaying) {
+            if (isPlaying) {
                 return <PlayCircle size={20} className="text-blue-400 shrink-0" />
+            } else if (completedLectures?.includes(lecture.lectureId)) {
+                return <CheckCircle2 size={20} className="text-green-400 shrink-0" />
             } else {
                 return <Circle size={20} className="text-blue-500 shrink-0" />
             }
+
         } else {
             return <Lock size={20} className='text-gray-500 shrink-0' />
         }
@@ -99,13 +100,13 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
                             `}
                         >
                             <div className="overflow-hidden relative">
-                                <div className="px-0 py-0 space-y-2">
-                                    <div className="absolute right-[-1rem] sm:right-[-1.5rem] top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/50 to-transparent" />
+                                <div className="px-0 py-0 space-y-2 ">
+
                                     {chapter.chapterContent.map((lec, lecIdx) => (
                                         <div
                                             key={lec.lectureId}
                                             className={`p-3 sm:p-4 rounded-sm border flex items-center justify-between transition-all duration-300 min-h-[65px] sm:h-[75px]
-                                                ${lectureId == lecIdx
+                                                ${(chapterId == chapIdx && lectureId == lecIdx)
                                                     ? "bg-blue-500/10 border-blue-500"
                                                     : completedLectures?.includes(lec.lectureId)
                                                         ? "bg-green-500/10 border-green-500"

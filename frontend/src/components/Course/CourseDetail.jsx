@@ -551,7 +551,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                 <div className="mt-0 sm:mt-5">
                                                     <h4 
 
-                                                     className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 inline-block">
+                                                     className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 hidden sm:inline-block">
                                                        مدرس دوره
                                                     </h4>
                                                 </div>

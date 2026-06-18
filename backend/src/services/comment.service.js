@@ -9,8 +9,6 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
     const limit = Number(filterQueries.limit) || 6;
     const skip = (page - 1) * limit;
 
-
-
     const sortBy = filterQueries?.sortBy || "newest";
     const filter = {
         courseId,
@@ -20,9 +18,37 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
         ]
     };
 
-
     if (!filterQueries?.userId) {
-        filter.status = "approved"
+        filter.status = "approved";
+    } else {
+
+        filter.$and = [
+            {
+                $or: [
+                    { parentId: null },
+                    { parentId: { $exists: false } }
+                ]
+            },
+            {
+                $or: [
+                    { status: "approved" },
+                    {
+                        $and: [
+                            { status: "pending" },
+                            { userId: filterQueries.userId }
+                        ]
+                    }
+                ]
+            },
+            {
+                courseId
+            }
+        ];
+
+    
+        delete filter.$or;
+        delete filter.courseId;
+        delete filter.parentId;
     }
 
     let mainComments = [];
@@ -46,7 +72,10 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
                 .lean(),
 
             Comment.countDocuments(filter),
-            Comment.countDocuments({ ...filter, status: "approved" }),
+            Comment.countDocuments({
+                ...filter,
+                status: "approved"
+            }),
         ]);
     }
     else if (sortBy === "unApproved") {
@@ -68,13 +97,11 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
                         }
                     }
                 },
-
                 {
                     $sort: {
                         statusPriority: 1,
                     }
                 },
-
                 {
                     $lookup: {
                         from: "users",
@@ -83,21 +110,17 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
                         as: "user",
                     },
                 },
-
                 {
                     $unwind: "$user",
                 },
-
                 {
                     $project: {
                         "user.password": 0,
                     },
                 },
-
                 {
                     $skip: skip,
                 },
-
                 {
                     $limit: limit,
                 },
@@ -105,8 +128,6 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
             Comment.countDocuments(filter),
             Comment.countDocuments({ ...filter, status: "approved" })
         ]);
-        console.log(mainComments, totalComments);
-
     }
 
     const commentsWithReplies = await Promise.all(
@@ -124,10 +145,7 @@ export const getCourseCommentsService = async (courseId, filterQueries) => {
         })
     );
 
-
     const totalPages = Math.ceil(totalComments / limit);
-    console.log(commentsWithReplies);
-
 
     return {
         comments: commentsWithReplies,
