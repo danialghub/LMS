@@ -283,7 +283,7 @@ const SignUpPage = ({ role = "student" }) => {
                     content={`ثبت‌نام در سامانه آموزشی مغز افزار به عنوان ${roleTitle}.`}
                 />
 
-                <meta name="robots" content="noindex, nofollow" />
+           
             </Helmet>
             <SignupLayout>
                 <div className="flex h-full">

@@ -40,7 +40,7 @@ export default function MyCourses() {
         <>
             <Helmet>
                 <title>داشبورد مدرس | مغز افزار</title>
-                <meta name="robots" content="noindex, nofollow" />
+     
             </Helmet>
             <div className="min-h-screen bg-[#f3f3f3]">
                 <Navbar />

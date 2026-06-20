@@ -110,7 +110,7 @@ const LoginPage = ({ role = "student" }) => {
                     content={`ورود به پنل ${roleTitle} در سامانه آموزشی مغز افزار.`}
                 />
 
-                <meta name="robots" content="noindex, nofollow" />
+        
             </Helmet>
             <LoginLayout>
                 <div className="flex h-full ">

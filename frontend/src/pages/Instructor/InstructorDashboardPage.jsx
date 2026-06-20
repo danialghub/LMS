@@ -43,7 +43,7 @@ const InstructorDashboardPage = () => {
     <>
       <Helmet>
         <title>داشبورد مدرس | مغز افزار</title>
-        <meta name="robots" content="noindex, nofollow" />
+     
       </Helmet>
       <div className='h-screen flex flex-col' >
         <Navbar />
