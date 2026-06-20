@@ -523,7 +523,17 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                             <LectureAttachment isDark={theme === "dark"} attachmentFile={course.lecture.attachment} />
                                         )}
                                         <h1 className="text-2xl sm:text-4xl mt-8 sm:mt-12 font-heading font-normal leading-8 sm:leading-[70px] break-words">{course.courseTitle}</h1>
-                                        <div dangerouslySetInnerHTML={{ __html: course.courseDescription }} className="font- leading-7 sm:leading-9 mt-4 sm:mt-5 text-sm sm:text-[18px] text-zinc-600 dark:!text-white/70 break-words" />
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: course.courseDescription.replace(/&nbsp;/g, ' ')
+                                            }}
+                                            className="space-y-3 rich-text leading-7 sm:leading-9 mt-4 sm:mt-5  text-zinc-600 dark:!text-white/70"
+                                            style={{
+                                                wordBreak: 'keep-all',
+                                                overflowWrap: 'break-word',
+                                                whiteSpace: 'normal',
+                                            }}
+                                        />
                                     </div>
 
                                     {/* COURSE META */}
@@ -549,19 +559,19 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                     </div>
                                                 </div>
                                                 <div className="mt-0 sm:mt-5">
-                                                    <h4 
+                                                    <h4
 
-                                                     className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 hidden sm:inline-block">
-                                                       مدرس دوره
+                                                        className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 hidden sm:inline-block">
+                                                        مدرس دوره
                                                     </h4>
                                                 </div>
                                             </div>
 
-                                           {course.instructor.instructorProfile.bio && (
-                                            <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t text-xs sm:text-sm leading-6 sm:leading-8 line-clamp-3 sm:line-clamp-2 border-zinc-200 text-zinc-600 dark:border-[#1b2538] dark:text-gray-400">
-                                                {course.instructor.instructorProfile.bio}
-                                            </div>
-                                           )}
+                                            {course.instructor.instructorProfile.bio && (
+                                                <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t text-xs sm:text-sm leading-6 sm:leading-8 line-clamp-3 sm:line-clamp-2 border-zinc-200 text-zinc-600 dark:border-[#1b2538] dark:text-gray-400">
+                                                    {course.instructor.instructorProfile.bio}
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* STATS */}

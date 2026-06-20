@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
-import { Check, Loader2, UserPlus} from 'lucide-react';
+import { Check, Loader2, UserPlus } from 'lucide-react';
 import { registerSchema } from '@/validators/authSchema';
 import { useAuthStore } from '@/store/useAuthStore';
 import { AuthInput } from '@/components/index';
-
+import {Helmet} from 'react-helmet-async'
 
 // کامپوننت پیشرفت مرحله
 const SignupProgress = ({ currentStep, totalSteps }) => (
@@ -50,7 +50,7 @@ const SignupLayout = ({ children }) => (
         dir='ltr'
         className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-8">
-            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl sm:min-h-[94vh] overflow-hidden max-sm:mt-14">
+            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl lg:min-h-[94vh] overflow-hidden max-sm:mt-10">
                 {children}
             </div>
         </div>
@@ -257,88 +257,116 @@ const SignUpPage = ({ role = "student" }) => {
         if (isSubmitting) return "در حال ثبت نام...";
         return isStudent ? "ثبت نام دانشجو" : "ثبت نام مدرس";
     };
-
+    const roleTitle =
+        role === "student"
+            ? "دانشجو"
+            : role === "instructor"
+                ? "مدرس"
+                : "کاربر"
     return (
-        <SignupLayout>
-            <div className="flex h-full">
-                <SignupIllustration role={role} />
+        <>
+            <Helmet>
+                <title>{`ثبت‌نام ${roleTitle} | مغز افزار`}</title>
 
-                <div className="flex-5 p-6 md:p-8 col-span-2">
-                    {/* هدر */}
-                    <div className="text-center mb-6">
-                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-3">
-                            <UserPlus size={24} />
+                <meta
+                    name="description"
+                    content={`برای ایجاد حساب ${roleTitle} در مغز افزار ثبت‌نام کنید و به دوره‌ها، محتوای آموزشی و امکانات پلتفرم دسترسی داشته باشید.`}
+                />
+
+                <meta
+                    property="og:title"
+                    content={`ثبت‌نام ${roleTitle} | مغز افزار`}
+                />
+
+                <meta
+                    property="og:description"
+                    content={`ثبت‌نام در سامانه آموزشی مغز افزار به عنوان ${roleTitle}.`}
+                />
+
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
+            <SignupLayout>
+                <div className="flex h-full">
+                    <SignupIllustration role={role} />
+
+                    <div className="flex-5 p-6 md:p-8 col-span-2">
+                        {/* هدر */}
+                        <div className="text-center mb-6">
+                            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 mb-3">
+                                <UserPlus size={24} />
+                            </div>
+                            <h1 className="text-2xl font-bold">ثبت نام</h1>
+                            <p className="text-gray-500 text-sm mt-1">
+                                {isStudent ? "شروع یادگیری" : "شروع تدریس"}
+                            </p>
                         </div>
-                        <h1 className="text-2xl font-bold">ثبت نام</h1>
-                        <p className="text-gray-500 text-sm mt-1">
-                            {isStudent ? "شروع یادگیری" : "شروع تدریس"}
-                        </p>
-                    </div>
 
-                    {/* پیشرفت */}
-                    <SignupProgress currentStep={currentStep} totalSteps={totalSteps} />
+                        {/* پیشرفت */}
+                        <SignupProgress currentStep={currentStep} totalSteps={totalSteps} />
 
-                    {/* فرم با ارتفاع ثابت */}
-                    <form onSubmit={handleFormSubmit} className="space-y-5">
-                        {/* کانتینر با min-height ثابت برای جلوگیری از تغییر ارتفاع */}
-                        <div className="animate-fadeIn min-h-[280px]">
-                            {renderStep()}
+                        {/* فرم با ارتفاع ثابت */}
+                        <form onSubmit={handleFormSubmit} className="space-y-5">
+                            {/* کانتینر با min-height ثابت برای جلوگیری از تغییر ارتفاع */}
+                            <div className="animate-fadeIn min-h-[280px]">
+                                {renderStep()}
+                            </div>
+
+                            {/* دکمه‌ها */}
+                            <div className="flex gap-3 pt-2">
+                                {currentStep > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={prevStep}
+                                        className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                                    >
+                                        قبلی
+                                    </button>
+                                )}
+
+                                {currentStep < totalSteps ? (
+                                    <button
+                                        type="button"
+                                        onClick={nextStep}
+                                        className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+                                    >
+                                        بعدی
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isSubmitting ? (
+                                            <span className="flex items-center justify-center gap-2">
+                                                <Loader2 size={18} className="animate-spin" />
+                                                {getButtonText()}
+                                            </span>
+                                        ) : (
+                                            getButtonText()
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+                        </form>
+
+                        {/* لینک ورود */}
+                        <div className="mt-6 text-center">
+                            <p className="text-sm text-gray-500">
+                                قبلاً ثبت نام کرده‌اید؟{" "}
+                                <Link
+                                    to={`/login/${role}`}
+                                    className="text-blue-600 font-medium hover:underline"
+                                >
+                                    وارد شوید
+                                </Link>
+                            </p>
                         </div>
-
-                        {/* دکمه‌ها */}
-                        <div className="flex gap-3 pt-2">
-                            {currentStep > 1 && (
-                                <button
-                                    type="button"
-                                    onClick={prevStep}
-                                    className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
-                                >
-                                    قبلی
-                                </button>
-                            )}
-
-                            {currentStep < totalSteps ? (
-                                <button
-                                    type="button"
-                                    onClick={nextStep}
-                                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-                                >
-                                    بعدی
-                                </button>
-                            ) : (
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isSubmitting ? (
-                                        <span className="flex items-center justify-center gap-2">
-                                            <Loader2 size={18} className="animate-spin" />
-                                            {getButtonText()}
-                                        </span>
-                                    ) : (
-                                        getButtonText()
-                                    )}
-                                </button>
-                            )}
-                        </div>
-                    </form>
-
-                    {/* لینک ورود */}
-                    <div className="mt-6 text-center">
-                        <p className="text-sm text-gray-500">
-                            قبلاً ثبت نام کرده‌اید؟{" "}
-                            <Link
-                                to={`/login/${role}`}
-                                className="text-blue-600 font-medium hover:underline"
-                            >
-                                وارد شوید
-                            </Link>
-                        </p>
                     </div>
                 </div>
-            </div>
-        </SignupLayout>
+            </SignupLayout>
+
+        </>
     );
 };
 

@@ -32,7 +32,7 @@ const LatestCourses = () => {
   };
 
   return (
-    <div className="w-full py-24 bg-gradient-to-b from-slate-900 via-slate-900 to-purple-900/80">
+    <div className="w-full py-24 bg-gradient-to-b from-purple-950 via-slate-900 to-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* هدر بخش */}
@@ -71,7 +71,7 @@ const LatestCourses = () => {
           <Link
             to="/courses"
             onClick={() => scrollTo(0, 0)}
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold text-white text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/25">
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-700 to-purple-900 rounded-xl font-semibold text-white text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/25">
             مشاهده همه دوره‌ها
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </Link >

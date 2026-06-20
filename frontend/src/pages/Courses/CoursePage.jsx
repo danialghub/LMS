@@ -4,6 +4,8 @@ import { useParams } from 'react-router'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useCourseStore } from '@/store/useCourseStore'
 import { PageLoader, CourseDetail } from '@/components/index'
+import {Helmet} from 'react-helmet-async'
+
 const CoursePage = () => {
 
     const { courseId } = useParams()
@@ -26,7 +28,39 @@ const CoursePage = () => {
 
 
     return !isFetching && course ? (
-        <CourseDetail course={course} isPreviewPage={true} />
+        <>
+            <Helmet>
+                <title>{`${course.courseTitle} | مغز افزار`}</title>
+
+                <meta
+                    name="description"
+                    content={`آموزش ${course.courseTitle} به صورت پروژه‌محور در مغز افزار. همین حالا این دوره را مشاهده کنید و مهارت‌های خود را ارتقا دهید.`}
+                />
+
+                <meta property="og:title" content={`${course.courseTitle} | مغز افزار`} />
+
+                <meta
+                    property="og:description"
+                    content={`دوره ${course.courseTitle} در مغز افزار. یادگیری عملی و پروژه‌محور برای ورود به بازار کار.`}
+                />
+
+                <meta property="og:type" content="article" />
+
+                <meta name="twitter:card" content="summary_large_image" />
+
+                <meta
+                    name="twitter:title"
+                    content={`${course.courseTitle} | مغز افزار`}
+                />
+
+                <meta
+                    name="twitter:description"
+                    content={`دوره ${course.courseTitle} را در مغز افزار مشاهده کنید.`}
+                />
+            </Helmet>
+
+            <CourseDetail course={course} isPreviewPage={true} />
+        </>
     ) : <PageLoader />
 }
 

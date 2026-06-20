@@ -120,15 +120,15 @@ const CourseCard = ({ course }) => {
                                     </div>
                                 ) : (
                                     // حالت غیر رایگان - نمایش قیمت و تخفیف
-                                    <div className='flex items-center mobile-short:gap-2 mobile-tall:gap-3 gap-4'>
+                                    <div className='flex items-center mobile-short:gap-4 mobile-tall:gap-3 gap-4'>
                                         <div className='flex flex-col items-end gap-0.5 sm:gap-1 font-Dirooz-FD'>
                                             {course?.courseDiscount > 0 && (
-                                                <del className='mobile-short:text-[10px] mobile-tall:text-[11px] text-[15px] text-black/40'>
+                                                <del className='mobile-short:text-[12px] mobile-tall:text-[11px] text-[15px] text-black/40'>
                                                     {formatNumber(course.coursePrice)}
                                                 </del>
                                             )
                                             }
-                                            <div className='mobile-short:text-xs mobile-tall:text-xs text-[16px] flex items-center gap-1 text-blue-500'>
+                                            <div className='mobile-short:text-[14px] mobile-tall:text-xs text-[16px] flex items-center gap-1 text-blue-500'>
                                                 <span className='font-bold'>
                                                     {formatPrice(finalPrice)}
                                                 </span>
@@ -137,11 +137,11 @@ const CourseCard = ({ course }) => {
                                         </div>
 
                                         {course.courseDiscount > 0 && (
-                                            <div className='flex flex-col items-center gap-0.5 sm:gap-1'>
-                                                <span className='font-Dirooz-FD mobile-short:text-[10px] mobile-tall:text-[10px] text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
+                                            <div className='flex flex-col items-center gap-2 sm:gap-1'>
+                                                <span className='font-Dirooz-FD mobile-short:text-[13px] mobile-tall:text-[10px] text-[14px] p-0.5 sm:p-1 px-1 sm:px-1.5 bg-blue-500 text-white rounded-md'>
                                                     {course.courseDiscount}%
                                                 </span>
-                                                <span className='mobile-short:text-[10px] mobile-tall:text-[11px]  text-sm text-blue-500 font-vazir'>تخفیف</span>
+                                                <span className='mobile-short:text-[12px] mobile-tall:text-[11px]  text-sm text-blue-500 font-vazir'>تخفیف</span>
                                             </div>
                                         )
 

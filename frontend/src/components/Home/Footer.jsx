@@ -61,23 +61,23 @@ const Footer = () => {
                             <li>
                                 <Link
                                     to={"/"}
-                                    className="hover:text-amber-400 transition flex items-center gap-2 group">
-                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
+                                    className="hover:text-blue-400 transition flex items-center gap-2 group">
+                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-blue-400"></span>
                                     صفحه اصلی
                                 </Link>
                             </li>
                             <li>
                                 <Link
                                     to={"/courses"}
-                                    className="hover:text-amber-400 transition flex items-center gap-2 group">
-                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
+                                    className="hover:text-blue-400 transition flex items-center gap-2 group">
+                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-blue-400"></span>
                                     دوره‌های آموزشی
                                 </Link>
                             </li>
 
                             <li>
-                                <a href="#" className="hover:text-amber-400 transition flex items-center gap-2 group">
-                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-amber-400"></span>
+                                <a href="#" className="hover:text-blue-400 transition flex items-center gap-2 group">
+                                    <span className="w-1 h-1 bg-slate-500 rounded-full group-hover:bg-blue-400"></span>
                                     وبلاگ
                                 </a>
                             </li>

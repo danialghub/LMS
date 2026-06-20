@@ -52,7 +52,7 @@
 @layer base {
   body {
     font-family: "VazirMatn", "Dirooz", "Dirooz-FD";
-    @apply break-words;
+  
     scroll-behavior: smooth;
   }
 
@@ -82,7 +82,7 @@
   }
 
   .rich-text {
-    @apply text-[15px] break-words;
+    @apply text-[16px] break-words;
 
     span {
       @apply leading-[30px] px-2;
@@ -131,6 +131,7 @@
     li {
       @apply mb-0;
     }
+   
   }
 
 
@@ -138,6 +139,8 @@
     direction: auto !important;
     text-align: auto !important;
   }
+
+  
 
 
 

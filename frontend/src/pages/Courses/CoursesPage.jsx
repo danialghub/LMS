@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { useDebounce } from 'use-debounce'
 import { AnimatePresence } from 'framer-motion'
 import { useCourseStore } from '@/store/useCourseStore'
-
+import {Helmet} from 'react-helmet-async'
 
 const Banner = () => {
     const [coursesCount, setCourseCount] = useState(0)
@@ -124,60 +124,102 @@ const CoursesPage = () => {
     }, [searchByTitle]);
 
     return (
-        <div className='bg-neutral-100'>
-            <Navbar />
-            <div className='px-6 md:px-20 lg:px-32  py-52 pt-4'>
-                <div className='my-12 relative'>
-                    <Banner courseCount={totalCourses} />
-                </div>
-                <div className='flex flex-col lg:flex-row items-start  gap-8 relative'>
+        <>
+            <Helmet>
+                <title>دوره‌های آموزشی | مغز افزار</title>
 
-                    <CourseFilteringCard
-                        filters={filters}
-                        setFilters={setFilters}
-                        setSearchByTitle={setSearchByTitle}
-                        searchByTitle={searchByTitle}
+                <meta
+                    name="description"
+                    content="مجموعه کامل دوره‌های آموزشی مغز افزار در زمینه برنامه‌نویسی، توسعه وب، علوم داده و فناوری. دوره مناسب خود را پیدا کنید و یادگیری را به صورت پروژه‌محور آغاز کنید."
+                />
 
-                    />
+                <meta
+                    name="keywords"
+                    content="دوره آموزشی, آموزش برنامه نویسی, آموزش React, آموزش Node.js, آموزش JavaScript,  آموزش توسعه وب, دوره آنلاین, مغز افزار"
+                />
 
-                    <div className='lg:flex-3 flex flex-col items-center gap-6'>
-                        {isFetching && courses.length === 0
-                            ? <div > <PageLoader /></div>
-                            : courses?.length > 0
-                                ? (
-                                    <div className='grid grid-cols-1 px-7  md:px-0 md:grid-cols-3 xl:grid-cols-3  gap-6 md:flex-3 ' >
-                                        <AnimatePresence>
-                                            {courses.map(course => (
-                                                <CourseCard key={course._id} course={course} />
-                                            ))
+                <meta name="robots" content="index, follow" />
 
-                                            }
-                                        </AnimatePresence>
+                <meta property="og:title" content="دوره‌های آموزشی | مغز افزار" />
+
+                <meta
+                    property="og:description"
+                    content="تمامی دوره‌های آموزشی مغز افزار را مشاهده کنید و مهارت‌های خود را در برنامه‌نویسی،  و فناوری ارتقا دهید."
+                />
+
+                <meta property="og:type" content="website" />
+
+                <meta property="og:site_name" content="مغز افزار" />
+
+                <meta name="twitter:card" content="summary_large_image" />
+
+                <meta
+                    name="twitter:title"
+                    content="دوره‌های آموزشی | مغز افزار"
+                />
+
+                <meta
+                    name="twitter:description"
+                    content="لیست کامل دوره‌های آموزشی مغز افزار برای یادگیری مهارت‌های تخصصی و ورود به بازار کار."
+                />
+
+                <link rel="canonical" href="https://your-domain.com/courses" />
+            </Helmet>
+            <div className='bg-neutral-100'>
+                <Navbar />
+                <div className='px-6 md:px-20 lg:px-32  py-52 pt-4'>
+                    <div className='my-12 relative'>
+                        <Banner courseCount={totalCourses} />
+                    </div>
+                    <div className='flex flex-col lg:flex-row items-start  gap-8 relative'>
+
+                        <CourseFilteringCard
+                            filters={filters}
+                            setFilters={setFilters}
+                            setSearchByTitle={setSearchByTitle}
+                            searchByTitle={searchByTitle}
+
+                        />
+
+                        <div className='lg:flex-3 flex flex-col items-center gap-6'>
+                            {isFetching && courses.length === 0
+                                ? <div > <PageLoader /></div>
+                                : courses?.length > 0
+                                    ? (
+                                        <div className='grid grid-cols-1 px-7  md:px-0 md:grid-cols-3 xl:grid-cols-3  gap-6 md:flex-3 ' >
+                                            <AnimatePresence>
+                                                {courses.map(course => (
+                                                    <CourseCard key={course._id} course={course} />
+                                                ))
+
+                                                }
+                                            </AnimatePresence>
+                                        </div>
+                                    ) : <div className='flex items-center justify-center text-4xl text-gray-800 min-h-[70vh] font-heading'>
+                                        دوره ای یافت نشد
                                     </div>
-                                ) : <div className='flex items-center justify-center text-4xl text-gray-800 min-h-[70vh] font-heading'>
-                                    دوره ای یافت نشد
+                            }
+                            {hasNextPage && (
+                                <div >
+                                    <button
+                                        disabled={!hasNextPage || isFetchingNextPage}
+                                        onClick={fetchNextPage}
+                                        className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                                    >
+                                        {isFetchingNextPage ? (
+                                            <SubmitLoading />
+                                        ) : (
+                                            "مشاهده بیشتر"
+                                        )}
+                                    </button>
                                 </div>
-                        }
-                        {hasNextPage && (
-                            <div >
-                                <button
-                                    disabled={!hasNextPage || isFetchingNextPage}
-                                    onClick={fetchNextPage}
-                                    className="w-[120px] h-[40px] rounded-lg bg-blue-500 text-white text-sm flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
-                                >
-                                    {isFetchingNextPage ? (
-                                        <SubmitLoading />
-                                    ) : (
-                                        "مشاهده بیشتر"
-                                    )}
-                                </button>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
+                <Footer />
             </div>
-            <Footer />
-        </div>
+        </>
     )
 }
 
