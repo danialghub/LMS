@@ -7,7 +7,7 @@ export const errorHandler = (
     res,
     next
 ) => {
-    console.log(`Error occurred: ${req.path}`, error);
+    
 
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({

@@ -52,7 +52,7 @@
 @layer base {
   body {
     font-family: "VazirMatn", "Dirooz", "Dirooz-FD";
-  
+
     scroll-behavior: smooth;
   }
 
@@ -131,7 +131,11 @@
     li {
       @apply mb-0;
     }
-   
+
+    p {
+      @apply text-xs sm:text-[15px] leading-5 text-black/80 dark:text-white/60;
+    }
+
   }
 
 
@@ -140,7 +144,7 @@
     text-align: auto !important;
   }
 
-  
+
 
 
 

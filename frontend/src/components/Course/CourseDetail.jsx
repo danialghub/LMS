@@ -527,7 +527,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                             dangerouslySetInnerHTML={{
                                                 __html: course.courseDescription.replace(/&nbsp;/g, ' ')
                                             }}
-                                            className="space-y-3 rich-text leading-7 sm:leading-9 mt-4 sm:mt-5  text-zinc-600 dark:!text-white/70"
+                                            className=" space-y-3 rich-text leading-7 sm:leading-9 mt-4 sm:mt-5  text-zinc-600 dark:!text-white/70"
                                             style={{
                                                 wordBreak: 'keep-all',
                                                 overflowWrap: 'break-word',
@@ -537,10 +537,10 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                     </div>
 
                                     {/* COURSE META */}
-                                    <div className="mt-4">
+                                    <div className="mt-16">
                                         {/* INSTRUCTOR */}
-                                        <div className="rounded-2xl sm:rounded-3xl border p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 bg-zinc-50 border-zinc-200 hover:bg-white dark:bg-[#121826] dark:border-[#1b2538] dark:hover:bg-[#151d2d]">
-                                            <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+                                        <div className="rounded-2xl sm:rounded-3xl border p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 bg-zinc-50 border-zinc-200 hover:bg-white dark:bg-[#121826] dark:border-[#1b2538] dark:hover:bg-[#151d2d] ">
+                                            <div className="flex flex-col sm:flex-row  items-start justify-between gap-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="relative">
                                                         {course.instructor?.avatar ? (
@@ -561,7 +561,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                                 <div className="mt-0 sm:mt-5">
                                                     <h4
 
-                                                        className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 hidden sm:inline-block">
+                                                        className="py-2 px-3 sm:py-2.5 sm:px-4 rounded-full text-xs sm:text-sm font-medium transition-all duration-200  text-white shadow-sm hover:shadow-md active:scale-95 hidden sm:inline-block bg-gray-800">
                                                         مدرس دوره
                                                     </h4>
                                                 </div>
@@ -575,7 +575,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
                                         </div>
 
                                         {/* STATS */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mt-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 mt-8">
                                             {statistician.map((item, index) => (
                                                 <div key={index} className={`relative overflow-hidden rounded-2xl sm:rounded-3xl border p-4 sm:p-5 transition-all duration-500 group hover:-translate-y-2 hover:shadow-2xl bg-white border-zinc-200 dark:bg-[#121826] ${item.border}`}>
                                                     <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 bg-gradient-to-br ${item.color}`} />

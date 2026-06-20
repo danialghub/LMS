@@ -99,7 +99,7 @@ export const requestZarinPalService = async (userId, courseId) => {
             } else {
                 // خطای برگشتی از زرین‌پال
                 const errorMessage = response.data?.data?.message || 'خطا در ایجاد تراکنش';
-                console.error('ZarinPal error:', response.data);
+
 
                 return {
                     status: "failed",
@@ -110,7 +110,6 @@ export const requestZarinPalService = async (userId, courseId) => {
             }
         } catch (error) {
             // مدیریت خطاهای شبکه و سرور
-            console.error('Request error:', error.message);
 
             if (error.code === 'ECONNABORTED') {
                 throw new Error('ارتباط با درگاه پرداخت با خطا مواجه شد (timeout)');

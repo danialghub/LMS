@@ -5,7 +5,6 @@ import { NotFoundException, UnauthorizedException } from "../utils/app.error.js"
 //course
 export const getInstructorCourseService = async (instructorId, page = 1, limit = 6) => {
     const skip = (page - 1) * limit;
-    console.log(page, limit);
 
     const totalCourses = await Course.countDocuments({
         instructor: instructorId
