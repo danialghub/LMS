@@ -1,5 +1,3 @@
-
-
 import express from 'express'
 
 import { allowStudent, protectRoute } from '../middlewares/auth.middleware.js'

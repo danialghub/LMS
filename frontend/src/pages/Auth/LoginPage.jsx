@@ -11,7 +11,7 @@ import {Helmet} from 'react-helmet-async'
 const LoginLayout = ({ children }) => (
     <div dir='ltr' className="min-h-screen  bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="container mx-auto px-4 py-8">
-            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl lg:min-h-[94vh]  overflow-hidden max-sm:mt-16">
+            <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl lg:min-h-[94vh]  overflow-hidden max-sm:mt-10">
                 {children}
             </div>
         </div>

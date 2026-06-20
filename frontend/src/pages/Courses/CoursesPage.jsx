@@ -31,7 +31,7 @@ const Banner = () => {
     return (
         <div className='relative '>
             <div className='relative z-10 p-4 md:p-12  flex flex-col justify-center items-center gap-10 md:gap-16 bg-zinc-800 text-sm text-white rounded-lg'>
-                <h3 className=' text-xl md:text-3xl font-bold'>همه دوره های آموزشی</h3>
+                <h1 className=' text-xl md:text-4xl font-bold'>همه دوره های آموزشی</h1>
                 <div className='flex items-center justify-center gap-8 max-md:text-[10px] md:gap-16'>
                     <div className='flex items-center gap-2 md:gap-3 '>
                         <span className='p-1 md:p-4 rounded-lg bg-white/10 '>

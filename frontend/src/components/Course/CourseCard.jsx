@@ -43,7 +43,7 @@ const CourseCard = ({ course }) => {
                     <img
                         src={course.courseThumbnail}
                         alt=""
-                        className='bg-cover aspect-video w-full object-contain'
+                        className='bg-cover aspect-video w-full object-cover h-auto'
                     />
                     <span className='bg-black/15 group-hover:bg-black/0 size-full absolute top-0 left-0 transition duration-300'></span>
                 </div>
