@@ -97,6 +97,7 @@ const LoginPage = ({ role = "student" }) => {
                 <meta
                     name="description"
                     content={`برای دسترسی به حساب کاربری ${roleTitle} خود در مغز افزار وارد شوید و از امکانات آموزشی پلتفرم استفاده کنید.`}
+                    data-rh="true"
                 />
 
                 <meta

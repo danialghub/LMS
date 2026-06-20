@@ -50,6 +50,7 @@ const HomePage = () => {
                     name="twitter:description"
                     content="دوره‌های آموزشی پروژه‌محور در حوزه برنامه‌نویسی، توسعه وب و علوم داده در مغز افزار."
                 />
+                <link rel="canonical" href="https://lms-48kl.onrender.com/" />
             </Helmet>
             <div>
                 <Navbar />

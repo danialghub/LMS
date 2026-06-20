@@ -63,7 +63,9 @@ const CourseCard = ({ course }) => {
                 <div className="flex-shrink-0 mt-2">
                     <p
                         className='line-clamp-2 lg:line-clamp-3 leading-5 text-[11px] lg:text-[12px] text-black/50'
-                        dangerouslySetInnerHTML={{ __html: course.courseDescription }}
+                        dangerouslySetInnerHTML={{
+                            __html: course.courseDescription.replace(/&nbsp;/g, ' ')
+                        }}
                     />
                 </div>
 

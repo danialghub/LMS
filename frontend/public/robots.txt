@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://lms-48kl.onrender.com/sitemap.xml

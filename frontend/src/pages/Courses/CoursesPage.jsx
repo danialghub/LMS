@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { useDebounce } from 'use-debounce'
 import { AnimatePresence } from 'framer-motion'
 import { useCourseStore } from '@/store/useCourseStore'
-import {Helmet} from 'react-helmet-async'
+import { Helmet } from 'react-helmet-async'
 
 const Banner = () => {
     const [coursesCount, setCourseCount] = useState(0)
@@ -131,6 +131,7 @@ const CoursesPage = () => {
                 <meta
                     name="description"
                     content="مجموعه کامل دوره‌های آموزشی مغز افزار در زمینه برنامه‌نویسی، توسعه وب، علوم داده و فناوری. دوره مناسب خود را پیدا کنید و یادگیری را به صورت پروژه‌محور آغاز کنید."
+                    data-rh="true"
                 />
 
                 <meta
@@ -163,7 +164,7 @@ const CoursesPage = () => {
                     content="لیست کامل دوره‌های آموزشی مغز افزار برای یادگیری مهارت‌های تخصصی و ورود به بازار کار."
                 />
 
-                <link rel="canonical" href="https://your-domain.com/courses" />
+                <link rel="canonical" href="https://lms-48kl.onrender.com/courses" />
             </Helmet>
             <div className='bg-neutral-100'>
                 <Navbar />

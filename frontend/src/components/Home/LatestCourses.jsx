@@ -33,7 +33,7 @@ const LatestCourses = () => {
 
   return (
     <div className="w-full py-24 bg-gradient-to-b from-purple-950 via-slate-900 to-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-16 sm:px-4 lg:px-8">
 
         {/* هدر بخش */}
         <div className="text-center mb-12">
@@ -58,7 +58,7 @@ const LatestCourses = () => {
           ? <PageLoader />
           : recentlyCourses.length
 
-            ? (<div className="grid grid-cols-2 mobile-tall:grid-cols-4 mobile-tall:gap-3 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-12 gap-y-4">
+            ? (<div className="grid grid-cols-1 mobile-tall:grid-cols-4 mobile-tall:gap-2 md:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-12 gap-y-4">
               {recentlyCourses.map((course, index) => (
                 <CourseCard key={course._id} course={course} />
               ))}

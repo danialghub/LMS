@@ -126,7 +126,7 @@ const Hero = () => {
 
                         {/* توضیحات */}
                         <p className="mobile-tall:text-sm text-lg sm:text-xl text-gray-300 mb-8 max-w-2xl lg:mx-0 mx-auto">
-                            به بزرگ‌ترین پلتفرم آموزش آنلاین ایران بپیوندید. با  دوره های تخصصی،
+                            به  پلتفرم آموزش آنلاین ایران بپیوندید. با  دوره های تخصصی،
                             یادگیری عملی و مدرسان مجرب، مهارت‌های خود را به سطح بعدی برسانید.
                         </p>
                         <button className='flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl hover:bg-white/20 text-white text-lg  transition-all duration-300 hover:scale-105 font-semibold'>

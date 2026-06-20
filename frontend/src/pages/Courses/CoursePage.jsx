@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useCourseStore } from '@/store/useCourseStore'
 import { PageLoader, CourseDetail } from '@/components/index'
-import {Helmet} from 'react-helmet-async'
+import { Helmet } from 'react-helmet-async'
 
 const CoursePage = () => {
 
@@ -35,6 +35,7 @@ const CoursePage = () => {
                 <meta
                     name="description"
                     content={`آموزش ${course.courseTitle} به صورت پروژه‌محور در مغز افزار. همین حالا این دوره را مشاهده کنید و مهارت‌های خود را ارتقا دهید.`}
+                    data-rh="true"
                 />
 
                 <meta property="og:title" content={`${course.courseTitle} | مغز افزار`} />
@@ -57,6 +58,7 @@ const CoursePage = () => {
                     name="twitter:description"
                     content={`دوره ${course.courseTitle} را در مغز افزار مشاهده کنید.`}
                 />
+                <link rel="canonical" href={`https://lms-48kl.onrender.com/course/${course._id}`} />
             </Helmet>
 
             <CourseDetail course={course} isPreviewPage={true} />
