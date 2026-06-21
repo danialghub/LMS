@@ -19,7 +19,7 @@ import transactionRoutes from './routes/transaction.routes.js'
 import instructorRoutes from './routes/instructor.routes.js'
 import studentRoutes from './routes/student.routes.js'
 import commentRoutes from './routes/comment.routes.js'
-import siteMapRoute from './routes/siteMap.routes.js'
+// import siteMapRoute from './routes/siteMap.routes.js'
 
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 
@@ -58,7 +58,7 @@ app.get(
         });
     })
 );
-app.use('/sitemap.xml', siteMapRoute)
+// app.use('/sitemap.xml', siteMapRoute)
 app.use('/api/auth', authRoutes)
 app.use('/api/course', courseRoutes)
 app.use('/api/transaction', transactionRoutes)
