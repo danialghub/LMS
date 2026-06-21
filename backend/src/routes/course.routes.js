@@ -2,7 +2,7 @@
 
 import express from 'express'
 import {
-    getCourses, createCourse, patchCourseFields, getCourseById,
+    getCourses, createCourse, patchCourseFields, getCourseByTitle,
     createChapter, patchChapterFields, createLecture, patchLectureFields,
     getLectureById,
     removeAttachment,
@@ -21,7 +21,7 @@ const router = express.Router()
 //public routes
 router.get('/courses', getCourses)
 router.get('/course-banner',getCourseBannerInfo)
-router.get('/:courseId', getCourseById)
+router.get('/:slug', getCourseByTitle)
 
 
 //private routes

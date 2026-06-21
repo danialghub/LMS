@@ -79,7 +79,7 @@ const MyCourseCard = ({ course }) => {
             {/* دکمه رفتن به دوره */}
             <div>
                 <Link
-                    to={`/course/${course._id}`}
+                    to={`/course/${course.slug}`}
                 >
                     <button
                         className="w-full py-2 rounded bg-blue-100 text-blue-500 flex items-center justify-center text-[13px] cursor-pointer"

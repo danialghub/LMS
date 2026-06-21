@@ -25,7 +25,7 @@ router.get('/', asyncHandler(
 
         const courseXml = courses.map(course => `
             <url>
-                <loc>${Env.FRONTEND_ORIGIN}/course/${course._id}</loc>
+                <loc>${Env.FRONTEND_ORIGIN}/course/${course.slug}</loc>
                 <changefreq>daily</changefreq>
                 <priority>0.7</priority>
             </url>

@@ -65,7 +65,7 @@ const routes = () => {
         },
       
         {
-            path: "/course/:courseId",
+            path: "/course/:slug",
             element: <CoursePage />
         },
         {

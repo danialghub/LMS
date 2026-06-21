@@ -1,11 +1,12 @@
 import { courseSchema, chapterSchema, lectureSchema } from "../validators/course.validator.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import {
-    getCourseService, getCourseByIdService, createCourseService, patchCourseService, updateCoursePublishStatusService,
+    getCourseService, createCourseService, patchCourseService, updateCoursePublishStatusService,
     createChapterService, patchChapterService,
     getLectureByIdService, createLectureService, patchLectureService, removeAttachmentFileService,
     updateLecturePublishStatusService, reOrderLecturesService,
-    reOrderChaptersService, getCourseBannerInfoService
+    reOrderChaptersService, getCourseBannerInfoService,
+    getCourseByTitleService
 
 } from "../services/course.service.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
@@ -20,14 +21,13 @@ export const getCourses = asyncHandler(
         res.status(HTTPSTATUS.OK).json(data)
     }
 )
-export const getCourseById = asyncHandler(
+export const getCourseByTitle = asyncHandler(
     async (req, res) => {
-        const { courseId } = req.params
+        const { slug } = req.params
         const { userId = "" } = req.query
 
 
-        const course = await getCourseByIdService(userId, courseId)
-
+        const course = await getCourseByTitleService(userId, slug)
 
 
         if (!course) {

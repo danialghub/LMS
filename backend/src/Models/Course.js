@@ -31,8 +31,10 @@ const ChapterSchema = new mongoose.Schema({
 
 
 const CourseSchema = new mongoose.Schema({
-    courseTitle: { type: String, required: true },
-
+    courseTitle: { type: String, required: true, unique: true },
+    slug: {
+        type: String, unique: true, required: true
+    },
     courseDescription: { type: String },
     courseThumbnail: String,
 
@@ -60,6 +62,8 @@ const CourseSchema = new mongoose.Schema({
     },
 
 }, { timestamps: true })
+
+
 
 const Course = mongoose.model('Course', CourseSchema);
 

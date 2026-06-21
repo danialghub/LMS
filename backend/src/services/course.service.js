@@ -169,13 +169,13 @@ export const getCourseService = async (filterQueries = {}) => {
     };
 };
 
-export const getCourseByIdService = async (userId, courseId) => {
+export const getCourseByTitleService = async (userId, slug) => {
     let course;
     let studentCourse;
 
     if (userId) {
         studentCourse = await Course.findOne({
-            _id: courseId,
+            slug,
             enrolledStudents: userId
         })
             .populate({
@@ -187,7 +187,7 @@ export const getCourseByIdService = async (userId, courseId) => {
     if (studentCourse) {
         course = studentCourse.toObject();
         let courseProgress = await CourseProgress.findOne({
-            courseId: courseId,
+            courseId: studentCourse._id,
             userId: userId
         });
         course.courseProgress = courseProgress || {
@@ -195,7 +195,7 @@ export const getCourseByIdService = async (userId, courseId) => {
         };
 
     } else {
-        course = await Course.findById(courseId)
+        course = await Course.findOne({ slug })
             .populate([
                 { path: 'instructor', select: '-password' },
             ])
@@ -251,7 +251,10 @@ export const getCourseBannerInfoService = async () => {
     };
 }
 export const createCourseService = async (body) => {
-
+    const foundCourse = await Course.findOne({ courseTitle: body.courseTitle })
+    if (foundCourse) {
+        throw new UnauthorizedException("دوره با این عنوان از قبل وجود دارد")
+    }
     const course = await Course.create(body)
 
     return course

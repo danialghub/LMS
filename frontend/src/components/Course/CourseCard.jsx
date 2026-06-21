@@ -36,7 +36,7 @@ const CourseCard = ({ course }) => {
             exit={{ opacity: 0 }}
             layout
         >
-            <Link to={`/course/${course._id}`}
+            <Link to={`/course/${course?.slug}`}
                 onClick={() => scrollTo(0, 0)}
                 className="block">
                 <div className='rounded-lg relative cursor-pointer overflow-hidden'>
@@ -99,7 +99,7 @@ const CourseCard = ({ course }) => {
                     {course?.enrolledStudents.some(std => std === authUser?._id)
                         ? (
                             <div>
-                                <Link to={`/course/${course._id}`}
+                                <Link to={`/course/${course?.slug}`}
                                     onClick={() => scrollTo(0, 0)}
                                 >
                                     <button className="w-full py-2 rounded bg-blue-100 text-blue-500 flex items-center justify-center text-[13px] cursor-pointer gap-1">

@@ -8,22 +8,22 @@ import { Helmet } from 'react-helmet-async'
 
 const CoursePage = () => {
 
-    const { courseId } = useParams()
-    const { authUser, isCheckingAuth } = useAuthStore()
+    const { slug } = useParams()
+    const { authUser } = useAuthStore()
     const { getCourseById, course, isFetching } = useCourseStore()
 
     useEffect(() => {
-        if (!courseId) return
+        if (!slug) return
 
 
         if (authUser && authUser.role === "student") {
-            getCourseById(courseId, { userId: authUser._id })
+            getCourseById(slug, { userId: authUser._id })
 
 
         } else {
-            getCourseById(courseId)
+            getCourseById(slug)
         }
-    }, [courseId])
+    }, [slug])
 
 
 
