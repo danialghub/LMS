@@ -1,4 +1,2 @@
 User-agent: *
-Disallow: 
-Allow: /
-Sitemap: https://lms-48kl.onrender.com/sitemap.xml
+Disallow:
