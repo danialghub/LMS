@@ -12,7 +12,7 @@ router.get('/', asyncHandler(
 
         const staticUrls = [
             "",
-            "/courses",
+            "courses",
         ];
 
         const staticXml = staticUrls.map(url => `
