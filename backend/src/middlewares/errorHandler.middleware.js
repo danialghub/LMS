@@ -7,7 +7,7 @@ export const errorHandler = (
     res,
     next
 ) => {
-    
+
 
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({
@@ -15,10 +15,11 @@ export const errorHandler = (
             errorCode: error.errorCode,
         });
     }
+    console.log(error.message);
 
     return res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
-        error: error?.message || "Something went wrong",
+        error: error.message || "Something went wrong",
         errorCode: ErrorCodes.ERR_INTERNAL,
     });
 };
