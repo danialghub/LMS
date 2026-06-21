@@ -69,7 +69,7 @@ const routes = () => {
             element: <CoursePage />
         },
         {
-            path: "/course/:courseId/:chapterId/:lectureId",
+            path: "/course/:slug/:chapterId/:lectureId",
             element: <LessonPage />
         },
         //instrutor routes

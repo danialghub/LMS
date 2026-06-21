@@ -9,19 +9,19 @@ import toast from 'react-hot-toast'
 
 const LessonPage = () => {
 
-  const { chapterId, lectureId, courseId } = useParams()
+  const { chapterId, lectureId, slug } = useParams()
   const { authUser, isCheckingAuth } = useAuthStore()
   const { getCourseById, course } = useCourseStore()
   const [lecture, setLecture] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!courseId || isCheckingAuth || !(authUser && authUser.role === "student")) return
+    if (!slug || isCheckingAuth || !(authUser && authUser.role === "student")) return
     if (course?._id) return
 
-    getCourseById(courseId, { userId: authUser?._id })
+    getCourseById(slug, { userId: authUser?._id })
 
-  }, [courseId, authUser])
+  }, [slug, authUser])
 
   useEffect(() => {
 

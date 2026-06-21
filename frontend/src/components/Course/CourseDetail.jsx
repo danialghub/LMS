@@ -193,7 +193,7 @@ const CourseDetail = ({ isPreviewPage, course }) => {
 
     const goToLectures = () => {
         const { chapterIndex, lectureIndex } = foundFirstLecture()
-        navigate(`/course/${course._id}/${chapterIndex}/${lectureIndex}`)
+        navigate(`/course/${course?.slug}/${chapterIndex}/${lectureIndex}`)
     }
 
     useEffect(() => {

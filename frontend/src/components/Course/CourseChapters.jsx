@@ -28,7 +28,7 @@ const CourseChapters = ({ chapters, completedLectures, formatDuration, course })
             return
         }
 
-        navigate(`/course/${course._id}/${chapterId}/${lectureId}`)
+        navigate(`/course/${course?.slug}/${chapterId}/${lectureId}`)
     }
 
     const getLectureIcon = (lecture, isPlaying) => {
